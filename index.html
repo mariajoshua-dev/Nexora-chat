@@ -171,7 +171,8 @@
                         <h3 id="chatTitle" style="font-size: 15px;">🌐 Global Chat Room</h3>
                         <small id="chatSub">● Real-time group chat</small>
                     </div>
-                    <div>
+                    <div style="display: flex; gap: 8px; align-items: center;">
+                        <button id="blockUserHeaderBtn" onclick="blockCurrentChatUser()" style="display: none; padding: 5px 8px; background: #ef4444; border: none; border-radius: 6px; color: white; cursor: pointer; font-size: 11px;">🚫 Block</button>
                         <select id="themeSelector" onchange="changeTheme(this.value)" style="padding: 5px 8px; font-size: 11px;">
                             <option value="theme-purple">Purple</option>
                             <option value="theme-cyan">Cyan</option>
@@ -181,7 +182,7 @@
                 </div>
                 <div class="messages" id="messages"></div>
                 <div class="typing-indicator" id="typingIndicator"></div>
-                <div class="message-input">
+                <div class="message-input" id="messageInputArea">
                     <label class="attach-btn" title="Send Photo/Video">
                         📎 <input type="file" id="mediaInput" accept="image/*,video/*" style="display:none;" onclick="event.stopPropagation();" onchange="handleMediaUpload(event)">
                     </label>
@@ -259,7 +260,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
         import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
-        import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, doc, setDoc, getDoc, deleteDoc, updateDoc, getDocs } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, doc, setDoc, getDoc, deleteDoc, updateDoc, getDocs, arrayUnion, arrayRemove } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyD_SWsXIgcBUkWRmL8wYQzQZFwv0WmQe3Y",
@@ -282,6 +283,7 @@
         let typingTimeout = null;
         let compressedProfileImage = "";
         let notificationsList = [];
+        let myBlockedUsers = [];
 
         window.login = async function() {
             const email = document.getElementById("email").value.trim();
@@ -310,7 +312,8 @@
                     privacy: "public", 
                     online: true,
                     avatar: "",
-                    followers: [] 
+                    followers: [],
+                    blocked: []
                 });
             } catch (error) {
                 errorBox.innerText = "Signup failed: " + error.message;
@@ -337,6 +340,7 @@
                     let data = userSnap.data();
                     if (data.name) displayName = data.name;
                     if (data.avatar) userAvatar = data.avatar;
+                    myBlockedUsers = data.blocked || [];
                     document.getElementById("accountPrivacySelect").value = data.privacy || "public";
                     renderFollowersList(data.followers || []);
                 }
@@ -473,9 +477,12 @@
                             btn.innerText = "Requested";
                             btn.disabled = true;
                             btn.style.opacity = "0.6";
+                        } else if (reqSnap.exists() && reqSnap.data().status === "accepted") {
+                            btn.innerText = "Chat";
+                            btn.onclick = () => { selectChat(userId, targetName); closeAccountSettings(); };
                         } else {
                             btn.innerText = "Follow";
-                            btn.onclick = () => sendChatRequest(userId);
+                            btn.onclick = () => { sendChatRequest(userId); searchUsersByEmail(); };
                         }
                     } else {
                         btn.innerText = "Chat";
@@ -513,6 +520,7 @@
                 if (auth.currentUser) {
                     const mySnap = snapshot.docs.find(d => d.id === auth.currentUser.uid);
                     if (mySnap && mySnap.exists()) {
+                        myBlockedUsers = mySnap.data().blocked || [];
                         renderFollowersList(mySnap.data().followers || []);
                     }
                 }
@@ -520,10 +528,8 @@
                 snapshot.forEach(async (docSnap) => {
                     const userData = docSnap.data();
                     const userId = docSnap.id;
-                    if (auth.currentUser && userId !== auth.currentUser.uid) {
-                        const item = document.createElement("div");
-                        item.className = `user-item ${currentChatId === userId ? 'active' : ''}`;
-                        
+                    
+                    if (auth.currentUser && userId !== auth.currentUser.uid && !myBlockedUsers.includes(userId)) {
                         let roomId = [auth.currentUser.uid, userId].sort().join('_');
                         const reqRef = doc(db, "chat_requests", roomId);
                         const reqSnap = await getDoc(reqRef);
@@ -532,33 +538,40 @@
                         let userAvatarIcon = userData.avatar ? `<img src="${userData.avatar}" style="width:22px;height:22px;border-radius:50%;object-fit:cover;vertical-align:middle;margin-right:4px;">` : '👤';
                         let displayName = userData.name || "NEXORA User";
 
+                        let showInSidebar = false;
                         let actionHTML = "";
 
-                        if (userData.privacy === "private") {
-                            if (reqSnap.exists()) {
-                                let reqData = reqSnap.data();
-                                if (reqData.status === "pending") {
-                                    if (reqData.to === auth.currentUser.uid) {
-                                        displayName += " (Accept)";
-                                        item.onclick = () => acceptRequest(roomId, userId, userData.name || "NEXORA User");
-                                    } else {
-                                        // Added Remove/Cancel Request Button here
-                                        actionHTML = `<button onclick="event.stopPropagation(); removeRequest('${roomId}')" style="background:#ef4444; border:none; color:white; padding:2px 6px; border-radius:4px; font-size:10px; cursor:pointer;">Remove</button>`;
-                                        displayName += " (Requested)";
-                                    }
-                                } else if (reqData.status === "accepted") {
-                                    item.onclick = () => selectChat(userId, displayName);
-                                }
-                            } else {
-                                actionHTML = `<button onclick="event.stopPropagation(); sendChatRequest('${userId}')" style="background:var(--accent-color); border:none; color:white; padding:2px 6px; border-radius:4px; font-size:10px; cursor:pointer;">Follow</button>`;
+                        if (userData.privacy !== "private") {
+                            showInSidebar = true;
+                        } 
+                        else if (reqSnap.exists()) {
+                            let reqData = reqSnap.data();
+                            if (reqData.status === "accepted") {
+                                showInSidebar = true;
+                            } else if (reqData.status === "pending" && reqData.to === auth.currentUser.uid) {
+                                showInSidebar = true;
+                                displayName += " (Accept)";
                             }
-                        } else {
-                            item.onclick = () => selectChat(userId, displayName);
                         }
 
-                        let statusText = `<div>${onlineIndicator}${userAvatarIcon}${displayName}</div>${actionHTML}`;
-                        item.innerHTML = statusText;
-                        chatList.appendChild(item);
+                        if (showInSidebar) {
+                            const item = document.createElement("div");
+                            item.className = `user-item ${currentChatId === userId ? 'active' : ''}`;
+
+                            if (userData.privacy === "private" && reqSnap.exists() && reqSnap.data().status === "pending" && reqSnap.data().to === auth.currentUser.uid) {
+                                item.onclick = () => acceptRequest(roomId, userId, userData.name || "NEXORA User");
+                            } else {
+                                item.onclick = () => selectChat(userId, displayName.replace(" (Accept)", ""));
+                                if (userData.privacy === "private" && reqSnap.exists() && reqSnap.data().status === "pending" && reqSnap.data().from === auth.currentUser.uid) {
+                                    actionHTML = `<button onclick="event.stopPropagation(); removeRequest('${roomId}')" style="background:#ef4444; border:none; color:white; padding:2px 6px; border-radius:4px; font-size:10px; cursor:pointer;">Remove</button>`;
+                                    displayName += " (Requested)";
+                                }
+                            }
+
+                            let statusText = `<div>${onlineIndicator}${userAvatarIcon}${displayName}</div>${actionHTML}`;
+                            item.innerHTML = statusText;
+                            chatList.appendChild(item);
+                        }
                     }
                 });
             });
@@ -609,11 +622,39 @@
             selectChat(targetUid, targetName);
         };
 
+        window.blockCurrentChatUser = async function() {
+            if (currentChatId === 'global') return;
+            if (confirm("Are you sure you want to block this user?")) {
+                await updateDoc(doc(db, "users", auth.currentUser.uid), {
+                    blocked: arrayUnion(currentChatId)
+                });
+                let roomId = [auth.currentUser.uid, currentChatId].sort().join('_');
+                try {
+                    await deleteDoc(doc(db, "chat_requests", roomId));
+                } catch(e) {}
+                
+                alert("User blocked successfully.");
+                selectChat('global', 'Global Chat');
+            }
+        };
+
         window.selectChat = function(chatId, chatName) {
             currentChatId = chatId;
             currentChatName = chatName;
             document.getElementById("chatTitle").innerText = chatId === 'global' ? "🌐 Global Chat Room" : `💬 Private Chat with ${chatName}`;
             document.getElementById("chatSub").innerText = chatId === 'global' ? "● Real-time group chat" : "● Direct messaging";
+            
+            const blockBtn = document.getElementById("blockUserHeaderBtn");
+            const inputArea = document.getElementById("messageInputArea");
+            
+            if (chatId === 'global') {
+                blockBtn.style.display = "none";
+                inputArea.style.display = "flex";
+            } else {
+                blockBtn.style.display = "block";
+                inputArea.style.display = "flex";
+            }
+
             listenToMessages();
             listenToTypingStatus();
         };
@@ -692,6 +733,8 @@
                 snapshot.forEach(async (docSnap) => {
                     const data = docSnap.data();
                     if (data.chatRoom === targetRoom) {
+                        if (myBlockedUsers.includes(data.senderId)) return;
+
                         const messageId = docSnap.id;
                         const message = document.createElement("div");
                         const isMine = data.senderId === auth.currentUser.uid;
@@ -738,6 +781,12 @@
             });
         }
 
+        window.deleteMessage = async function(messageId) {
+            if (confirm("Delete this message?")) {
+                await deleteDoc(doc(db, "messages", messageId));
+            }
+        };
+
         function updateNotificationsUI() {
             const badge = document.getElementById("notifBadge");
             const container = document.getElementById("notificationsListContainer");
@@ -746,7 +795,7 @@
                 badge.style.display = "inline-block";
                 badge.innerText = notificationsList.length;
 
-                container.innerHTML = notificationsList.map(n => `
+                container.innerHTML = notificationsList.load ? "" : notificationsList.map(n => `
                     <div class="notif-item">
                         <div>
                             <strong>${n.sender}</strong>: ${n.text}
@@ -768,12 +817,6 @@
             document.getElementById("notificationsModal").style.display = "none";
             notificationsList = [];
             updateNotificationsUI();
-        };
-
-        window.deleteMessage = async function(messageId) {
-            if (confirm("Delete this message?")) {
-                await deleteDoc(doc(db, "messages", messageId));
-            }
         };
 
         window.openAccountSettings = () => document.getElementById("accountSettingsModal").style.display = "flex";
