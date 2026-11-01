@@ -47,13 +47,18 @@
         .sidebar { width: 320px; height: 100%; padding: 15px; border-right: 1px solid var(--border-color); display: flex; flex-direction: column; justify-content: space-between; flex-shrink: 0; background: rgba(0,0,0,0.2); } 
         .profile-section { display: flex; flex-direction: column; height: 100%; gap: 10px; overflow: hidden; }
         .profile { display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 8px; border-radius: 10px; background: rgba(255,255,255,0.05); flex-shrink: 0; } 
-        .avatar { width: 42px; height: 42px; border-radius: 50%; display: flex; justify-content: center; align-items: center; background: var(--primary-gradient); font-size: 20px; border: 2px solid rgba(255,255,255,0.2); flex-shrink: 0; position: relative; } 
+        .avatar { width: 42px; height: 42px; border-radius: 50%; display: flex; justify-content: center; align-items: center; background: var(--primary-gradient); font-size: 20px; border: 2px solid rgba(255,255,255,0.2); flex-shrink: 0; position: relative; overflow: hidden; } 
+        .avatar img { width: 100%; height: 100%; object-fit: cover; }
         .online-dot { width: 9px; height: 9px; background: #22c55e; border-radius: 50%; position: absolute; bottom: 1px; right: 1px; border: 2px solid #111; }
         .profile-info h3 { font-size: 13px; word-break: break-all; } 
         .status { color: #5eead4; font-size: 11px; } 
         
         .users-list-container { flex: 1; overflow-y: auto; background: rgba(0,0,0,0.15); border-radius: 10px; padding: 10px; border: 1px solid var(--border-color); } 
-        .users-list-container h4 { font-size: 12px; color: #aab0c5; margin-bottom: 8px; } 
+        .users-list-container h4 { font-size: 12px; color: #aab0c5; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; } 
+        
+        .notif-bell-btn { background: rgba(255,255,255,0.1); border: none; color: white; padding: 3px 8px; border-radius: 6px; cursor: pointer; font-size: 11px; position: relative; }
+        .notif-badge { background: #ef4444; color: white; padding: 1px 5px; border-radius: 10px; font-size: 9px; font-weight: bold; margin-left: 4px; }
+        
         .user-item { padding: 10px; border-radius: 8px; cursor: pointer; font-size: 13px; margin-bottom: 6px; display: flex; align-items: center; justify-content: space-between; background: rgba(255,255,255,0.03); transition: background 0.2s; word-break: break-all; } 
         .user-item:hover, .user-item.active { background: rgba(255,255,255,0.12); } 
         .user-status-indicator { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 6px; flex-shrink: 0; }
@@ -79,7 +84,7 @@
         .send-btn { width: 45px; height: 44px; background: var(--accent-color); font-size: 16px; color: white; display: flex; align-items: center; justify-content: center; border: none; border-radius: 12px; cursor: pointer; flex-shrink: 0; } 
         .media-preview { max-width: 220px; border-radius: 8px; margin-top: 6px; display: block; }
 
-        /* SEARCH RESULTS STYLING INSIDE MODAL */
+        /* SEARCH RESULTS */
         .search-container { display: flex; gap: 6px; margin-bottom: 10px; }
         .search-results-box { max-height: 100px; overflow-y: auto; background: rgba(0,0,0,0.2); border-radius: 6px; padding: 5px; margin-top: 5px; text-align: left; }
         .search-result-item { padding: 5px; font-size: 11px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
@@ -88,9 +93,12 @@
         /* MODALS */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; justify-content: center; align-items: center; z-index: 999; }
         .modal-content { background: #1e1e2f; padding: 22px; border-radius: 16px; width: 360px; text-align: center; border: 1px solid rgba(255,255,255,0.1); max-height: 90vh; overflow-y: auto; }
-        .avatar-preview-box { width: 70px; height: 70px; margin: 0 auto 10px; border-radius: 50%; background: var(--primary-gradient); display: flex; align-items: center; justify-content: center; font-size: 32px; border: 2px solid rgba(255,255,255,0.3); }
+        .avatar-preview-box { width: 70px; height: 70px; margin: 0 auto 10px; border-radius: 50%; background: var(--primary-gradient); display: flex; align-items: center; justify-content: center; font-size: 32px; border: 2px solid rgba(255,255,255,0.3); overflow: hidden; }
+        .avatar-preview-box img { width: 100%; height: 100%; object-fit: cover; }
 
-        /* RESPONSIVE DESIGN */
+        /* NOTIFICATION PANEL LIST */
+        .notif-item { padding: 8px; background: rgba(255,255,255,0.05); border-radius: 6px; margin-bottom: 6px; font-size: 12px; text-align: left; display: flex; justify-content: space-between; align-items: center; }
+
         @media (max-width: 768px) {
             #app { padding: 4px; }
             .app-container { flex-direction: column; border-radius: 10px; }
@@ -139,12 +147,17 @@
                             <div class="online-dot"></div>
                         </div>
                         <div class="profile-info">
-                            <h3 id="displayName">User</h3>
+                            <h3 id="displayName">NEXORA User</h3>
                             <span class="status">● Settings ⚙️</span>
                         </div>
                     </div>
                     <div class="users-list-container">
-                        <h4>💬 Global & Private Chats</h4>
+                        <h4>
+                            <span>💬 Chats</span>
+                            <button class="notif-bell-btn" onclick="openNotificationsModal()">
+                                🔔 Notifications <span id="notifBadge" class="notif-badge" style="display:none;">0</span>
+                            </button>
+                        </h4>
                         <div id="chatList">
                             <div class="user-item active" onclick="selectChat('global', 'Global Chat')">🌐 Global Chat Room</div>
                         </div>
@@ -184,6 +197,23 @@
         <div class="modal-content">
             <h3 style="margin-bottom:12px; color:#fff; font-size: 16px;">⚙️ Account Settings</h3>
             
+            <!-- NAME CUSTOMIZATION -->
+            <div style="background: rgba(255,255,255,0.05); padding: 10px; border-radius: 10px; margin-bottom: 10px; text-align: left;">
+                <label style="color:#cbd5e1; font-size:12px; display:block; margin-bottom:4px; font-weight:bold;">✏️ Customize Your Name</label>
+                <div style="display: flex; gap: 6px;">
+                    <input type="text" id="customNameInput" placeholder="Enter display name..." style="padding: 6px; font-size: 12px;">
+                    <button onclick="saveCustomName()" style="padding: 6px 10px; background:var(--accent-color); border:none; border-radius:8px; color:white; cursor:pointer; font-size:12px;">Save</button>
+                </div>
+            </div>
+
+            <!-- PROFILE PHOTO (FACE) UPLOAD -->
+            <div style="background: rgba(255,255,255,0.05); padding: 10px; border-radius: 10px; margin-bottom: 10px; text-align: left;">
+                <label style="color:#cbd5e1; font-size:12px; display:block; margin-bottom:6px; font-weight:bold;">📸 Upload Profile Photo (Face)</label>
+                <div class="avatar-preview-box" id="modalAvatarPreview">👨‍💼</div>
+                <input type="file" id="profileImageInput" accept="image/*" style="width:100%; font-size:11px; margin-top:4px;" onchange="previewProfileImage(event)">
+                <button onclick="saveProfilePhoto()" style="width:100%; padding:6px; background:var(--primary-gradient); color:white; border:none; border-radius:6px; font-weight:bold; cursor:pointer; margin-top:6px; font-size: 11px;">Save Photo</button>
+            </div>
+
             <!-- SEARCH USER EMAIL SECTION -->
             <div style="background: rgba(255,255,255,0.05); padding: 10px; border-radius: 10px; margin-bottom: 10px; text-align: left;">
                 <label style="color:#cbd5e1; font-size:12px; display:block; margin-bottom:4px; font-weight:bold;">🔍 Search Email ID & Request</label>
@@ -192,31 +222,6 @@
                     <button onclick="searchUsersByEmail()" style="padding: 6px 10px; background:var(--accent-color); border:none; border-radius:8px; color:white; cursor:pointer; font-size:12px;">🔍</button>
                 </div>
                 <div class="search-results-box" id="searchResultsBox">Type email to search...</div>
-            </div>
-
-            <!-- AVATAR CUSTOMIZATION -->
-            <div style="background: rgba(255,255,255,0.05); padding: 10px; border-radius: 10px; margin-bottom: 10px; text-align: left;">
-                <label style="color:#cbd5e1; font-size:12px; display:block; margin-bottom:6px; font-weight:bold;">🎨 Avatar Customization</label>
-                <div class="avatar-preview-box" id="modalAvatarPreview">👨‍💼</div>
-
-                <div style="margin-bottom: 6px;">
-                    <label style="font-size: 11px; color: #aab0c5;">Gender</label>
-                    <select id="avatarGender" style="padding: 6px; font-size: 11px; margin-top: 2px;" onchange="previewAvatar()">
-                        <option value="male">Male 👨</option>
-                        <option value="female">Female 👩</option>
-                    </select>
-                </div>
-
-                <div style="margin-bottom: 6px;">
-                    <label style="font-size: 11px; color: #aab0c5;">Outfit</label>
-                    <select id="avatarDress" style="padding: 6px; font-size: 11px; margin-top: 2px;" onchange="previewAvatar()">
-                        <option value="suit">Formal Suit 👔</option>
-                        <option value="casual">Casual Hoodie 🧥</option>
-                        <option value="jacket">Jacket 🧥</option>
-                    </select>
-                </div>
-
-                <button onclick="saveAvatarSettings()" style="width:100%; padding:6px; background:var(--primary-gradient); color:white; border:none; border-radius:6px; font-weight:bold; cursor:pointer; margin-top:4px; font-size: 11px;">Save Avatar</button>
             </div>
 
             <!-- PRIVACY SETTINGS -->
@@ -228,14 +233,25 @@
                 </select>
             </div>
 
-            <!-- FOLLOWERS LIST SECTION -->
+            <!-- FOLLOWERS COUNT & LIST SECTION -->
             <div style="background: rgba(255,255,255,0.05); padding: 10px; border-radius: 10px; margin-bottom: 10px; text-align: left; max-height: 100px; overflow-y: auto;">
-                <label style="color:#cbd5e1; font-size:12px; display:block; margin-bottom:4px; font-weight:bold;">👥 My Followers</label>
-                <div id="followersListContainer" style="font-size: 11px; color: #aab0c5;">Loading followers...</div>
+                <label style="color:#cbd5e1; font-size:12px; display:block; margin-bottom:4px; font-weight:bold;" id="followerCountLabel">👥 Followers (0)</label>
+                <div id="followersListContainer" style="font-size: 11px; color: #aab0c5;">No followers yet.</div>
             </div>
 
             <button onclick="logout()" style="width:100%; padding:8px; background:#ef4444; color:white; border:none; border-radius:8px; font-weight:bold; cursor:pointer; margin-top:4px;">Logout</button>
             <button onclick="closeAccountSettings()" style="width:100%; padding:5px; background:transparent; color:#aaa; border:none; cursor:pointer; margin-top:4px;">Close</button>
+        </div>
+    </div>
+
+    <!-- NOTIFICATIONS PANEL MODAL -->
+    <div class="modal-overlay" id="notificationsModal">
+        <div class="modal-content">
+            <h3 style="margin-bottom:12px; color:#fff; font-size: 16px;">🔔 Notification Panel</h3>
+            <div id="notificationsListContainer" style="max-height: 200px; overflow-y: auto; margin-bottom: 15px;">
+                <div style="font-size: 12px; color: #aab0c5; padding: 10px;">No new notifications.</div>
+            </div>
+            <button onclick="closeNotificationsModal()" style="width:100%; padding:8px; background:var(--accent-color); color:white; border:none; border-radius:8px; font-weight:bold; cursor:pointer;">Close</button>
         </div>
     </div>
 
@@ -264,6 +280,8 @@
         let unsubscribeUsers = null;
         let unsubscribeTyping = null;
         let typingTimeout = null;
+        let compressedProfileImage = "";
+        let notificationsList = [];
 
         window.login = async function() {
             const email = document.getElementById("email").value.trim();
@@ -288,10 +306,10 @@
                 const res = await createUserWithEmailAndPassword(auth, email, password);
                 await setDoc(doc(db, "users", res.user.uid), { 
                     email: email,
-                    name: email.split("@")[0], 
+                    name: "NEXORA User", 
                     privacy: "public", 
                     online: true,
-                    avatar: "👨‍💼",
+                    avatar: "",
                     followers: [] 
                 });
             } catch (error) {
@@ -311,20 +329,23 @@
                 }, 1000);
 
                 let email = user.email;
-                let name = email.split("@")[0];
-                document.getElementById("displayName").innerText = name;
-                
+                let displayName = "NEXORA User";
+                let userAvatar = "";
+
                 const userSnap = await getDoc(doc(db, "users", user.uid));
-                let userAvatar = "👨‍💼";
                 if (userSnap.exists()) {
                     let data = userSnap.data();
-                    document.getElementById("accountPrivacySelect").value = data.privacy || "public";
+                    if (data.name) displayName = data.name;
                     if (data.avatar) userAvatar = data.avatar;
+                    document.getElementById("accountPrivacySelect").value = data.privacy || "public";
                     renderFollowersList(data.followers || []);
                 }
                 
-                document.getElementById("userAvatarDisplay").innerHTML = `${userAvatar}<div class="online-dot"></div>`;
-                await setDoc(doc(db, "users", user.uid), { email: email, name: name, online: true, avatar: userAvatar }, { merge: true });
+                document.getElementById("displayName").innerText = displayName;
+                document.getElementById("customNameInput").value = displayName;
+                
+                updateAvatarDisplay(userAvatar);
+                await setDoc(doc(db, "users", user.uid), { email: email, online: true }, { merge: true });
                 
                 listenToActiveUsersAndRequests();
                 listenToMessages();
@@ -341,7 +362,79 @@
             }
         });
 
-        // SEARCH USERS BY EMAIL ID FUNCTION
+        function updateAvatarDisplay(avatarData) {
+            const display = document.getElementById("userAvatarDisplay");
+            const preview = document.getElementById("modalAvatarPreview");
+            if (avatarData) {
+                display.innerHTML = `<img src="${avatarData}"><div class="online-dot"></div>`;
+                preview.innerHTML = `<img src="${avatarData}">`;
+            } else {
+                display.innerHTML = `👨‍💼<div class="online-dot"></div>`;
+                preview.innerHTML = `👨‍💼`;
+            }
+        }
+
+        window.saveCustomName = async function() {
+            if (!auth.currentUser) return;
+            let newName = document.getElementById("customNameInput").value.trim() || "NEXORA User";
+            await setDoc(doc(db, "users", auth.currentUser.uid), { name: newName }, { merge: true });
+            document.getElementById("displayName").innerText = newName;
+            alert("Name updated successfully!");
+        };
+
+        window.previewProfileImage = function(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement("canvas");
+                    const MAX_WIDTH = 150;
+                    const MAX_HEIGHT = 150;
+                    let width = img.width;
+                    let height = img.height;
+
+                    if (width > height) {
+                        if (width > MAX_WIDTH) {
+                            height *= MAX_WIDTH / width;
+                            width = MAX_WIDTH;
+                        }
+                    } else {
+                        if (height > MAX_HEIGHT) {
+                            width *= MAX_HEIGHT / height;
+                            height = MAX_HEIGHT;
+                        }
+                    }
+
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext("2d");
+                    ctx.drawImage(img, 0, 0, width, height);
+
+                    compressedProfileImage = canvas.toDataURL("image/jpeg", 0.7);
+                    document.getElementById("modalAvatarPreview").innerHTML = `<img src="${compressedProfileImage}">`;
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        };
+
+        window.saveProfilePhoto = async function() {
+            if (!auth.currentUser || !compressedProfileImage) {
+                alert("Please select an image first!");
+                return;
+            }
+            try {
+                await setDoc(doc(db, "users", auth.currentUser.uid), { avatar: compressedProfileImage }, { merge: true });
+                updateAvatarDisplay(compressedProfileImage);
+                alert("Profile photo saved successfully!");
+            } catch (err) {
+                alert("Error saving photo: " + err.message);
+            }
+        };
+
         window.searchUsersByEmail = async function() {
             const queryEmail = document.getElementById("userSearchInput").value.trim().toLowerCase();
             const resultsBox = document.getElementById("searchResultsBox");
@@ -364,7 +457,10 @@
                     found = true;
                     const item = document.createElement("div");
                     item.className = "search-result-item";
-                    item.innerHTML = `<span>${userData.avatar || '👤'} ${userData.email} (${userData.privacy})</span>`;
+                    
+                    let avatarHtml = userData.avatar ? `<img src="${userData.avatar}" style="width:20px;height:20px;border-radius:50%;object-fit:cover;">` : '👤';
+                    let targetName = userData.name || "NEXORA User";
+                    item.innerHTML = `<span>${avatarHtml} ${targetName} (${userData.privacy})</span>`;
                     
                     const btn = document.createElement("button");
                     btn.style.cssText = "padding:3px 6px; background:var(--accent-color); border:none; border-radius:4px; color:white; cursor:pointer; font-size:10px;";
@@ -374,7 +470,7 @@
                         btn.onclick = () => sendChatRequest(userId);
                     } else {
                         btn.innerText = "Chat";
-                        btn.onclick = () => { selectChat(userId, userData.name || userData.email.split("@")[0]); closeAccountSettings(); };
+                        btn.onclick = () => { selectChat(userId, targetName); closeAccountSettings(); };
                     }
 
                     item.appendChild(btn);
@@ -387,26 +483,11 @@
             }
         };
 
-        window.previewAvatar = function() {
-            const gender = document.getElementById("avatarGender").value;
-            const dress = document.getElementById("avatarDress").value;
-            let emoji = gender === "female" ? "👩‍💼" : "👨‍💼";
-            if (dress === "casual") emoji = gender === "female" ? "👩‍💻" : "👨‍💻";
-            if (dress === "jacket") emoji = gender === "female" ? "👩‍🎤" : "👨‍🎤";
-            document.getElementById("modalAvatarPreview").innerText = emoji;
-        };
-
-        window.saveAvatarSettings = async function() {
-            if (!auth.currentUser) return;
-            const emoji = document.getElementById("modalAvatarPreview").innerText;
-            await setDoc(doc(db, "users", auth.currentUser.uid), { avatar: emoji }, { merge: true });
-            document.getElementById("userAvatarDisplay").innerHTML = `${emoji}<div class="online-dot"></div>`;
-            alert("Avatar updated successfully!");
-            closeAccountSettings();
-        };
-
         function renderFollowersList(followers) {
             const container = document.getElementById("followersListContainer");
+            const label = document.getElementById("followerCountLabel");
+            const count = followers ? followers.length : 0;
+            label.innerText = `👥 Followers (${count})`;
             if (!followers || followers.length === 0) {
                 container.innerHTML = "No followers yet.";
                 return;
@@ -420,6 +501,13 @@
                 const chatList = document.getElementById("chatList");
                 chatList.innerHTML = `<div class="user-item ${currentChatId === 'global' ? 'active' : ''}" onclick="selectChat('global', 'Global Chat')">🌐 Global Chat Room</div>`;
                 
+                if (auth.currentUser) {
+                    const mySnap = snapshot.docs.find(d => d.id === auth.currentUser.uid);
+                    if (mySnap && mySnap.exists()) {
+                        renderFollowersList(mySnap.data().followers || []);
+                    }
+                }
+
                 snapshot.forEach(async (docSnap) => {
                     const userData = docSnap.data();
                     const userId = docSnap.id;
@@ -432,31 +520,32 @@
                         const reqSnap = await getDoc(reqRef);
                         
                         let onlineIndicator = `<span class="user-status-indicator ${userData.online ? 'is-online' : 'is-offline'}"></span>`;
-                        let userAvatarIcon = userData.avatar || '👤';
-                        let displayName = userData.name || (userData.email ? userData.email.split("@")[0] : 'User');
-                        let statusText = onlineIndicator + `${userAvatarIcon} ` + displayName;
+                        let userAvatarIcon = userData.avatar ? `<img src="${userData.avatar}" style="width:22px;height:22px;border-radius:50%;object-fit:cover;vertical-align:middle;margin-right:4px;">` : '👤';
+                        
+                        let displayName = userData.name || "NEXORA User";
 
                         if (userData.privacy === "private") {
                             if (reqSnap.exists()) {
                                 let reqData = reqSnap.data();
                                 if (reqData.status === "pending") {
                                     if (reqData.to === auth.currentUser.uid) {
-                                        statusText += " (Accept)";
-                                        item.onclick = () => acceptRequest(roomId, userId, displayName);
+                                        displayName += " (Accept)";
+                                        item.onclick = () => acceptRequest(roomId, userId, userData.name || "NEXORA User");
                                     } else {
-                                        statusText += " (Requested)";
+                                        displayName += " (Requested)";
                                     }
                                 } else if (reqData.status === "accepted") {
                                     item.onclick = () => selectChat(userId, displayName);
                                 }
                             } else {
-                                statusText += " (Request)";
+                                displayName += " (Request)";
                                 item.onclick = () => sendChatRequest(userId);
                             }
                         } else {
                             item.onclick = () => selectChat(userId, displayName);
                         }
 
+                        let statusText = onlineIndicator + userAvatarIcon + displayName;
                         item.innerHTML = statusText;
                         chatList.appendChild(item);
                     }
@@ -474,24 +563,46 @@
             alert("Chat request sent successfully!");
         };
 
+        // FIXED ACCEPT REQUEST TO PROPERLY UPDATE FOLLOWER ARRAY
         window.acceptRequest = async function(roomId, targetUid, targetName) {
             await updateDoc(doc(db, "chat_requests", roomId), { status: "accepted" });
             
-            const mySnap = await getDoc(doc(db, "users", auth.currentUser.uid));
+            // Get current user's name
+            const myName = document.getElementById("displayName").innerText;
+            
+            // Add current user to the requester's followers list, OR add requester to current user based on direction
+            // Since targetUid sent the request or is being accepted: let's add target user to MY followers, 
+            // and add ME to target user's followers so both counts update correctly!
+            const myDocRef = doc(db, "users", auth.currentUser.uid);
+            const mySnap = await getDoc(myDocRef);
             if (mySnap.exists()) {
-                let currentName = auth.currentUser.email.split("@")[0];
-                let targetDocRef = doc(db, "users", targetUid);
-                let targetSnap = await getDoc(targetDocRef);
-                if (targetSnap.exists()) {
-                    let followers = targetSnap.data().followers || [];
-                    if (!followers.includes(currentName)) {
-                        followers.push(currentName);
-                        await updateDoc(targetDocRef, { followers: followers });
+                let myFollowers = mySnap.data().followers || [];
+                // If target user is accepting or being accepted, let's ensure target user is in my followers if they followed me
+                // Actually, whoever requests: if B requests A, and A accepts, B follows A. So A's followers list gets B's name!
+                const reqDoc = await getDoc(doc(db, "chat_requests", roomId));
+                if (reqDoc.exists()) {
+                    let reqData = reqDoc.data();
+                    let followerUserId = reqData.from; // The one who sent the request
+                    let userToBeFollowedId = reqData.to; // The one who accepted
+
+                    // Fetch the name of the user who sent the request
+                    const followerUserSnap = await getDoc(doc(db, "users", followerUserId));
+                    if (followerUserSnap.exists()) {
+                        let followerName = followerUserSnap.data().name || "NEXORA User";
+                        const followedUserDocRef = doc(db, "users", userToBeFollowedId);
+                        const followedSnap = await getDoc(followedUserDocRef);
+                        if (followedSnap.exists()) {
+                            let existingFollowers = followedSnap.data().followers || [];
+                            if (!existingFollowers.includes(followerName)) {
+                                existingFollowers.push(followerName);
+                                await updateDoc(followedUserDocRef, { followers: existingFollowers });
+                            }
+                        }
                     }
                 }
             }
 
-            alert("Request accepted! Chat unlocked.");
+            alert("Request accepted! Follower increased successfully.");
             selectChat(targetUid, targetName);
         };
 
@@ -507,7 +618,7 @@
         window.handleTyping = async function() {
             if (!auth.currentUser) return;
             const typingRef = doc(db, "typing", currentChatId + "_" + auth.currentUser.uid);
-            await setDoc(typingRef, { isTyping: true, user: auth.currentUser.email.split("@")[0] }, { merge: true });
+            await setDoc(typingRef, { isTyping: true, user: document.getElementById("displayName").innerText }, { merge: true });
 
             if (typingTimeout) clearTimeout(typingTimeout);
             typingTimeout = setTimeout(async () => {
@@ -544,7 +655,7 @@
                 mediaUrl: mediaUrl,
                 mediaType: mediaType,
                 senderId: auth.currentUser.uid,
-                senderName: auth.currentUser.email.split("@")[0],
+                senderName: document.getElementById("displayName").innerText,
                 chatRoom: roomId,
                 status: 'sent',
                 createdAt: serverTimestamp()
@@ -570,6 +681,7 @@
             let targetRoom = currentChatId === 'global' ? 'global' : [auth.currentUser.uid, currentChatId].sort().join('_');
             const q = query(collection(db, "messages"), orderBy("createdAt", "asc"));
             
+            let isInitialLoad = true;
             unsubscribeMessages = onSnapshot(q, (snapshot) => {
                 const messagesBox = document.getElementById("messages");
                 messagesBox.innerHTML = "";
@@ -606,11 +718,54 @@
                         if (!isMine && data.status !== 'read') {
                             await updateDoc(doc(db, "messages", messageId), { status: 'read' });
                         }
+
+                        if (!isInitialLoad && !isMine) {
+                            notificationsList.unshift({
+                                sender: data.senderName,
+                                text: data.text || "Sent an attachment",
+                                time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                            });
+
+                            updateNotificationsUI();
+                        }
                     }
                 });
+                isInitialLoad = false;
                 messagesBox.scrollTop = messagesBox.scrollHeight;
             });
         }
+
+        function updateNotificationsUI() {
+            const badge = document.getElementById("notifBadge");
+            const container = document.getElementById("notificationsListContainer");
+
+            if (notificationsList.length > 0) {
+                badge.style.display = "inline-block";
+                badge.innerText = notificationsList.length;
+
+                container.innerHTML = notificationsList.map(n => `
+                    <div class="notif-item">
+                        <div>
+                            <strong>${n.sender}</strong>: ${n.text}
+                        </div>
+                        <span style="font-size:10px; color:#aaa;">${n.time}</span>
+                    </div>
+                `).join("");
+            } else {
+                badge.style.display = "none";
+                container.innerHTML = `<div style="font-size: 12px; color: #aab0c5; padding: 10px;">No new notifications.</div>`;
+            }
+        }
+
+        window.openNotificationsModal = function() {
+            document.getElementById("notificationsModal").style.display = "flex";
+        };
+
+        window.closeNotificationsModal = function() {
+            document.getElementById("notificationsModal").style.display = "none";
+            notificationsList = [];
+            updateNotificationsUI();
+        };
 
         window.deleteMessage = async function(messageId) {
             if (confirm("Delete this message?")) {
