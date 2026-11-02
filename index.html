@@ -76,8 +76,6 @@
         .users-list-container h4 { font-size: 12px; color: #aab0c5; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; } 
         
         .create-group-btn { background: var(--accent-color); border: none; color: white; padding: 3px 7px; border-radius: 6px; cursor: pointer; font-size: 10px; font-weight: bold; }
-        .notif-bell-btn { background: rgba(255,255,255,0.1); border: none; color: white; padding: 3px 8px; border-radius: 6px; cursor: pointer; font-size: 11px; position: relative; }
-        .notif-badge { background: #ef4444; color: white; padding: 1px 5px; border-radius: 10px; font-size: 9px; font-weight: bold; margin-left: 4px; }
         
         .user-item { padding: 10px; border-radius: 8px; cursor: pointer; font-size: 13px; margin-bottom: 6px; display: flex; align-items: center; justify-content: space-between; background: rgba(255,255,255,0.03); transition: background 0.2s; word-break: break-all; } 
         .user-item:hover, .user-item.active { background: rgba(255,255,255,0.12); } 
@@ -92,7 +90,7 @@
         .header-avatar { width: 38px; height: 38px; border-radius: 50%; background: var(--primary-gradient); display: flex; align-items: center; justify-content: center; font-size: 18px; overflow: hidden; border: 1.5px solid rgba(255,255,255,0.3); }
         .header-avatar img { width: 100%; height: 100%; object-fit: cover; }
 
-        /* CORRECTED & CENTRED FLOATING TYPING INDICATOR INSIDE SCREEN */
+        /* FLOATING TYPING INDICATOR */
         .typing-floating-banner {
             position: absolute;
             top: 70px;
@@ -143,7 +141,7 @@
         .wallpaper-thumb { width: 100%; height: 75px; border-radius: 8px; object-fit: cover; cursor: pointer; border: 2px solid transparent; transition: transform 0.2s; }
         .wallpaper-thumb:hover { transform: scale(1.03); border-color: var(--accent-color); }
 
-        /* LIVE CAMERA SNAP MODAL WITH FRONT/BACK CAMERA & FILTERS */
+        /* LIVE CAMERA SNAP MODAL WITH FRONT/BACK SWITCH & FILTERS */
         .camera-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.92); display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 2000; padding: 15px; }
         .camera-view { width: min(380px, 90%); height: 48vh; border-radius: 16px; object-fit: cover; background: #000; border: 2px solid var(--accent-color); }
         .filter-normal { filter: none; }
@@ -201,9 +199,6 @@
         .avatar-preview-box img { width: 100%; height: 100%; object-fit: cover; }
 
         .group-member-checkbox-item { display: flex; align-items: center; justify-content: space-between; padding: 6px 10px; background: rgba(255,255,255,0.03); border-radius: 6px; margin-bottom: 5px; font-size: 12px; }
-
-        /* NOTIFICATIONS PANEL LIST */
-        .notif-item { padding: 8px; background: rgba(255,255,255,0.05); border-radius: 6px; margin-bottom: 6px; font-size: 12px; text-align: left; display: flex; justify-content: space-between; align-items: center; }
 
         @media (max-width: 768px) {
             #app { padding: 4px; }
@@ -263,7 +258,7 @@
                         </div>
                     </div>
                     
-                    <!-- SIDEBAR TABS (CHATS vs GROUPS) -->
+                    <!-- SIDEBAR TABS -->
                     <div class="sidebar-tabs">
                         <button class="tab-btn active" id="chatsTabBtn" onclick="switchSidebarTab('chats')">💬 Chats</button>
                         <button class="tab-btn" id="groupsTabBtn" onclick="switchSidebarTab('groups')">👥 Groups</button>
@@ -274,15 +269,12 @@
                             <span id="sidebarTitleText">💬 Accepted Chats</span>
                             <button class="create-group-btn" id="addGroupHeaderBtn" onclick="openCreateGroupModal()" style="display:none;">+ Group</button>
                         </h4>
-                        <div id="chatList">
-                            <!-- List items appear here -->
-                        </div>
+                        <div id="chatList"></div>
                     </div>
                 </div>
             </div>
 
             <div class="chat-area" id="chatAreaBackground">
-                <!-- CORRECTED & CENTRED FLOATING TYPING INDICATOR -->
                 <div class="typing-floating-banner" id="typingIndicator">✍️ someone is typing...</div>
 
                 <div class="chat-header">
@@ -336,7 +328,7 @@
         </div>
     </div>
 
-    <!-- SPECIFIC USER / GROUP PROFILE & SETTINGS MODAL -->
+    <!-- PROFILE MODAL -->
     <div class="modal-overlay" id="selectedUserProfileModal">
         <div class="modal-content">
             <div class="avatar-preview-box" id="modalTargetAvatar" style="margin: 0 auto 8px;">👤</div>
@@ -360,9 +352,6 @@
                     <img src="https://images.unsplash.com/photo-1579546929518-9e396f3cc809?q=80&w=1000&auto=format&fit=crop" class="wallpaper-thumb" onclick="applyPresetWallpaper(this.src)">
                     <img src="https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=1000&auto=format&fit=crop" class="wallpaper-thumb" onclick="applyPresetWallpaper(this.src)">
                 </div>
-                <div style="margin-top: 8px;">
-                    <input type="file" id="customWallpaperFile" accept="image/*" style="font-size:11px; width:100%;" onchange="uploadCustomWallpaper(event)">
-                </div>
             </div>
 
             <button id="modalBlockBtn" onclick="blockCurrentChatUser()" style="width:100%; padding:8px; background:#ef4444; color:white; border:none; border-radius:8px; font-weight:bold; cursor:pointer; margin-bottom:8px;">🚫 Block User</button>
@@ -370,7 +359,7 @@
         </div>
     </div>
 
-    <!-- MODERN & ELEGANT CALL UI OVERLAY -->
+    <!-- CALL OVERLAY -->
     <div class="call-overlay" id="callOverlay">
         <div class="call-card">
             <div class="call-avatar-wrapper">
@@ -384,7 +373,7 @@
         </div>
     </div>
 
-    <!-- LIVE CAMERA WITH FRONT/BACK SWITCH & FILTERS MODAL -->
+    <!-- LIVE CAMERA SNAP MODAL WITH AUTOMATIC TIME/LOCATION STAMP -->
     <div class="camera-overlay" id="cameraOverlay">
         <h3 style="color:white; margin-bottom:8px;">📸 Nexora Snap Studio</h3>
         
@@ -404,7 +393,7 @@
         </div>
 
         <div class="camera-controls">
-            <button class="cam-btn capture-btn" onclick="captureLiveSnap()">Capture Snap</button>
+            <button class="cam-btn capture-btn" onclick="captureLiveSnap()">Capture & Send Snap</button>
             <button class="cam-btn close-cam-btn" onclick="closeCameraModal()">Cancel</button>
         </div>
     </div>
@@ -438,32 +427,8 @@
                 <div class="search-results-box" id="searchResultsBox">Type email to search...</div>
             </div>
 
-            <div style="margin-bottom:10px; text-align:left;">
-                <label style="color:#cbd5e1; font-size:12px; display:block; margin-bottom:4px;">Account Privacy</label>
-                <select id="accountPrivacySelect" style="width:100%; padding:7px; border-radius:6px; background:#111; color:#fff; border:1px solid #444;" onchange="updateAccountPrivacy(this.value)">
-                    <option value="public">Public (Direct Chat)</option>
-                    <option value="private">Private (Request Required)</option>
-                </select>
-            </div>
-
-            <div style="background: rgba(255,255,255,0.05); padding: 10px; border-radius: 10px; margin-bottom: 10px; text-align: left; max-height: 100px; overflow-y: auto;">
-                <label style="color:#cbd5e1; font-size:12px; display:block; margin-bottom:4px; font-weight:bold;" id="followerCountLabel">👥 Followers (0)</label>
-                <div id="followersListContainer" style="font-size: 11px; color: #aab0c5;">No followers yet.</div>
-            </div>
-
             <button onclick="logout()" style="width:100%; padding:8px; background:#ef4444; color:white; border:none; border-radius:8px; font-weight:bold; cursor:pointer; margin-top:4px;">Logout</button>
             <button onclick="closeAccountSettings()" style="width:100%; padding:5px; background:transparent; color:#aaa; border:none; cursor:pointer; margin-top:4px;">Close</button>
-        </div>
-    </div>
-
-    <!-- NOTIFICATIONS PANEL MODAL -->
-    <div class="modal-overlay" id="notificationsModal">
-        <div class="modal-content">
-            <h3 style="margin-bottom:12px; color:#fff; font-size: 16px;">🔔 Notification Panel</h3>
-            <div id="notificationsListContainer" style="max-height: 200px; overflow-y: auto; margin-bottom: 15px;">
-                <div style="font-size: 12px; color: #aab0c5; padding: 10px;">No new notifications.</div>
-            </div>
-            <button onclick="closeNotificationsModal()" style="width:100%; padding:8px; background:var(--accent-color); color:white; border:none; border-radius:8px; font-weight:bold; cursor:pointer;">Close</button>
         </div>
     </div>
 
@@ -501,7 +466,6 @@
         let unsubscribeChatMeta = null;
         let typingTimeout = null;
         let compressedProfileImage = "";
-        let notificationsList = [];
         let myBlockedUsers = [];
         let currentNexoraPoints = 0;
         let mediaStream = null;
@@ -580,8 +544,6 @@
                     if (data.avatar) userAvatar = data.avatar;
                     myBlockedUsers = data.blocked || [];
                     currentNexoraPoints = data.nexoraPoints || 0;
-                    document.getElementById("accountPrivacySelect").value = data.privacy || "private";
-                    renderFollowersList(data.followers || []);
                 }
                 
                 document.getElementById("displayName").innerText = displayName;
@@ -789,17 +751,6 @@
             closeSelectedUserProfile();
         };
 
-        window.uploadCustomWallpaper = function(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = async function(e) {
-                await saveAndSyncWallpaper(e.target.result);
-                closeSelectedUserProfile();
-            };
-            reader.readAsDataURL(file);
-        };
-
         async function saveAndSyncWallpaper(wallpaperUrl) {
             if (!currentChatId) return;
             let roomId = isCurrentChatGroup ? currentChatId : [auth.currentUser.uid, currentChatId].sort().join('_');
@@ -832,6 +783,10 @@
 
         // CAMERA MODAL & FRONT/BACK SWITCH LOGIC
         window.openCameraModal = async function() {
+            if (!currentChatId) {
+                alert("Please select a chat user or group first to send a snap!");
+                return;
+            }
             const overlay = document.getElementById("cameraOverlay");
             overlay.style.display = "flex";
             useFrontCamera = true;
@@ -878,7 +833,14 @@
             btnElement.classList.add("active");
         };
 
+        // AUTOMATIC TIME & LOCATION STAMPED SNAP
         window.captureLiveSnap = async function() {
+            if (!currentChatId) {
+                alert("Please select an active chat first!");
+                closeCameraModal();
+                return;
+            }
+
             const video = document.getElementById("cameraVideo");
             const canvas = document.getElementById("cameraCanvas");
             canvas.width = video.videoWidth || 400;
@@ -888,23 +850,25 @@
             ctx.filter = window.getComputedStyle(video).filter;
             ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
+            // Automatic Time & Location Filter Overlay stamp
             ctx.filter = "none";
-            ctx.font = "bold 16px Arial";
-            ctx.fillStyle = "#06b6d4";
-            const currentTimeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            ctx.fillText(`🕒 ${currentTimeStr} | 📍 Panagudi`, 20, canvas.height - 30);
+            ctx.font = "bold 15px Arial";
+            ctx.fillStyle = "#22d3ee";
+            const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            ctx.fillText(`🕒 ${timeStr} | 📍 Panagudi`, 20, canvas.height - 25);
 
             const snapBase64 = canvas.toDataURL("image/jpeg", 0.85);
             closeCameraModal();
 
-            await sendMessage(snapBase64, "image", "📸 [NEXORA SNAP WITH TIME & FILTER]");
+            // Send directly to the currently selected active chat user/group
+            await sendMessage(snapBase64, "image", "📸 [NEXORA SNAP]");
             
             const userRef = doc(db, "users", auth.currentUser.uid);
             await updateDoc(userRef, { nexoraPoints: increment(10) });
 
             currentNexoraPoints += 10;
             document.getElementById("displayNexoraPoints").innerText = `⭐ Points: ${currentNexoraPoints}`;
-            alert("📸 Filtered Snap captured! You earned +10 Nexora Points! 🎉");
+            alert("📸 Snap captured with time filter and sent successfully! (+10 Points)");
         };
 
         window.searchUsersByEmail = async function() {
@@ -962,15 +926,6 @@
             if (!found) resultsBox.innerHTML = "No users found with this email.";
         };
 
-        function renderFollowersList(followers) {
-            const container = document.getElementById("followersListContainer");
-            const label = document.getElementById("followerCountLabel");
-            const count = followers ? followers.length : 0;
-            label.innerText = `👥 Followers (${count})`;
-            if (!followers || followers.length === 0) return container.innerHTML = "No followers yet.";
-            container.innerHTML = followers.map(f => `👤 ${f}`).join("<br>");
-        }
-
         function listenToActiveUsersAndGroups() {
             const usersRef = collection(db, "users");
             unsubscribeUsers = onSnapshot(usersRef, async (snapshot) => {
@@ -982,7 +937,6 @@
                         myBlockedUsers = mySnap.data().blocked || [];
                         currentNexoraPoints = mySnap.data().nexoraPoints || 0;
                         document.getElementById("displayNexoraPoints").innerText = `⭐ Points: ${currentNexoraPoints}`;
-                        renderFollowersList(mySnap.data().followers || []);
                     }
                 }
 
@@ -1066,19 +1020,6 @@
             let roomId = [auth.currentUser.uid, targetUid].sort().join('_');
             await setDoc(doc(db, "chat_requests", roomId), { from: auth.currentUser.uid, to: targetUid, status: "pending" });
             alert("Chat request sent successfully!");
-        };
-
-        window.removeRequest = async function(roomId) {
-            if (confirm("Cancel this request?")) {
-                await deleteDoc(doc(db, "chat_requests", roomId));
-                alert("Request cancelled.");
-            }
-        };
-
-        window.acceptRequest = async function(roomId, targetUid, targetName, targetAvatar, targetEmail) {
-            await updateDoc(doc(db, "chat_requests", roomId), { status: "accepted" });
-            alert("Request accepted! User is now added to your Chats list.");
-            switchSidebarTab('chats');
         };
 
         window.blockCurrentChatUser = async function() {
@@ -1314,15 +1255,6 @@
                         if (!isMine && data.status !== 'read') {
                             await updateDoc(doc(db, "messages", messageId), { status: 'read' });
                         }
-
-                        if (!isInitialLoad && !isMine) {
-                            notificationsList.unshift({
-                                sender: data.senderName,
-                                text: data.text || "Sent an attachment",
-                                time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-                            });
-                            updateNotificationsUI();
-                        }
                     }
                 });
                 isInitialLoad = false;
@@ -1336,41 +1268,8 @@
             }
         };
 
-        function updateNotificationsUI() {
-            const badge = document.getElementById("notifBadge");
-            const container = document.getElementById("notificationsListContainer");
-
-            if (notificationsList.length > 0) {
-                badge.style.display = "inline-block";
-                badge.innerText = notificationsList.length;
-
-                container.innerHTML = notificationsList.map(n => `
-                    <div class="notif-item">
-                        <div><strong>${n.sender}</strong>: ${n.text}</div>
-                        <span style="font-size:10px; color:#aaa;">${n.time}</span>
-                    </div>
-                `).join("");
-            } else {
-                badge.style.display = "none";
-                container.innerHTML = `<div style="font-size: 12px; color: #aab0c5; padding: 10px;">No new notifications.</div>`;
-            }
-        }
-
-        window.openNotificationsModal = () => document.getElementById("notificationsModal").style.display = "flex";
-        window.closeNotificationsModal = () => {
-            document.getElementById("notificationsModal").style.display = "none";
-            notificationsList = [];
-            updateNotificationsUI();
-        };
-
         window.openAccountSettings = () => document.getElementById("accountSettingsModal").style.display = "flex";
         window.closeAccountSettings = () => document.getElementById("accountSettingsModal").style.display = "none";
-
-        window.updateAccountPrivacy = async function(privacyState) {
-            if (!auth.currentUser) return;
-            await setDoc(doc(db, "users", auth.currentUser.uid), { privacy: privacyState }, { merge: true });
-            alert(`Privacy updated to ${privacyState}`);
-        };
 
         window.changeTheme = (themeName) => {
             document.body.className = themeName;
