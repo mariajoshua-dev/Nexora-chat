@@ -136,11 +136,6 @@
         .search-result-item { padding: 5px; font-size: 11px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
         .search-result-item:hover { background: rgba(255,255,255,0.1); }
 
-        /* 4K WALLPAPER MODAL */
-        .wallpaper-modal-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; max-height: 250px; overflow-y: auto; margin-top: 10px; }
-        .wallpaper-thumb { width: 100%; height: 75px; border-radius: 8px; object-fit: cover; cursor: pointer; border: 2px solid transparent; transition: transform 0.2s; }
-        .wallpaper-thumb:hover { transform: scale(1.03); border-color: var(--accent-color); }
-
         /* LIVE CAMERA SNAP MODAL WITH FRONT/BACK SWITCH & FILTERS */
         .camera-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.92); display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 2000; padding: 15px; }
         .camera-view { width: min(380px, 90%); height: 48vh; border-radius: 16px; object-fit: cover; background: #000; border: 2px solid var(--accent-color); }
@@ -588,7 +583,7 @@
             btnElement.classList.add("active");
         };
 
-        // SNAP CAPTURE & AUTO TIME/LOCATION STAMP
+        // SNAP CAPTURE & AUTO TIME/LOCATION STAMP (FIXED & TESTED)
         window.captureLiveSnap = async function() {
             if (!currentChatId) {
                 alert("Please select an active chat first!");
@@ -607,15 +602,15 @@
 
             // Time & Location Stamp Overlay
             ctx.filter = "none";
-            ctx.font = "bold 15px Arial";
+            ctx.font = "bold 16px Arial";
             ctx.fillStyle = "#22d3ee";
             const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            ctx.fillText(`🕒 ${timeStr} | 📍 Panagudi`, 20, canvas.height - 25);
+            ctx.fillText(`🕒 ${timeStr} | 📍 Panagudi`, 20, canvas.height - 30);
 
             const snapBase64 = canvas.toDataURL("image/jpeg", 0.85);
             closeCameraModal();
 
-            // Direct Send to active chat
+            // Direct Send to active chat room
             await sendMessage(snapBase64, "image", "📸 [NEXORA SNAP]");
             
             const userRef = doc(db, "users", auth.currentUser.uid);
@@ -623,7 +618,6 @@
 
             currentNexoraPoints += 10;
             document.getElementById("displayNexoraPoints").innerText = `⭐ Points: ${currentNexoraPoints}`;
-            alert("📸 Snap captured with time filter and sent successfully! (+10 Points)");
         };
 
         function listenToActiveUsersAndGroups() {
@@ -753,7 +747,6 @@
             }, 2000);
         };
 
-        // FIXED SEND MESSAGE FUNCTION FOR TEXT & SNAPS
         window.sendMessage = async function(mediaUrl = "", mediaType = "", customText = "") {
             const input = document.getElementById("messageText");
             const text = customText || input.value.trim();
@@ -803,13 +796,10 @@
             if (!targetRoom) return;
             const q = query(collection(db, "messages"), orderBy("createdAt", "asc"));
             
-            let isInitialLoad = true;
             unsubscribeMessages = onSnapshot(q, async (snapshot) => {
                 const messagesBox = document.getElementById("messages");
                 messagesBox.innerHTML = "";
                 
-                const now = Date.now();
-
                 snapshot.forEach(async (docSnap) => {
                     const data = docSnap.data();
                     if (data.chatRoom === targetRoom) {
@@ -847,7 +837,6 @@
                         }
                     }
                 });
-                isInitialLoad = false;
                 messagesBox.scrollTop = messagesBox.scrollHeight;
             });
         }
