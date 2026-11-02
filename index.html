@@ -17,6 +17,14 @@
         body.theme-purple { --bg-main: #13071e; --gradient-bg: linear-gradient(135deg, #13071e, #2a0845, #11021c); --primary-gradient: linear-gradient(90deg, #c084fc, #ec4899); --accent-color: #c084fc; }
         body.theme-cyan { --bg-main: #02151a; --gradient-bg: linear-gradient(135deg, #02151a, #083344, #030712); --primary-gradient: linear-gradient(90deg, #22d3ee, #3b82f6); --accent-color: #22d3ee; }
         body.theme-midnight { --bg-main: #09090b; --gradient-bg: linear-gradient(135deg, #09090b, #18181b, #27272a); --primary-gradient: linear-gradient(90deg, #f43f5e, #fb923c); --accent-color: #f43f5e; }
+        
+        /* INDIVIDUAL CHAT THEMES */
+        .chat-theme-purple { background: linear-gradient(135deg, #13071e, #2a0845) !important; }
+        .chat-theme-cyan { background: linear-gradient(135deg, #02151a, #083344) !important; }
+        .chat-theme-crimson { background: linear-gradient(135deg, #1a0208, #450813) !important; }
+        .chat-theme-gold { background: linear-gradient(135deg, #1a1402, #453608) !important; }
+        .chat-theme-emerald { background: linear-gradient(135deg, #021a0f, #084529) !important; }
+
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; } 
         body, html { width: 100%; height: 100vh; overflow: hidden; background: var(--bg-main); color: var(--text-color); }
         
@@ -83,7 +91,7 @@
         .is-online { background: #22c55e; }
         .is-offline { background: #64748b; }
 
-        .chat-area { flex: 1; height: 100%; display: flex; flex-direction: column; min-width: 0; background: rgba(0,0,0,0.05); position: relative; background-size: cover; background-position: center; } 
+        .chat-area { flex: 1; height: 100%; display: flex; flex-direction: column; min-width: 0; background: rgba(0,0,0,0.05); position: relative; background-size: cover; background-position: center; transition: background 0.3s ease; } 
         .chat-header { padding: 12px 20px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; background: rgba(8, 11, 29, 0.75); backdrop-filter: blur(10px); z-index: 5; } 
         
         .chat-header-profile { display: flex; align-items: center; gap: 10px; cursor: pointer; }
@@ -244,7 +252,7 @@
                 <div class="typing-floating-banner" id="typingIndicator">✍️ someone is typing...</div>
 
                 <div class="chat-header">
-                    <div class="chat-header-profile" onclick="openSelectedUserProfile()" title="Click to view User / Group Profile">
+                    <div class="chat-header-profile" onclick="openSelectedUserProfile()" title="Click to view User Profile, Chat Themes & Block Options">
                         <div class="header-avatar" id="headerUserAvatar">👤</div>
                         <div>
                             <h3 id="chatTitle" style="font-size: 14px;">Select a Chat</h3>
@@ -335,7 +343,7 @@
 
             <div style="background: rgba(255,255,255,0.05); padding: 8px; border-radius: 8px; margin-bottom: 8px; text-align: left;">
                 <label style="color:#cbd5e1; font-size:11px; display:block; margin-bottom:3px; font-weight:bold;">🎭 Avatar: Gender & Customized Outfits</label>
-                <div class="avatar-preview-box" id="modalAvatarPreview">👨‍💼</div>
+                <div class="avatar-preview-box" id="modalAvatarPreview">🤵</div>
                 
                 <select id="avatarGenderSelect" style="width:100%; padding:6px; font-size:11px; background:#111; color:#fff; border-radius:6px; border:1px solid #444; margin-top:4px;" onchange="renderOutfitOptions(this.value)">
                     <option value="male">Male Outfits & Shoes</option>
@@ -365,14 +373,34 @@
         </div>
     </div>
 
-    <!-- PROFILE MODAL -->
+    <!-- PROFILE & CHAT THEMES MODAL -->
     <div class="modal-overlay" id="selectedUserProfileModal">
         <div class="modal-content">
             <div class="avatar-preview-box" id="modalTargetAvatar" style="margin: 0 auto 8px;">👤</div>
             <h3 id="modalProfileName" style="margin-bottom:4px; color:#fff; font-size: 16px;">Profile & Settings</h3>
-            <p id="modalProfileEmail" style="font-size: 11px; color: #aab0c5; margin-bottom: 15px;">user@email.com</p>
+            <p id="modalProfileEmail" style="font-size: 11px; color: #aab0c5; margin-bottom: 12px;">user@email.com</p>
             
-            <button id="modalBlockBtn" onclick="blockCurrentChatUser()" style="width:100%; padding:8px; background:#ef4444; color:white; border:none; border-radius:8px; font-weight:bold; cursor:pointer; margin-bottom:8px;">🚫 Block User</button>
+            <div style="background: rgba(255,255,255,0.05); padding: 8px; border-radius: 8px; margin-bottom: 8px; text-align: left;">
+                <label style="color:#cbd5e1; font-size:11px; display:block; margin-bottom:4px; font-weight:bold;">🎨 Chat Theme Customization</label>
+                <select id="chatThemeSelect" style="width:100%; padding:6px; font-size:11px; background:#111; color:#fff; border-radius:6px; border:1px solid #444;" onchange="updateChatTheme(this.value)">
+                    <option value="chat-theme-purple">🌌 Deep Purple</option>
+                    <option value="chat-theme-cyan">🌊 Ocean Cyan</option>
+                    <option value="chat-theme-crimson">🔥 Crimson Dark</option>
+                    <option value="chat-theme-gold">⭐ Luxury Gold</option>
+                    <option value="chat-theme-emerald">💎 Emerald Neon</option>
+                </select>
+            </div>
+
+            <div style="background: rgba(255,255,255,0.05); padding: 8px; border-radius: 8px; margin-bottom: 10px; text-align: left;">
+                <label style="color:#cbd5e1; font-size:11px; display:block; margin-bottom:4px; font-weight:bold;">⏳ Disappearing Messages Timer</label>
+                <select id="disappearingModeSelect" style="width:100%; padding:6px; font-size:11px; background:#111; color:#fff; border-radius:6px; border:1px solid #444;" onchange="updateDisappearingMode(this.value)">
+                    <option value="off">Off (Standard)</option>
+                    <option value="view">After viewing (Disappears instantly once read)</option>
+                    <option value="24h">24 Hours after viewing</option>
+                </select>
+            </div>
+
+            <button id="modalBlockBtn" onclick="toggleBlockUser()" style="width:100%; padding:8px; background:#ef4444; color:white; border:none; border-radius:8px; font-weight:bold; cursor:pointer; margin-bottom:8px;">🚫 Block User</button>
             <button onclick="closeSelectedUserProfile()" style="width:100%; padding:6px; background:transparent; color:#aaa; border:none; cursor:pointer;">Close</button>
         </div>
     </div>
@@ -381,7 +409,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
         import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
-        import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, doc, setDoc, getDoc, deleteDoc, updateDoc, getDocs, arrayUnion, increment } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, doc, setDoc, getDoc, deleteDoc, updateDoc, getDocs, arrayUnion, arrayRemove, increment } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyD_SWsXIgcBUkWRmL8wYQzQZFwv0WmQe3Y",
@@ -409,7 +437,7 @@
         let unsubscribeChatMeta = null;
         let typingTimeout = null;
         let compressedProfileImage = "";
-        let selectedOutfitEmoji = "👨‍💼";
+        let selectedOutfitEmoji = "🤵";
         let myBlockedUsers = [];
         let currentNexoraPoints = 0;
         let mediaStream = null;
@@ -694,7 +722,6 @@
             btnElement.classList.add("active");
         };
 
-        // SNAP CAPTURE & AUTO TIME/LOCATION STAMP
         window.captureLiveSnap = async function() {
             if (!currentChatId) {
                 alert("Please select an active chat first!");
@@ -729,7 +756,6 @@
             document.getElementById("displayNexoraPoints").innerText = `⭐ Points: ${currentNexoraPoints}`;
         };
 
-        // SEARCH USERS BY EMAIL OR NAME
         window.searchUsers = async function() {
             const queryStr = document.getElementById("userSearchInput").value.trim().toLowerCase();
             const resultsBox = document.getElementById("searchResultsBox");
@@ -916,11 +942,104 @@
             }
 
             let roomId = isGroup ? chatId : [auth.currentUser.uid, chatId].sort().join('_');
+            listenToChatMeta(roomId);
             listenToMessages(roomId);
             listenToTypingStatus();
         };
 
-        // REAL-TIME TYPING INDICATOR (CORRECTED)
+        window.openSelectedUserProfile = function() {
+            if (!currentChatId) return;
+            document.getElementById("modalProfileName").innerText = currentChatName;
+            document.getElementById("modalProfileEmail").innerText = isCurrentChatGroup ? "Private Group Chat" : (currentChatEmail || "nexora.user@chat");
+            
+            const targetAvatarBox = document.getElementById("modalTargetAvatar");
+            if (isCurrentChatGroup) {
+                targetAvatarBox.innerHTML = `👥`;
+                document.getElementById("modalBlockBtn").style.display = "none";
+            } else {
+                document.getElementById("modalBlockBtn").style.display = "block";
+                if (currentChatAvatar && currentChatAvatar.startsWith("data:")) {
+                    targetAvatarBox.innerHTML = `<img src="${currentChatAvatar}">`;
+                } else {
+                    targetAvatarBox.innerHTML = currentChatAvatar || "👤";
+                }
+
+                if (myBlockedUsers.includes(currentChatId)) {
+                    document.getElementById("modalBlockBtn").innerText = "🔓 Unblock User";
+                    document.getElementById("modalBlockBtn").style.background = "#22c55e";
+                } else {
+                    document.getElementById("modalBlockBtn").innerText = "🚫 Block User";
+                    document.getElementById("modalBlockBtn").style.background = "#ef4444";
+                }
+            }
+
+            document.getElementById("selectedUserProfileModal").style.display = "flex";
+        };
+        window.closeSelectedUserProfile = () => document.getElementById("selectedUserProfileModal").style.display = "none";
+
+        window.updateChatTheme = async function(themeClass) {
+            if (!currentChatId) return;
+            let roomId = isCurrentChatGroup ? currentChatId : [auth.currentUser.uid, currentChatId].sort().join('_');
+            await setDoc(doc(db, "chat_meta", roomId), { chatTheme: themeClass }, { merge: true });
+        };
+
+        window.updateDisappearingMode = async function(mode) {
+            if (!currentChatId) return;
+            let roomId = isCurrentChatGroup ? currentChatId : [auth.currentUser.uid, currentChatId].sort().join('_');
+            await setDoc(doc(db, "chat_meta", roomId), { disappearingMode: mode }, { merge: true });
+            alert(`Disappearing messages timer updated to: ${mode}`);
+        };
+
+        function listenToChatMeta(roomId) {
+            if (unsubscribeChatMeta) unsubscribeChatMeta();
+            if (!roomId) return;
+
+            unsubscribeChatMeta = onSnapshot(doc(db, "chat_meta", roomId), (docSnap) => {
+                const chatArea = document.getElementById("chatAreaBackground");
+                const themeSelect = document.getElementById("chatThemeSelect");
+                const modeSelect = document.getElementById("disappearingModeSelect");
+
+                chatArea.className = "chat-area";
+
+                if (docSnap.exists()) {
+                    let data = docSnap.data();
+                    if (data.chatTheme) {
+                        chatArea.classList.add(data.chatTheme);
+                        themeSelect.value = data.chatTheme;
+                    }
+                    if (data.disappearingMode) {
+                        modeSelect.value = data.disappearingMode;
+                    }
+                } else {
+                    chatArea.classList.add("chat-theme-purple");
+                }
+            });
+        }
+
+        window.toggleBlockUser = async function() {
+            if (!currentChatId || isCurrentChatGroup) return;
+            let isBlocked = myBlockedUsers.includes(currentChatId);
+
+            if (isBlocked) {
+                if (confirm("Unblock this user?")) {
+                    await updateDoc(doc(db, "users", auth.currentUser.uid), { blocked: arrayRemove(currentChatId) });
+                    alert("User unblocked successfully.");
+                    closeSelectedUserProfile();
+                    window.location.reload();
+                }
+            } else {
+                if (confirm("Are you sure you want to block this user?")) {
+                    await updateDoc(doc(db, "users", auth.currentUser.uid), { blocked: arrayUnion(currentChatId) });
+                    let roomId = [auth.currentUser.uid, currentChatId].sort().join('_');
+                    try { await deleteDoc(doc(db, "chat_requests", roomId)); } catch(e) {}
+                    
+                    alert("User blocked successfully.");
+                    closeSelectedUserProfile();
+                    window.location.reload();
+                }
+            }
+        };
+
         window.handleTyping = async function() {
             if (!auth.currentUser || !currentChatId) return;
             const typingRef = doc(db, "typing", currentChatId + "_" + auth.currentUser.uid);
@@ -967,7 +1086,9 @@
             }
 
             let roomId = isCurrentChatGroup ? currentChatId : [auth.currentUser.uid, currentChatId].sort().join('_');
-            
+            let metaSnap = await getDoc(doc(db, "chat_meta", roomId));
+            let dispMode = (metaSnap && metaSnap.exists()) ? metaSnap.data().disappearingMode : "off";
+
             await addDoc(collection(db, "messages"), {
                 text: text,
                 mediaUrl: mediaUrl,
@@ -976,6 +1097,8 @@
                 senderName: document.getElementById("displayName").innerText,
                 chatRoom: roomId,
                 status: 'sent',
+                disappearingMode: dispMode,
+                viewedBy: [],
                 createdAt: serverTimestamp()
             });
             input.value = "";
@@ -1005,7 +1128,8 @@
             unsubscribeMessages = onSnapshot(q, async (snapshot) => {
                 const messagesBox = document.getElementById("messages");
                 messagesBox.innerHTML = "";
-                
+                const now = Date.now();
+
                 snapshot.forEach(async (docSnap) => {
                     const data = docSnap.data();
                     if (data.chatRoom === targetRoom) {
@@ -1013,6 +1137,19 @@
 
                         const messageId = docSnap.id;
                         let isMine = data.senderId === auth.currentUser.uid;
+
+                        // Disappearing messages rules check
+                        if (!isMine && data.disappearingMode === "view" && data.status === 'read') {
+                            await deleteDoc(doc(db, "messages", messageId));
+                            return;
+                        }
+                        if (data.disappearingMode === "24h" && data.createdAt) {
+                            let msgTime = data.createdAt.toMillis ? data.createdAt.toMillis() : now;
+                            if (now - msgTime > 24 * 60 * 60 * 1000) {
+                                await deleteDoc(doc(db, "messages", messageId));
+                                return;
+                            }
+                        }
 
                         const message = document.createElement("div");
                         message.className = isMine ? "message sent" : "message";
