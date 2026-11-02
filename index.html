@@ -162,36 +162,6 @@
         .capture-btn { background: #22c55e; }
         .close-cam-btn { background: #ef4444; }
 
-        /* ULTRA MODERN ELEGANT CALL OVERLAY */
-        .call-overlay { 
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: radial-gradient(circle at center, #1b1035 0%, #080b1d 100%); 
-            backdrop-filter: blur(25px);
-            display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 1000; 
-            animation: fadeInCall 0.3s ease-in-out;
-        }
-        @keyframes fadeInCall { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
-        
-        .call-card {
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            padding: 40px 30px;
-            border-radius: 32px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-            width: min(360px, 90%);
-        }
-
-        .call-avatar-wrapper { position: relative; margin-bottom: 20px; }
-        .call-avatar { width: 100px; height: 100px; border-radius: 50%; background: var(--primary-gradient); display: flex; align-items: center; justify-content: center; font-size: 42px; border: 3px solid rgba(255,255,255,0.25); box-shadow: 0 0 30px rgba(139,92,246,0.5); animation: pulseGlow 2s infinite alternate; }
-        .call-actions { display: flex; gap: 20px; margin-top: 35px; width: 100%; justify-content: center; }
-        .call-btn { padding: 14px 28px; border-radius: 50px; border: none; font-weight: bold; cursor: pointer; font-size: 14px; color: white; transition: transform 0.2s; }
-        .call-btn:active { transform: scale(0.95); }
-        .accept-call { background: linear-gradient(135deg, #22c55e, #16a34a); box-shadow: 0 5px 20px rgba(34,197,94,0.4); }
-        .reject-call { background: linear-gradient(135deg, #ef4444, #dc2626); box-shadow: 0 5px 20px rgba(239,68,68,0.4); }
-
         /* MODALS */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; justify-content: center; align-items: center; z-index: 999; }
         .modal-content { background: #1e1e2f; padding: 22px; border-radius: 16px; width: 360px; text-align: center; border: 1px solid rgba(255,255,255,0.1); max-height: 90vh; overflow-y: auto; }
@@ -344,32 +314,8 @@
                 </select>
             </div>
 
-            <div style="background: rgba(255,255,255,0.05); padding: 10px; border-radius: 10px; margin-bottom: 10px; text-align: left;">
-                <label style="color:#cbd5e1; font-size:12px; display:block; margin-bottom:6px; font-weight:bold;">🎨 4K Chat Wallpapers (Synced)</label>
-                <div class="wallpaper-modal-grid">
-                    <img src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=1000&auto=format&fit=crop" class="wallpaper-thumb" onclick="applyPresetWallpaper(this.src)">
-                    <img src="https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?q=80&w=1000&auto=format&fit=crop" class="wallpaper-thumb" onclick="applyPresetWallpaper(this.src)">
-                    <img src="https://images.unsplash.com/photo-1579546929518-9e396f3cc809?q=80&w=1000&auto=format&fit=crop" class="wallpaper-thumb" onclick="applyPresetWallpaper(this.src)">
-                    <img src="https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=1000&auto=format&fit=crop" class="wallpaper-thumb" onclick="applyPresetWallpaper(this.src)">
-                </div>
-            </div>
-
             <button id="modalBlockBtn" onclick="blockCurrentChatUser()" style="width:100%; padding:8px; background:#ef4444; color:white; border:none; border-radius:8px; font-weight:bold; cursor:pointer; margin-bottom:8px;">🚫 Block User</button>
             <button onclick="closeSelectedUserProfile()" style="width:100%; padding:6px; background:transparent; color:#aaa; border:none; cursor:pointer;">Close</button>
-        </div>
-    </div>
-
-    <!-- CALL OVERLAY -->
-    <div class="call-overlay" id="callOverlay">
-        <div class="call-card">
-            <div class="call-avatar-wrapper">
-                <div class="call-avatar" id="callAvatarIcon">📞</div>
-            </div>
-            <h2 id="callTargetName" style="color:white; font-size: 20px; font-weight: bold; margin-bottom: 6px;">User Name</h2>
-            <p id="callStatusText" style="color:#aab0c5; font-size: 13px; letter-spacing: 0.5px;">Incoming Secure Call...</p>
-            <div class="call-actions" id="callActionsContainer">
-                <button class="call-btn reject-call" onclick="endCall()">End Call</button>
-            </div>
         </div>
     </div>
 
@@ -411,22 +357,6 @@
                 </div>
             </div>
 
-            <div style="background: rgba(255,255,255,0.05); padding: 10px; border-radius: 10px; margin-bottom: 10px; text-align: left;">
-                <label style="color:#cbd5e1; font-size:12px; display:block; margin-bottom:6px; font-weight:bold;">📸 Upload Profile Photo (Face)</label>
-                <div class="avatar-preview-box" id="modalAvatarPreview">👨‍💼</div>
-                <input type="file" id="profileImageInput" accept="image/*" style="width:100%; font-size:11px; margin-top:4px;" onchange="previewProfileImage(event)">
-                <button onclick="saveProfilePhoto()" style="width:100%; padding:6px; background:var(--primary-gradient); color:white; border:none; border-radius:6px; font-weight:bold; cursor:pointer; margin-top:6px; font-size: 11px;">Save Photo</button>
-            </div>
-
-            <div style="background: rgba(255,255,255,0.05); padding: 10px; border-radius: 10px; margin-bottom: 10px; text-align: left;">
-                <label style="color:#cbd5e1; font-size:12px; display:block; margin-bottom:4px; font-weight:bold;">🔍 Search Email & Connect</label>
-                <div class="search-container">
-                    <input type="email" id="userSearchInput" placeholder="Search user email..." style="padding: 6px; font-size: 11px;">
-                    <button onclick="searchUsersByEmail()" style="padding: 6px 10px; background:var(--accent-color); border:none; border-radius:8px; color:white; cursor:pointer; font-size:12px;">🔍</button>
-                </div>
-                <div class="search-results-box" id="searchResultsBox">Type email to search...</div>
-            </div>
-
             <button onclick="logout()" style="width:100%; padding:8px; background:#ef4444; color:white; border:none; border-radius:8px; font-weight:bold; cursor:pointer; margin-top:4px;">Logout</button>
             <button onclick="closeAccountSettings()" style="width:100%; padding:5px; background:transparent; color:#aaa; border:none; cursor:pointer; margin-top:4px;">Close</button>
         </div>
@@ -462,7 +392,6 @@
         let unsubscribeGroups = null;
         let unsubscribeTyping = null;
         let unsubscribeCalls = null;
-        let unsubscribeWallpaper = null;
         let unsubscribeChatMeta = null;
         let typingTimeout = null;
         let compressedProfileImage = "";
@@ -555,7 +484,6 @@
                 await setDoc(doc(db, "users", user.uid), { email: email, online: true }, { merge: true });
                 
                 listenToActiveUsersAndGroups();
-                listenToIncomingCalls();
             } else {
                 if (auth.currentUser) {
                     let timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -567,21 +495,16 @@
                 if (unsubscribeUsers) unsubscribeUsers();
                 if (unsubscribeGroups) unsubscribeGroups();
                 if (unsubscribeTyping) unsubscribeTyping();
-                if (unsubscribeCalls) unsubscribeCalls();
-                if (unsubscribeWallpaper) unsubscribeWallpaper();
                 if (unsubscribeChatMeta) unsubscribeChatMeta();
             }
         });
 
         function updateAvatarDisplay(avatarData) {
             const display = document.getElementById("userAvatarDisplay");
-            const preview = document.getElementById("modalAvatarPreview");
             if (avatarData) {
                 display.innerHTML = `<img src="${avatarData}"><div class="online-dot"></div>`;
-                preview.innerHTML = `<img src="${avatarData}">`;
             } else {
                 display.innerHTML = `👨‍💼<div class="online-dot"></div>`;
-                preview.innerHTML = `👨‍💼`;
             }
         }
 
@@ -591,59 +514,6 @@
             await setDoc(doc(db, "users", auth.currentUser.uid), { name: newName }, { merge: true });
             document.getElementById("displayName").innerText = newName;
             alert("Name updated successfully!");
-        };
-
-        window.previewProfileImage = function(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const img = new Image();
-                img.onload = function() {
-                    const canvas = document.createElement("canvas");
-                    const MAX_WIDTH = 150;
-                    const MAX_HEIGHT = 150;
-                    let width = img.width;
-                    let height = img.height;
-
-                    if (width > height) {
-                        if (width > MAX_WIDTH) {
-                            height *= MAX_WIDTH / width;
-                            width = MAX_WIDTH;
-                        }
-                    } else {
-                        if (height > MAX_HEIGHT) {
-                            width *= MAX_HEIGHT / height;
-                            height = MAX_HEIGHT;
-                        }
-                    }
-
-                    canvas.width = width;
-                    canvas.height = height;
-                    const ctx = canvas.getContext("2d");
-                    ctx.drawImage(img, 0, 0, width, height);
-
-                    compressedProfileImage = canvas.toDataURL("image/jpeg", 0.7);
-                    document.getElementById("modalAvatarPreview").innerHTML = `<img src="${compressedProfileImage}">`;
-                };
-                img.src = e.target.result;
-            };
-            reader.readAsDataURL(file);
-        };
-
-        window.saveProfilePhoto = async function() {
-            if (!auth.currentUser || !compressedProfileImage) {
-                alert("Please select an image first!");
-                return;
-            }
-            try {
-                await setDoc(doc(db, "users", auth.currentUser.uid), { avatar: compressedProfileImage }, { merge: true });
-                updateAvatarDisplay(compressedProfileImage);
-                alert("Profile photo saved successfully!");
-            } catch (err) {
-                alert("Error saving photo: " + err.message);
-            }
         };
 
         window.switchSidebarTab = function(tabName) {
@@ -667,121 +537,6 @@
             renderChatListAndGroups();
         };
 
-        window.openCreateGroupModal = function() {
-            const container = document.getElementById("groupMembersCheckboxList");
-            if (availableUsersList.length === 0) {
-                container.innerHTML = `<div style="font-size:11px; color:#aaa;">No available contacts.</div>`;
-            } else {
-                container.innerHTML = availableUsersList.map(u => `
-                    <div class="group-member-checkbox-item">
-                        <span>👤 ${u.name}</span>
-                        <input type="checkbox" value="${u.id}" data-name="${u.name}" class="group-member-checkbox">
-                    </div>
-                `).join("");
-            }
-            document.getElementById("createGroupModal").style.display = "flex";
-        };
-        window.closeCreateGroupModal = () => document.getElementById("createGroupModal").style.display = "none";
-
-        window.createNewPrivateGroup = async function() {
-            const groupName = document.getElementById("newGroupNameInput").value.trim();
-            if (!groupName) {
-                alert("Please enter a group name.");
-                return;
-            }
-
-            const checkboxes = document.querySelectorAll(".group-member-checkbox:checked");
-            let memberIds = [auth.currentUser.uid];
-            let memberNames = [document.getElementById("displayName").innerText];
-
-            checkboxes.forEach(cb => {
-                memberIds.push(cb.value);
-                memberNames.push(cb.getAttribute("data-name"));
-            });
-
-            if (memberIds.length < 2) {
-                alert("Please select at least one member for the group.");
-                return;
-            }
-
-            await addDoc(collection(db, "groups"), {
-                groupName: groupName,
-                admin: auth.currentUser.uid,
-                members: memberIds,
-                memberNames: memberNames,
-                createdAt: serverTimestamp()
-            });
-
-            document.getElementById("newGroupNameInput").value = "";
-            closeCreateGroupModal();
-            alert("✨ Private Group created successfully!");
-        };
-
-        window.openSelectedUserProfile = function() {
-            if (!currentChatId) return;
-            document.getElementById("modalProfileName").innerText = currentChatName;
-            document.getElementById("modalProfileEmail").innerText = isCurrentChatGroup ? "Private Group Chat" : (currentChatEmail || "nexora.user@chat");
-            
-            const targetAvatarBox = document.getElementById("modalTargetAvatar");
-            if (isCurrentChatGroup) {
-                targetAvatarBox.innerHTML = `👥`;
-                document.getElementById("modalBlockBtn").style.display = "none";
-            } else {
-                document.getElementById("modalBlockBtn").style.display = "block";
-                if (currentChatAvatar) {
-                    targetAvatarBox.innerHTML = `<img src="${currentChatAvatar}">`;
-                } else {
-                    targetAvatarBox.innerHTML = `👤`;
-                }
-            }
-
-            document.getElementById("selectedUserProfileModal").style.display = "flex";
-        };
-        window.closeSelectedUserProfile = () => document.getElementById("selectedUserProfileModal").style.display = "none";
-
-        window.updateDisappearingMode = async function(mode) {
-            if (!currentChatId) return;
-            let roomId = isCurrentChatGroup ? currentChatId : [auth.currentUser.uid, currentChatId].sort().join('_');
-            await setDoc(doc(db, "chat_meta", roomId), { disappearingMode: mode }, { merge: true });
-            alert(`Disappearing messages updated to: ${mode}`);
-        };
-
-        window.applyPresetWallpaper = async function(url) {
-            await saveAndSyncWallpaper(url);
-            closeSelectedUserProfile();
-        };
-
-        async function saveAndSyncWallpaper(wallpaperUrl) {
-            if (!currentChatId) return;
-            let roomId = isCurrentChatGroup ? currentChatId : [auth.currentUser.uid, currentChatId].sort().join('_');
-            await setDoc(doc(db, "chat_meta", roomId), { wallpaper: wallpaperUrl }, { merge: true });
-            alert("✨ Chat wallpaper updated & synced!");
-        }
-
-        function listenToChatMeta(roomId) {
-            if (unsubscribeChatMeta) unsubscribeChatMeta();
-            if (!roomId) return;
-
-            unsubscribeChatMeta = onSnapshot(doc(db, "chat_meta", roomId), (docSnap) => {
-                const chatArea = document.getElementById("chatAreaBackground");
-                const modeSelect = document.getElementById("disappearingModeSelect");
-                if (docSnap.exists()) {
-                    let data = docSnap.data();
-                    if (data.wallpaper) {
-                        chatArea.style.backgroundImage = `url('${data.wallpaper}')`;
-                    } else {
-                        chatArea.style.backgroundImage = "none";
-                    }
-                    if (data.disappearingMode) {
-                        modeSelect.value = data.disappearingMode;
-                    }
-                } else {
-                    chatArea.style.backgroundImage = "none";
-                }
-            });
-        }
-
-        // CAMERA MODAL & FRONT/BACK SWITCH LOGIC
         window.openCameraModal = async function() {
             if (!currentChatId) {
                 alert("Please select a chat user or group first to send a snap!");
@@ -833,7 +588,7 @@
             btnElement.classList.add("active");
         };
 
-        // AUTOMATIC TIME & LOCATION STAMPED SNAP
+        // SNAP CAPTURE & AUTO TIME/LOCATION STAMP
         window.captureLiveSnap = async function() {
             if (!currentChatId) {
                 alert("Please select an active chat first!");
@@ -850,7 +605,7 @@
             ctx.filter = window.getComputedStyle(video).filter;
             ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-            // Automatic Time & Location Filter Overlay stamp
+            // Time & Location Stamp Overlay
             ctx.filter = "none";
             ctx.font = "bold 15px Arial";
             ctx.fillStyle = "#22d3ee";
@@ -860,7 +615,7 @@
             const snapBase64 = canvas.toDataURL("image/jpeg", 0.85);
             closeCameraModal();
 
-            // Send directly to the currently selected active chat user/group
+            // Direct Send to active chat
             await sendMessage(snapBase64, "image", "📸 [NEXORA SNAP]");
             
             const userRef = doc(db, "users", auth.currentUser.uid);
@@ -869,61 +624,6 @@
             currentNexoraPoints += 10;
             document.getElementById("displayNexoraPoints").innerText = `⭐ Points: ${currentNexoraPoints}`;
             alert("📸 Snap captured with time filter and sent successfully! (+10 Points)");
-        };
-
-        window.searchUsersByEmail = async function() {
-            const queryEmail = document.getElementById("userSearchInput").value.trim().toLowerCase();
-            const resultsBox = document.getElementById("searchResultsBox");
-            if (!queryEmail) return resultsBox.innerHTML = "Please enter an email ID.";
-
-            resultsBox.innerHTML = "Searching...";
-            const usersSnapshot = await getDocs(collection(db, "users"));
-            resultsBox.innerHTML = "";
-
-            let found = false;
-            usersSnapshot.forEach(async (docSnap) => {
-                const userData = docSnap.data();
-                const userId = docSnap.id;
-                const userEmail = (userData.email || "").toLowerCase();
-
-                if (userId !== auth.currentUser.uid && userEmail.includes(queryEmail)) {
-                    found = true;
-                    const item = document.createElement("div");
-                    item.className = "search-result-item";
-                    
-                    let avatarHtml = userData.avatar ? `<img src="${userData.avatar}" style="width:20px;height:20px;border-radius:50%;object-fit:cover;">` : '👤';
-                    let targetName = userData.name || "NEXORA User";
-                    item.innerHTML = `<span>${avatarHtml} ${targetName}</span>`;
-                    
-                    const btn = document.createElement("button");
-                    btn.style.cssText = "padding:3px 8px; background:var(--accent-color); border:none; border-radius:4px; color:white; cursor:pointer; font-size:10px;";
-                    
-                    let roomId = [auth.currentUser.uid, userId].sort().join('_');
-                    const reqSnap = await getDoc(doc(db, "chat_requests", roomId));
-
-                    if (userData.privacy === "private") {
-                        if (reqSnap.exists() && reqSnap.data().status === "pending") {
-                            btn.innerText = "Requested";
-                            btn.disabled = true;
-                            btn.style.opacity = "0.6";
-                        } else if (reqSnap.exists() && reqSnap.data().status === "accepted") {
-                            btn.innerText = "Chat";
-                            btn.onclick = () => { selectChat(userId, targetName, userData.avatar, userData.email, false, userData.online, userData.lastSeen); closeAccountSettings(); };
-                        } else {
-                            btn.innerText = "Request";
-                            btn.onclick = () => { sendChatRequest(userId); searchUsersByEmail(); };
-                        }
-                    } else {
-                        btn.innerText = "Chat";
-                        btn.onclick = () => { selectChat(userId, targetName, userData.avatar, userData.email, false, userData.online, userData.lastSeen); closeAccountSettings(); };
-                    }
-
-                    item.appendChild(btn);
-                    resultsBox.appendChild(item);
-                }
-            });
-
-            if (!found) resultsBox.innerHTML = "No users found with this email.";
         };
 
         function listenToActiveUsersAndGroups() {
@@ -1016,25 +716,6 @@
             }
         }
 
-        window.sendChatRequest = async function(targetUid) {
-            let roomId = [auth.currentUser.uid, targetUid].sort().join('_');
-            await setDoc(doc(db, "chat_requests", roomId), { from: auth.currentUser.uid, to: targetUid, status: "pending" });
-            alert("Chat request sent successfully!");
-        };
-
-        window.blockCurrentChatUser = async function() {
-            if (!currentChatId || isCurrentChatGroup) return;
-            if (confirm("Are you sure you want to block this user?")) {
-                await updateDoc(doc(db, "users", auth.currentUser.uid), { blocked: arrayUnion(currentChatId) });
-                let roomId = [auth.currentUser.uid, currentChatId].sort().join('_');
-                try { await deleteDoc(doc(db, "chat_requests", roomId)); } catch(e) {}
-                
-                closeSelectedUserProfile();
-                alert("User blocked successfully.");
-                window.location.reload();
-            }
-        };
-
         window.selectChat = function(chatId, chatName, chatAvatar, chatEmail, isGroup = false, isOnline = true, lastSeen = "") {
             currentChatId = chatId;
             currentChatName = chatName;
@@ -1048,8 +729,6 @@
             if (isGroup) {
                 headerAvatar.innerHTML = "👥";
                 document.getElementById("chatSub").innerText = "● Private Group Chat";
-                document.getElementById("audioCallBtn").style.display = "none";
-                document.getElementById("videoCallBtn").style.display = "none";
             } else {
                 if (chatAvatar) {
                     headerAvatar.innerHTML = `<img src="${chatAvatar}">`;
@@ -1057,68 +736,10 @@
                     headerAvatar.innerHTML = "👤";
                 }
                 document.getElementById("chatSub").innerText = isOnline ? "● Online (Click for Profile)" : (lastSeen ? `Last seen at ${lastSeen}` : "● Offline");
-                document.getElementById("audioCallBtn").style.display = "block";
-                document.getElementById("videoCallBtn").style.display = "block";
             }
 
             let roomId = isGroup ? chatId : [auth.currentUser.uid, chatId].sort().join('_');
-            listenToChatMeta(roomId);
             listenToMessages(roomId);
-            listenToTypingStatus();
-        };
-
-        window.startCall = async function(callType) {
-            if (!currentChatId || isCurrentChatGroup) return;
-            const overlay = document.getElementById("callOverlay");
-            document.getElementById("callStatusText").innerText = `Calling... (${callType.toUpperCase()})`;
-            document.getElementById("callTargetName").innerText = currentChatName;
-            document.getElementById("callAvatarIcon").innerText = callType === 'video' ? '📹' : '📞';
-            document.getElementById("callActionsContainer").innerHTML = `<button class="call-btn reject-call" onclick="endCall()">Cancel Call</button>`;
-            overlay.style.display = "flex";
-
-            await setDoc(doc(db, "calls", currentChatId + "_" + auth.currentUser.uid), {
-                callerId: auth.currentUser.uid,
-                callerName: document.getElementById("displayName").innerText,
-                receiverId: currentChatId,
-                type: callType,
-                status: "ringing",
-                timestamp: serverTimestamp()
-            });
-        };
-
-        function listenToIncomingCalls() {
-            if (!auth.currentUser) return;
-            const callsRef = collection(db, "calls");
-            unsubscribeCalls = onSnapshot(callsRef, (snapshot) => {
-                snapshot.forEach((docSnap) => {
-                    let callData = docSnap.data();
-                    if (callData.receiverId === auth.currentUser.uid && callData.status === "ringing") {
-                        const overlay = document.getElementById("callOverlay");
-                        document.getElementById("callStatusText").innerText = `Incoming ${callData.type.toUpperCase()} Call...`;
-                        document.getElementById("callTargetName").innerText = callData.callerName;
-                        document.getElementById("callAvatarIcon").innerText = callData.type === 'video' ? '📹' : '📞';
-                        document.getElementById("callActionsContainer").innerHTML = `
-                            <button class="call-btn accept-call" onclick="acceptCall('${docSnap.id}')">Accept</button>
-                            <button class="call-btn reject-call" onclick="endCall('${docSnap.id}')">Decline</button>
-                        `;
-                        overlay.style.display = "flex";
-                    }
-                });
-            });
-        }
-
-        window.acceptCall = async function(callId) {
-            document.getElementById("callStatusText").innerText = "Connected 🟢";
-            document.getElementById("callActionsContainer").innerHTML = `<button class="call-btn reject-call" onclick="endCall('${callId}')">End Call</button>`;
-        };
-
-        window.endCall = async function(callId = "") {
-            document.getElementById("callOverlay").style.display = "none";
-            if (callId) {
-                try { await deleteDoc(doc(db, "calls", callId)); } catch(e) {}
-            } else if (currentChatId && !isCurrentChatGroup) {
-                try { await deleteDoc(doc(db, "calls", currentChatId + "_" + auth.currentUser.uid)); } catch(e) {}
-            }
         };
 
         window.handleTyping = async function() {
@@ -1132,36 +753,14 @@
             }, 2000);
         };
 
-        function listenToTypingStatus() {
-            const indicator = document.getElementById("typingIndicator");
-            indicator.style.display = "none";
-            if (unsubscribeTyping) unsubscribeTyping();
-
-            const typingRef = collection(db, "typing");
-            unsubscribeTyping = onSnapshot(typingRef, (snapshot) => {
-                let isSomeoneTyping = false;
-                let typingText = "";
-                snapshot.forEach((docSnap) => {
-                    let data = docSnap.data();
-                    if (docSnap.id.startsWith(currentChatId) && data.isTyping && !docSnap.id.includes(auth.currentUser.uid)) {
-                        isSomeoneTyping = true;
-                        typingText = `✍️ ${data.user} is typing...`;
-                    }
-                });
-
-                if (isSomeoneTyping) {
-                    indicator.innerText = typingText;
-                    indicator.style.display = "block";
-                } else {
-                    indicator.style.display = "none";
-                }
-            });
-        }
-
+        // FIXED SEND MESSAGE FUNCTION FOR TEXT & SNAPS
         window.sendMessage = async function(mediaUrl = "", mediaType = "", customText = "") {
             const input = document.getElementById("messageText");
             const text = customText || input.value.trim();
-            if ((!text && !mediaUrl) || !auth.currentUser || !currentChatId) return;
+            if ((!text && !mediaUrl) || !auth.currentUser || !currentChatId) {
+                if (!currentChatId) alert("Please select a chat to send messages!");
+                return;
+            }
 
             let roomId = isCurrentChatGroup ? currentChatId : [auth.currentUser.uid, currentChatId].sort().join('_');
             
@@ -1185,7 +784,10 @@
 
         window.handleMediaUpload = function(event) {
             const file = event.target.files[0];
-            if (!file) return;
+            if (!file || !currentChatId) {
+                if (!currentChatId) alert("Please select a chat first!");
+                return;
+            }
 
             const reader = new FileReader();
             reader.onload = function(e) {
@@ -1214,19 +816,7 @@
                         if (!isCurrentChatGroup && myBlockedUsers.includes(data.senderId)) return;
 
                         const messageId = docSnap.id;
-
                         let isMine = data.senderId === auth.currentUser.uid;
-                        if (!isMine && data.disappearingMode === "view" && data.status === 'read') {
-                            await deleteDoc(doc(db, "messages", messageId));
-                            return;
-                        }
-                        if (data.disappearingMode === "24h" && data.createdAt) {
-                            let msgTime = data.createdAt.toMillis ? data.createdAt.toMillis() : now;
-                            if (now - msgTime > 24 * 60 * 60 * 1000) {
-                                await deleteDoc(doc(db, "messages", messageId));
-                                return;
-                            }
-                        }
 
                         const message = document.createElement("div");
                         message.className = isMine ? "message sent" : "message";
