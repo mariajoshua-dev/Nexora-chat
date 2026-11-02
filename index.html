@@ -18,7 +18,7 @@
         body.theme-cyan { --bg-main: #02151a; --gradient-bg: linear-gradient(135deg, #02151a, #083344, #030712); --primary-gradient: linear-gradient(90deg, #22d3ee, #3b82f6); --accent-color: #22d3ee; }
         body.theme-midnight { --bg-main: #09090b; --gradient-bg: linear-gradient(135deg, #09090b, #18181b, #27272a); --primary-gradient: linear-gradient(90deg, #f43f5e, #fb923c); --accent-color: #f43f5e; }
         
-        /* INDIVIDUAL CHAT THEMES */
+        /* SHARED CHAT THEMES */
         .chat-theme-purple { background: linear-gradient(135deg, #13071e, #2a0845) !important; }
         .chat-theme-cyan { background: linear-gradient(135deg, #02151a, #083344) !important; }
         .chat-theme-crimson { background: linear-gradient(135deg, #1a0208, #450813) !important; }
@@ -171,8 +171,10 @@
         .avatar-preview-box img { width: 100%; height: 100%; object-fit: cover; }
 
         .outfit-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 8px; }
-        .outfit-card { padding: 8px 4px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; cursor: pointer; font-size: 11px; text-align: center; color: #fff; transition: all 0.2s; }
+        .outfit-card { padding: 10px 6px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; cursor: pointer; font-size: 11px; text-align: center; color: #fff; transition: all 0.2s; }
         .outfit-card:hover, .outfit-card.selected { background: var(--accent-color); border-color: #fff; font-weight: bold; }
+        
+        .group-member-checkbox-item { display: flex; align-items: center; justify-content: space-between; padding: 6px 10px; background: rgba(255,255,255,0.03); border-radius: 6px; margin-bottom: 5px; font-size: 12px; }
 
         @media (max-width: 768px) {
             #app { padding: 4px; }
@@ -221,7 +223,7 @@
                 <div class="profile-section">
                     <div class="profile" onclick="openAccountSettings()">
                         <div class="avatar" id="userAvatarDisplay">
-                            👨‍💼
+                            👨‍💻
                             <div class="online-dot"></div>
                         </div>
                         <div class="profile-info">
@@ -252,7 +254,7 @@
                 <div class="typing-floating-banner" id="typingIndicator">✍️ someone is typing...</div>
 
                 <div class="chat-header">
-                    <div class="chat-header-profile" onclick="openSelectedUserProfile()" title="Click to view User Profile, Chat Themes & Block Options">
+                    <div class="chat-header-profile" onclick="openSelectedUserProfile()" title="Click to view User Profile, Synced Chat Themes & Block Options">
                         <div class="header-avatar" id="headerUserAvatar">👤</div>
                         <div>
                             <h3 id="chatTitle" style="font-size: 14px;">Select a Chat</h3>
@@ -342,12 +344,12 @@
             </div>
 
             <div style="background: rgba(255,255,255,0.05); padding: 8px; border-radius: 8px; margin-bottom: 8px; text-align: left;">
-                <label style="color:#cbd5e1; font-size:11px; display:block; margin-bottom:3px; font-weight:bold;">🎭 Avatar: Gender & Customized Outfits</label>
-                <div class="avatar-preview-box" id="modalAvatarPreview">🤵</div>
+                <label style="color:#cbd5e1; font-size:11px; display:block; margin-bottom:3px; font-weight:bold;">🎭 Select Gender & Custom Avatar</label>
+                <div class="avatar-preview-box" id="modalAvatarPreview">👨‍💻</div>
                 
-                <select id="avatarGenderSelect" style="width:100%; padding:6px; font-size:11px; background:#111; color:#fff; border-radius:6px; border:1px solid #444; margin-top:4px;" onchange="renderOutfitOptions(this.value)">
-                    <option value="male">Male Outfits & Shoes</option>
-                    <option value="female">Female Dresses & Shoes</option>
+                <select id="avatarGenderSelect" style="width:100%; padding:6px; font-size:11px; background:#111; color:#fff; border-radius:6px; border:1px solid #444; margin-top:4px;" onchange="renderAvatarOptions(this.value)">
+                    <option value="male">Male Avatars</option>
+                    <option value="female">Female Avatars</option>
                 </select>
 
                 <div class="outfit-grid" id="outfitChoicesContainer"></div>
@@ -373,7 +375,7 @@
         </div>
     </div>
 
-    <!-- PROFILE & CHAT THEMES MODAL -->
+    <!-- PROFILE & SYNCED CHAT THEMES MODAL -->
     <div class="modal-overlay" id="selectedUserProfileModal">
         <div class="modal-content">
             <div class="avatar-preview-box" id="modalTargetAvatar" style="margin: 0 auto 8px;">👤</div>
@@ -381,7 +383,7 @@
             <p id="modalProfileEmail" style="font-size: 11px; color: #aab0c5; margin-bottom: 12px;">user@email.com</p>
             
             <div style="background: rgba(255,255,255,0.05); padding: 8px; border-radius: 8px; margin-bottom: 8px; text-align: left;">
-                <label style="color:#cbd5e1; font-size:11px; display:block; margin-bottom:4px; font-weight:bold;">🎨 Chat Theme Customization</label>
+                <label style="color:#cbd5e1; font-size:11px; display:block; margin-bottom:4px; font-weight:bold;">🎨 Synced Chat Theme (Applies to both users)</label>
                 <select id="chatThemeSelect" style="width:100%; padding:6px; font-size:11px; background:#111; color:#fff; border-radius:6px; border:1px solid #444;" onchange="updateChatTheme(this.value)">
                     <option value="chat-theme-purple">🌌 Deep Purple</option>
                     <option value="chat-theme-cyan">🌊 Ocean Cyan</option>
@@ -389,6 +391,11 @@
                     <option value="chat-theme-gold">⭐ Luxury Gold</option>
                     <option value="chat-theme-emerald">💎 Emerald Neon</option>
                 </select>
+
+                <div style="margin-top: 8px;">
+                    <label style="color:#cbd5e1; font-size:10px; display:block; margin-bottom:2px;">Or Upload Custom Wallpaper from Gallery:</label>
+                    <input type="file" id="customWallpaperInput" accept="image/*" style="width:100%; font-size:10px;" onchange="uploadCustomChatWallpaper(event)">
+                </div>
             </div>
 
             <div style="background: rgba(255,255,255,0.05); padding: 8px; border-radius: 8px; margin-bottom: 10px; text-align: left;">
@@ -437,7 +444,7 @@
         let unsubscribeChatMeta = null;
         let typingTimeout = null;
         let compressedProfileImage = "";
-        let selectedOutfitEmoji = "🤵";
+        let selectedAvatarEmoji = "👨‍💻";
         let myBlockedUsers = [];
         let currentNexoraPoints = 0;
         let mediaStream = null;
@@ -445,22 +452,22 @@
         let selectedFilterClass = "filter-normal";
         let availableUsersList = [];
 
-        const maleOutfits = [
-            { name: "Executive Suit", emoji: "🤵" },
-            { name: "Casual Blazer", emoji: "🧥" },
-            { name: "Streetwear Hoodie", emoji: "🧢" },
-            { name: "Sporty Jersey", emoji: "👕" },
-            { name: "Sneaker Style", emoji: "👟" },
-            { name: "Cool Shades", emoji: "😎" }
+        const maleAvatars = [
+            { name: "Developer", emoji: "👨‍💻" },
+            { name: "Gentleman", emoji: "👨‍💼" },
+            { name: "Cool Guy", emoji: "😎" },
+            { name: "Hacker", emoji: "🥷" },
+            { name: "Prince", emoji: "🤴" },
+            { name: "Artist", emoji: "🧑‍🎨" }
         ];
 
-        const femaleOutfits = [
-            { name: "Elegant Gown", emoji: "👗" },
-            { name: "Chic Dress", emoji: "👘" },
-            { name: "Stylish Jacket", emoji: "🧥" },
-            { name: "Trendy Top", emoji: "👚" },
-            { name: "Party Heels", emoji: "👠" },
-            { name: "Glamour Look", emoji: "👒" }
+        const femaleAvatars = [
+            { name: "Professional", emoji: "👩‍💼" },
+            { name: "Stylish Girl", emoji: "👩‍🎤" },
+            { name: "Princess", emoji: "👸" },
+            { name: "Scientist", emoji: "👩‍🔬" },
+            { name: "Artist", emoji: "👩‍🎨" },
+            { name: "Angel", emoji: "🧚‍♀️" }
         ];
 
         window.togglePasswordVisibility = function() {
@@ -502,7 +509,7 @@
                     privacy: "private", 
                     online: true,
                     lastSeen: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-                    avatar: "🤵",
+                    avatar: "👨‍💻",
                     followers: [],
                     blocked: [],
                     nexoraPoints: 0
@@ -525,7 +532,7 @@
 
                 let email = user.email;
                 let displayName = "NEXORA User";
-                let userAvatar = "🤵";
+                let userAvatar = "👨‍💻";
                 let privacyMode = "private";
 
                 const userSnap = await getDoc(doc(db, "users", user.uid));
@@ -543,10 +550,10 @@
                 document.getElementById("displayNexoraPoints").innerText = `⭐ Points: ${currentNexoraPoints}`;
                 document.getElementById("customNameInput").value = displayName;
                 document.getElementById("accountPrivacySelect").value = privacyMode;
-                selectedOutfitEmoji = userAvatar.startsWith("data:") ? userAvatar : userAvatar;
+                selectedAvatarEmoji = userAvatar.startsWith("data:") ? userAvatar : userAvatar;
                 
                 updateAvatarDisplay(userAvatar);
-                renderOutfitOptions("male");
+                renderAvatarOptions("male");
                 await setDoc(doc(db, "users", user.uid), { email: email, online: true }, { merge: true });
                 
                 listenToActiveUsersAndGroups();
@@ -572,25 +579,25 @@
                 display.innerHTML = `<img src="${avatarData}"><div class="online-dot"></div>`;
                 preview.innerHTML = `<img src="${avatarData}">`;
             } else {
-                let emoji = avatarData || "🤵";
+                let emoji = avatarData || "👨‍💻";
                 display.innerHTML = `${emoji}<div class="online-dot"></div>`;
                 preview.innerHTML = `${emoji}`;
             }
         }
 
-        window.renderOutfitOptions = function(gender) {
+        window.renderAvatarOptions = function(gender) {
             const container = document.getElementById("outfitChoicesContainer");
-            const list = gender === 'female' ? femaleOutfits : maleOutfits;
+            const list = gender === 'female' ? femaleAvatars : maleAvatars;
             container.innerHTML = list.map(item => `
-                <div class="outfit-card" onclick="selectOutfit('${item.emoji}')">
-                    <div style="font-size:20px;">${item.emoji}</div>
+                <div class="outfit-card" onclick="selectAvatarEmoji('${item.emoji}')">
+                    <div style="font-size:22px;">${item.emoji}</div>
                     <div>${item.name}</div>
                 </div>
             `).join("");
         };
 
-        window.selectOutfit = function(emoji) {
-            selectedOutfitEmoji = emoji;
+        window.selectAvatarEmoji = function(emoji) {
+            selectedAvatarEmoji = emoji;
             compressedProfileImage = "";
             document.getElementById("modalAvatarPreview").innerHTML = emoji;
         };
@@ -644,10 +651,10 @@
 
         window.saveAvatarSettings = async function() {
             if (!auth.currentUser) return;
-            let avatarVal = compressedProfileImage || selectedOutfitEmoji;
+            let avatarVal = compressedProfileImage || selectedAvatarEmoji;
             await setDoc(doc(db, "users", auth.currentUser.uid), { avatar: avatarVal }, { merge: true });
             updateAvatarDisplay(avatarVal);
-            alert("Avatar & Outfit saved successfully!");
+            alert("Avatar saved successfully!");
         };
 
         window.switchSidebarTab = function(tabName) {
@@ -669,6 +676,56 @@
                 addGroupBtn.style.display = "inline-block";
             }
             renderChatListAndGroups();
+        };
+
+        window.openCreateGroupModal = function() {
+            const container = document.getElementById("groupMembersCheckboxList");
+            if (availableUsersList.length === 0) {
+                container.innerHTML = `<div style="font-size:11px; color:#aaa;">No available contacts.</div>`;
+            } else {
+                container.innerHTML = availableUsersList.map(u => `
+                    <div class="group-member-checkbox-item">
+                        <span>👤 ${u.name}</span>
+                        <input type="checkbox" value="${u.id}" data-name="${u.name}" class="group-member-checkbox">
+                    </div>
+                `).join("");
+            }
+            document.getElementById("createGroupModal").style.display = "flex";
+        };
+        window.closeCreateGroupModal = () => document.getElementById("createGroupModal").style.display = "none";
+
+        window.createNewPrivateGroup = async function() {
+            const groupName = document.getElementById("newGroupNameInput").value.trim();
+            if (!groupName) {
+                alert("Please enter a group name.");
+                return;
+            }
+
+            const checkboxes = document.querySelectorAll(".group-member-checkbox:checked");
+            let memberIds = [auth.currentUser.uid];
+            let memberNames = [document.getElementById("displayName").innerText];
+
+            checkboxes.forEach(cb => {
+                memberIds.push(cb.value);
+                memberNames.push(cb.getAttribute("data-name"));
+            });
+
+            if (memberIds.length < 2) {
+                alert("Please select at least one member for the group.");
+                return;
+            }
+
+            await addDoc(collection(db, "groups"), {
+                groupName: groupName,
+                admin: auth.currentUser.uid,
+                members: memberIds,
+                memberNames: memberNames,
+                createdAt: serverTimestamp()
+            });
+
+            document.getElementById("newGroupNameInput").value = "";
+            closeCreateGroupModal();
+            alert("✨ Private Group created successfully!");
         };
 
         window.openCameraModal = async function() {
@@ -781,7 +838,7 @@
                     if (userData.avatar && userData.avatar.startsWith("data:")) {
                         avatarHtml = `<img src="${userData.avatar}" style="width:22px;height:22px;border-radius:50%;object-fit:cover;vertical-align:middle;margin-right:5px;">`;
                     } else {
-                        avatarHtml = `<span style="margin-right:5px;font-size:16px;">${userData.avatar || '🤵'}</span>`;
+                        avatarHtml = `<span style="margin-right:5px;font-size:16px;">${userData.avatar || '👨‍💻'}</span>`;
                     }
 
                     let targetName = userData.name || "NEXORA User";
@@ -890,7 +947,7 @@
                             if (userData.avatar && userData.avatar.startsWith("data:")) {
                                 userAvatarIcon = `<img src="${userData.avatar}" style="width:22px;height:22px;border-radius:50%;object-fit:cover;vertical-align:middle;margin-right:4px;">`;
                             } else {
-                                userAvatarIcon = `<span style="margin-right:4px;font-size:15px;">${userData.avatar || '🤵'}</span>`;
+                                userAvatarIcon = `<span style="margin-right:4px;font-size:15px;">${userData.avatar || '👨‍💻'}</span>`;
                             }
 
                             let displayName = userData.name || "NEXORA User";
@@ -980,7 +1037,21 @@
         window.updateChatTheme = async function(themeClass) {
             if (!currentChatId) return;
             let roomId = isCurrentChatGroup ? currentChatId : [auth.currentUser.uid, currentChatId].sort().join('_');
-            await setDoc(doc(db, "chat_meta", roomId), { chatTheme: themeClass }, { merge: true });
+            await setDoc(doc(db, "chat_meta", roomId), { chatTheme: themeClass, customWallpaper: "" }, { merge: true });
+        };
+
+        window.uploadCustomChatWallpaper = function(event) {
+            const file = event.target.files[0];
+            if (!file || !currentChatId) return;
+
+            const reader = new FileReader();
+            reader.onload = async function(e) {
+                let wallpaperBase64 = e.target.result;
+                let roomId = isCurrentChatGroup ? currentChatId : [auth.currentUser.uid, currentChatId].sort().join('_');
+                await setDoc(doc(db, "chat_meta", roomId), { customWallpaper: wallpaperBase64, chatTheme: "" }, { merge: true });
+                alert("✨ Custom gallery wallpaper applied and synced successfully!");
+            };
+            reader.readAsDataURL(file);
         };
 
         window.updateDisappearingMode = async function(mode) {
@@ -1000,10 +1071,13 @@
                 const modeSelect = document.getElementById("disappearingModeSelect");
 
                 chatArea.className = "chat-area";
+                chatArea.style.backgroundImage = "none";
 
                 if (docSnap.exists()) {
                     let data = docSnap.data();
-                    if (data.chatTheme) {
+                    if (data.customWallpaper) {
+                        chatArea.style.backgroundImage = `url('${data.customWallpaper}')`;
+                    } else if (data.chatTheme) {
                         chatArea.classList.add(data.chatTheme);
                         themeSelect.value = data.chatTheme;
                     }
@@ -1138,7 +1212,6 @@
                         const messageId = docSnap.id;
                         let isMine = data.senderId === auth.currentUser.uid;
 
-                        // Disappearing messages rules check
                         if (!isMine && data.disappearingMode === "view" && data.status === 'read') {
                             await deleteDoc(doc(db, "messages", messageId));
                             return;
