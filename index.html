@@ -31,7 +31,6 @@
         .input-group label { display: block; margin-bottom: 7px; font-size: 13px; color: #cbd5e1; } 
         input, select { width: 100%; padding: 14px; border: 1px solid rgba(255,255,255,.12); outline: none; border-radius: 12px; background: rgba(0,0,0,.18); color: white; } 
         
-        /* SLEEK PASSWORD FIELD & EYE ICON */
         .password-wrapper { position: relative; width: 100%; }
         .password-wrapper input { width: 100%; padding-right: 50px; }
         .toggle-password { 
@@ -69,7 +68,6 @@
         .nexora-points-tag { font-size: 11px; color: #fbbf24; font-weight: bold; margin-top: 2px; display: block; }
         .status { color: #5eead4; font-size: 10px; } 
 
-        /* TABS (CHATS vs GROUPS) */
         .sidebar-tabs { display: flex; gap: 6px; margin-bottom: 6px; }
         .tab-btn { flex: 1; padding: 6px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #aab0c5; border-radius: 6px; cursor: pointer; font-size: 11px; font-weight: bold; text-align: center; }
         .tab-btn.active { background: var(--accent-color); color: white; border-color: transparent; }
@@ -88,29 +86,34 @@
         .is-offline { background: #64748b; }
 
         .chat-area { flex: 1; height: 100%; display: flex; flex-direction: column; min-width: 0; background: rgba(0,0,0,0.05); position: relative; background-size: cover; background-position: center; } 
-        .chat-header { padding: 12px 20px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; background: rgba(8, 11, 29, 0.75); backdrop-filter: blur(10px); } 
+        .chat-header { padding: 12px 20px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; background: rgba(8, 11, 29, 0.75); backdrop-filter: blur(10px); z-index: 5; } 
         
         .chat-header-profile { display: flex; align-items: center; gap: 10px; cursor: pointer; }
         .header-avatar { width: 38px; height: 38px; border-radius: 50%; background: var(--primary-gradient); display: flex; align-items: center; justify-content: center; font-size: 18px; overflow: hidden; border: 1.5px solid rgba(255,255,255,0.3); }
         .header-avatar img { width: 100%; height: 100%; object-fit: cover; }
 
-        /* FLOATING TYPING INDICATOR */
+        /* CORRECTED & CENTRED FLOATING TYPING INDICATOR INSIDE SCREEN */
         .typing-floating-banner {
             position: absolute;
-            top: 75px;
+            top: 70px;
             left: 50%;
             transform: translateX(-50%);
-            background: rgba(139, 92, 246, 0.2);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(139, 92, 246, 0.4);
+            background: rgba(139, 92, 246, 0.25);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(139, 92, 246, 0.5);
             color: #d8b4fe;
-            padding: 5px 16px;
+            padding: 4px 14px;
             border-radius: 20px;
             font-size: 11px;
             font-style: italic;
-            z-index: 10;
+            z-index: 15;
             display: none;
             box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            max-width: 80%;
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .messages { flex: 1; padding: 15px 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; background: rgba(0, 0, 0, 0.35); } 
@@ -123,7 +126,7 @@
         .tick.blue { color: #38bdf8; font-weight: bold; }
         .delete-btn { background: none; border: none; color: #fca5a5; font-size: 11px; cursor: pointer; opacity: 0.8; } 
         
-        .message-input { display: flex; gap: 8px; padding: 12px 20px; border-top: 1px solid var(--border-color); background: rgba(8, 11, 29, 0.85); backdrop-filter: blur(10px); align-items: center; flex-shrink: 0; } 
+        .message-input { display: flex; gap: 8px; padding: 12px 20px; border-top: 1px solid var(--border-color); background: rgba(8, 11, 29, 0.85); backdrop-filter: blur(10px); align-items: center; flex-shrink: 0; z-index: 5; } 
         .message-input input { flex: 1; min-width: 0; padding: 12px; font-size: 14px; } 
         .attach-btn, .snap-btn-icon { background: transparent; border: none; color: #cbd5e1; font-size: 20px; cursor: pointer; padding: 5px; }
         .send-btn { width: 45px; height: 44px; background: var(--accent-color); font-size: 16px; color: white; display: flex; align-items: center; justify-content: center; border: none; border-radius: 12px; cursor: pointer; flex-shrink: 0; } 
@@ -140,19 +143,24 @@
         .wallpaper-thumb { width: 100%; height: 75px; border-radius: 8px; object-fit: cover; cursor: pointer; border: 2px solid transparent; transition: transform 0.2s; }
         .wallpaper-thumb:hover { transform: scale(1.03); border-color: var(--accent-color); }
 
-        /* LIVE CAMERA SNAP MODAL WITH FILTERS */
+        /* LIVE CAMERA SNAP MODAL WITH FRONT/BACK CAMERA & FILTERS */
         .camera-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.92); display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 2000; padding: 15px; }
-        .camera-view { width: min(380px, 90%); height: 50vh; border-radius: 16px; object-fit: cover; background: #000; border: 2px solid var(--accent-color); }
+        .camera-view { width: min(380px, 90%); height: 48vh; border-radius: 16px; object-fit: cover; background: #000; border: 2px solid var(--accent-color); }
         .filter-normal { filter: none; }
         .filter-cyberpunk { filter: contrast(140%) saturate(180%) hue-rotate(310deg); }
         .filter-neon { filter: brightness(120%) contrast(150%) drop-shadow(0 0 10px #06b6d4); }
         .filter-cinematic { filter: sepia(30%) contrast(120%) brightness(95%); }
         .filter-grayscale { filter: grayscale(100%) contrast(130%); }
-        .filter-options-bar { display: flex; gap: 8px; margin: 12px 0; overflow-x: auto; max-width: 90%; padding: 4px; }
+        .filter-options-bar { display: flex; gap: 8px; margin: 10px 0; overflow-x: auto; max-width: 90%; padding: 4px; }
         .filter-chip { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 6px 12px; border-radius: 20px; font-size: 11px; cursor: pointer; white-space: nowrap; }
         .filter-chip.active { background: var(--accent-color); border-color: white; font-weight: bold; }
-        .camera-controls { display: flex; gap: 15px; margin-top: 10px; }
-        .cam-btn { padding: 12px 24px; border-radius: 30px; border: none; font-weight: bold; cursor: pointer; color: white; font-size: 14px; }
+        
+        .camera-action-row { display: flex; gap: 10px; margin-bottom: 8px; }
+        .switch-cam-btn { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); color: white; padding: 6px 14px; border-radius: 20px; font-size: 12px; cursor: pointer; font-weight: bold; }
+        .switch-cam-btn:hover { background: rgba(255,255,255,0.25); }
+
+        .camera-controls { display: flex; gap: 15px; margin-top: 5px; }
+        .cam-btn { padding: 10px 22px; border-radius: 30px; border: none; font-weight: bold; cursor: pointer; color: white; font-size: 13px; }
         .capture-btn { background: #22c55e; }
         .close-cam-btn { background: #ef4444; }
 
@@ -274,6 +282,7 @@
             </div>
 
             <div class="chat-area" id="chatAreaBackground">
+                <!-- CORRECTED & CENTRED FLOATING TYPING INDICATOR -->
                 <div class="typing-floating-banner" id="typingIndicator">✍️ someone is typing...</div>
 
                 <div class="chat-header">
@@ -375,9 +384,14 @@
         </div>
     </div>
 
-    <!-- LIVE CAMERA WITH FILTERS MODAL -->
+    <!-- LIVE CAMERA WITH FRONT/BACK SWITCH & FILTERS MODAL -->
     <div class="camera-overlay" id="cameraOverlay">
-        <h3 style="color:white; margin-bottom:10px;">📸 Nexora Snap Studio</h3>
+        <h3 style="color:white; margin-bottom:8px;">📸 Nexora Snap Studio</h3>
+        
+        <div class="camera-action-row">
+            <button class="switch-cam-btn" onclick="switchCamera()">🔄 Switch Camera (<span id="camFacingLabel">Front</span>)</button>
+        </div>
+
         <video id="cameraVideo" class="camera-view filter-normal" autoplay playsinline></video>
         <canvas id="cameraCanvas" style="display:none;"></canvas>
         
@@ -491,6 +505,7 @@
         let myBlockedUsers = [];
         let currentNexoraPoints = 0;
         let mediaStream = null;
+        let useFrontCamera = true;
         let selectedFilterClass = "filter-normal";
         let availableUsersList = [];
 
@@ -815,22 +830,42 @@
             });
         }
 
+        // CAMERA MODAL & FRONT/BACK SWITCH LOGIC
         window.openCameraModal = async function() {
             const overlay = document.getElementById("cameraOverlay");
-            const video = document.getElementById("cameraVideo");
             overlay.style.display = "flex";
+            useFrontCamera = true;
+            document.getElementById("camFacingLabel").innerText = "Front";
+            await startCameraStream();
+        };
+
+        async function startCameraStream() {
+            const video = document.getElementById("cameraVideo");
+            if (mediaStream) {
+                mediaStream.getTracks().forEach(track => track.stop());
+            }
             try {
-                mediaStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" }, audio: false });
+                mediaStream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { facingMode: useFrontCamera ? "user" : "environment" }, 
+                    audio: false 
+                });
                 video.srcObject = mediaStream;
             } catch (err) {
                 alert("Camera access denied or unavailable: " + err.message);
-                overlay.style.display = "none";
+                closeCameraModal();
             }
+        }
+
+        window.switchCamera = async function() {
+            useFrontCamera = !useFrontCamera;
+            document.getElementById("camFacingLabel").innerText = useFrontCamera ? "Front" : "Back";
+            await startCameraStream();
         };
 
         window.closeCameraModal = function() {
             if (mediaStream) {
                 mediaStream.getTracks().forEach(track => track.stop());
+                mediaStream = null;
             }
             document.getElementById("cameraOverlay").style.display = "none";
         };
