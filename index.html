@@ -416,7 +416,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
         import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
-        import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, doc, setDoc, getDoc, deleteDoc, updateDoc, getDocs, arrayUnion, arrayRemove, increment } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, query, onSnapshot, serverTimestamp, doc, setDoc, getDoc, deleteDoc, updateDoc, getDocs, arrayUnion, arrayRemove, increment } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyD_SWsXIgcBUkWRmL8wYQzQZFwv0WmQe3Y",
@@ -801,7 +801,7 @@
             const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
             ctx.fillText(`🕒 ${timeStr} | 📍 Panagudi`, 20, canvas.height - 30);
 
-            const snapBase64 = canvas.toDataURL("image/jpeg", 0.85);
+            const snapBase64 = canvas.toDataURL("image/jpeg", 0.7);
             closeCameraModal();
 
             await sendMessage(snapBase64, "image", "📸 [NEXORA SNAP]");
@@ -1046,10 +1046,20 @@
 
             const reader = new FileReader();
             reader.onload = async function(e) {
-                let wallpaperBase64 = e.target.result;
-                let roomId = isCurrentChatGroup ? currentChatId : [auth.currentUser.uid, currentChatId].sort().join('_');
-                await setDoc(doc(db, "chat_meta", roomId), { customWallpaper: wallpaperBase64, chatTheme: "" }, { merge: true });
-                alert("✨ Custom gallery wallpaper applied and synced successfully!");
+                const img = new Image();
+                img.onload = async function() {
+                    const canvas = document.createElement("canvas");
+                    canvas.width = 600;
+                    canvas.height = (img.height / img.width) * 600;
+                    const ctx = canvas.getContext("2d");
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    let wallpaperBase64 = canvas.toDataURL("image/jpeg", 0.6);
+
+                    let roomId = isCurrentChatGroup ? currentChatId : [auth.currentUser.uid, currentChatId].sort().join('_');
+                    await setDoc(doc(db, "chat_meta", roomId), { customWallpaper: wallpaperBase64, chatTheme: "" }, { merge: true });
+                    alert("✨ Custom gallery wallpaper applied and synced successfully!");
+                };
+                img.src = e.target.result;
             };
             reader.readAsDataURL(file);
         };
@@ -1187,9 +1197,18 @@
 
             const reader = new FileReader();
             reader.onload = function(e) {
-                const base64Data = e.target.result;
-                const isVideo = file.type.startsWith("video");
-                sendMessage(base64Data, isVideo ? "video" : "image");
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement("canvas");
+                    canvas.width = 500;
+                    canvas.height = (img.height / img.width) * 500;
+                    const ctx = canvas.getContext("2d");
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    
+                    const compressedBase64 = canvas.toDataURL("image/jpeg", 0.6);
+                    sendMessage(compressedBase64, "image");
+                };
+                img.src = e.target.result;
             };
             reader.readAsDataURL(file);
         };
@@ -1197,30 +1216,41 @@
         function listenToMessages(targetRoom) {
             if (unsubscribeMessages) unsubscribeMessages();
             if (!targetRoom) return;
-            const q = query(collection(db, "messages"), orderBy("createdAt", "asc"));
+            const q = query(collection(db, "messages"));
             
             unsubscribeMessages = onSnapshot(q, async (snapshot) => {
                 const messagesBox = document.getElementById("messages");
                 messagesBox.innerHTML = "";
                 const now = Date.now();
 
-                snapshot.forEach(async (docSnap) => {
-                    const data = docSnap.data();
-                    if (data.chatRoom === targetRoom) {
-                        if (!isCurrentChatGroup && myBlockedUsers.includes(data.senderId)) return;
+                let docsArray = [];
+                snapshot.forEach(docSnap => {
+                    docsArray.push({ id: docSnap.id, ...docSnap.data() });
+                });
 
-                        const messageId = docSnap.id;
+                // Client-side sorting by timestamp to ensure instant loading without requiring index creation
+                docsArray.sort((a, b) => {
+                    let t1 = a.createdAt?.toMillis ? a.createdAt.toMillis() : 0;
+                    let t2 = b.createdAt?.toMillis ? b.createdAt.toMillis() : 0;
+                    return t1 - t2;
+                });
+
+                for (let data of docsArray) {
+                    if (data.chatRoom === targetRoom) {
+                        if (!isCurrentChatGroup && myBlockedUsers.includes(data.senderId)) continue;
+
+                        const messageId = data.id;
                         let isMine = data.senderId === auth.currentUser.uid;
 
                         if (!isMine && data.disappearingMode === "view" && data.status === 'read') {
                             await deleteDoc(doc(db, "messages", messageId));
-                            return;
+                            continue;
                         }
                         if (data.disappearingMode === "24h" && data.createdAt) {
                             let msgTime = data.createdAt.toMillis ? data.createdAt.toMillis() : now;
                             if (now - msgTime > 24 * 60 * 60 * 1000) {
                                 await deleteDoc(doc(db, "messages", messageId));
-                                return;
+                                continue;
                             }
                         }
 
@@ -1252,7 +1282,7 @@
                             await updateDoc(doc(db, "messages", messageId), { status: 'read' });
                         }
                     }
-                });
+                }
                 messagesBox.scrollTop = messagesBox.scrollHeight;
             });
         }
