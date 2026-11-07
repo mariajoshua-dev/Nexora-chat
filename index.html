@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>NEXORA - Ultimate Chat Experience</title>
     <style>
         :root { 
@@ -25,164 +25,152 @@
         .chat-theme-gold { background: linear-gradient(135deg, #1a1402, #453608) !important; }
         .chat-theme-emerald { background: linear-gradient(135deg, #021a0f, #084529) !important; }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; } 
-        body, html { width: 100%; height: 100vh; overflow: hidden; background: var(--bg-main); color: var(--text-color); }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; -webkit-tap-highlight-color: transparent; } 
+        body, html { width: 100%; height: 100%; overflow: hidden; background: var(--bg-main); color: var(--text-color); position: fixed; }
         
         /* AUTH PAGE */
-        .auth-page { width: 100%; height: 100vh; display: flex; justify-content: center; align-items: center; background: var(--gradient-bg); }
-        .login-box { width: min(390px, 90%); padding: 38px 30px; border-radius: 28px; text-align: center; background: rgba(255,255,255,.09); backdrop-filter: blur(25px); border: 1px solid rgba(255,255,255,.18); }
-        .brand-icon { width: 62px; height: 62px; margin: 0 auto 15px; display: flex; align-items: center; justify-content: center; border-radius: 20px; font-size: 28px; background: var(--primary-gradient); animation: pulseGlow 2s infinite alternate; } 
-        @keyframes pulseGlow { 0% { transform: scale(1); box-shadow: 0 0 10px rgba(139,92,246,0.5); } 100% { transform: scale(1.08); box-shadow: 0 0 25px rgba(6,182,212,0.8); } }
-        .logo { font-size: 38px; font-weight: bold; margin-bottom: 8px; background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; } 
-        .subtitle { color: #aab0c5; margin-bottom: 20px; } 
-        .input-group { text-align: left; margin-top: 16px; } 
-        .input-group label { display: block; margin-bottom: 7px; font-size: 13px; color: #cbd5e1; } 
-        input, select { width: 100%; padding: 14px; border: 1px solid rgba(255,255,255,.12); outline: none; border-radius: 12px; background: rgba(0,0,0,.18); color: white; } 
+        .auth-page { width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; background: var(--gradient-bg); position: fixed; top: 0; left: 0; z-index: 100; }
+        .login-box { width: min(380px, 92%); padding: 32px 24px; border-radius: 24px; text-align: center; background: rgba(255,255,255,.08); backdrop-filter: blur(25px); border: 1px solid rgba(255,255,255,0.15); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .brand-icon { width: 56px; height: 56px; margin: 0 auto 12px; display: flex; align-items: center; justify-content: center; border-radius: 18px; font-size: 26px; background: var(--primary-gradient); animation: pulseGlow 2s infinite alternate; } 
+        @keyframes pulseGlow { 0% { transform: scale(1); box-shadow: 0 0 10px rgba(139,92,246,0.5); } 100% { transform: scale(1.06); box-shadow: 0 0 20px rgba(6,182,212,0.8); } }
+        .logo { font-size: 32px; font-weight: bold; margin-bottom: 6px; background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; } 
+        .subtitle { color: #aab0c5; margin-bottom: 18px; font-size: 13px; } 
+        .input-group { text-align: left; margin-top: 14px; } 
+        .input-group label { display: block; margin-bottom: 6px; font-size: 12px; color: #cbd5e1; } 
+        input, select { width: 100%; padding: 12px 14px; border: 1px solid rgba(255,255,255,.12); outline: none; border-radius: 12px; background: rgba(0,0,0,.2); color: white; font-size: 14px; } 
         
         .password-wrapper { position: relative; width: 100%; }
-        .password-wrapper input { width: 100%; padding-right: 50px; }
+        .password-wrapper input { width: 100%; padding-right: 45px; }
         .toggle-password { 
-            position: absolute; right: 10px; top: 50%; transform: translateY(-50%); 
+            position: absolute; right: 8px; top: 50%; transform: translateY(-50%); 
             background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); 
-            cursor: pointer; font-size: 14px; color: #cbd5e1; 
-            width: 32px; height: 32px; border-radius: 8px; 
+            cursor: pointer; font-size: 13px; color: #cbd5e1; 
+            width: 30px; height: 30px; border-radius: 8px; 
             display: flex; align-items: center; justify-content: center; 
-            transition: all 0.2s ease; 
         }
-        .toggle-password:hover { background: rgba(255, 255, 255, 0.15); color: #fff; border-color: var(--accent-color); }
 
         .login-btn, .secondary-btn { border: none; cursor: pointer; font-weight: bold; border-radius: 12px; } 
-        .login-btn { width: 100%; padding: 14px; margin-top: 20px; background: var(--primary-gradient); color: white; } 
-        .secondary-btn { width: 100%; padding: 12px; margin-top: 10px; background: transparent; color: #a78bfa; border: 1px solid var(--accent-color); } 
-        .error { color: #fca5a5; font-size: 13px; margin-top: 12px; }
+        .login-btn { width: 100%; padding: 13px; margin-top: 18px; background: var(--primary-gradient); color: white; font-size: 14px; } 
+        .secondary-btn { width: 100%; padding: 11px; margin-top: 10px; background: transparent; color: #a78bfa; border: 1px solid var(--accent-color); font-size: 13px; } 
+        .error { color: #fca5a5; font-size: 12px; margin-top: 10px; }
 
         /* SPLASH SCREEN */
         #splashScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-main); display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 9999; }
-        .splash-logo { font-size: 48px; font-weight: bold; background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: bounceIn 1s ease infinite alternate; }
-        @keyframes bounceIn { 0% { transform: translateY(0); } 100% { transform: translateY(-10px); } }
+        .splash-logo { font-size: 42px; font-weight: bold; background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: bounceIn 1s ease infinite alternate; }
+        @keyframes bounceIn { 0% { transform: translateY(0); } 100% { transform: translateY(-8px); } }
 
-        /* CHAT APP LAYOUT */ 
-        #app { display: none; width: 100vw; height: 100vh; padding: 10px; background: var(--gradient-bg); box-sizing: border-box; } 
-        .app-container { width: 100%; height: 100%; max-width: 1200px; margin: auto; display: flex; flex-direction: row; overflow: hidden; border-radius: 16px; background: var(--panel-bg); border: 1px solid var(--border-color); backdrop-filter: blur(10px); } 
+        /* ANDROID APP LAYOUT CONTAINER */ 
+        #app { display: none; width: 100%; height: 100%; background: var(--gradient-bg); position: fixed; top: 0; left: 0; overflow: hidden; } 
+        .app-container { width: 100%; height: 100%; display: flex; flex-direction: column; background: var(--panel-bg); position: relative; overflow: hidden; } 
         
-        .sidebar { width: 330px; height: 100%; padding: 15px; border-right: 1px solid var(--border-color); display: flex; flex-direction: column; justify-content: space-between; flex-shrink: 0; background: rgba(0,0,0,0.2); } 
-        .profile-section { display: flex; flex-direction: column; height: 100%; gap: 10px; overflow: hidden; }
-        .profile { display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 8px; border-radius: 10px; background: rgba(255,255,255,0.05); flex-shrink: 0; } 
-        .avatar { width: 42px; height: 42px; border-radius: 50%; display: flex; justify-content: center; align-items: center; background: var(--primary-gradient); font-size: 20px; border: 2px solid rgba(255,255,255,0.2); flex-shrink: 0; position: relative; overflow: hidden; } 
-        .avatar img { width: 100%; height: 100%; object-fit: cover; }
-        .online-dot { width: 9px; height: 9px; background: #22c55e; border-radius: 50%; position: absolute; bottom: 1px; right: 1px; border: 2px solid #111; }
-        .profile-info h3 { font-size: 13px; word-break: break-all; } 
-        .profile-info p { font-size: 10px; color: #aab0c5; word-break: break-all; }
-        .nexora-points-tag { font-size: 11px; color: #fbbf24; font-weight: bold; margin-top: 2px; display: block; }
-        .status { color: #5eead4; font-size: 10px; } 
+        /* VIEWS CONTAINER (STACKED FOR MOBILE TRANSITIONS) */
+        .mobile-view-container { flex: 1; width: 100%; height: calc(100% - 60px); position: relative; overflow: hidden; display: flex; }
+        
+        /* SIDEBAR / CHAT LIST VIEW */
+        .sidebar { width: 100%; height: 100%; padding: 12px; display: flex; flex-direction: column; justify-content: space-between; background: rgba(8, 11, 29, 0.92); position: absolute; top: 0; left: 0; transition: transform 0.25s ease; z-index: 2; } 
+        .sidebar.hidden-mobile { transform: translateX(-100%); }
 
-        .sidebar-tabs { display: flex; gap: 4px; margin-bottom: 6px; }
-        .tab-btn { flex: 1; padding: 6px 4px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #aab0c5; border-radius: 6px; cursor: pointer; font-size: 10px; font-weight: bold; text-align: center; }
+        .profile-section { display: flex; flex-direction: column; height: 100%; gap: 8px; overflow: hidden; }
+        .profile { display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 8px 10px; border-radius: 12px; background: rgba(255,255,255,0.06); flex-shrink: 0; border: 1px solid rgba(255,255,255,0.08); } 
+        .avatar { width: 40px; height: 40px; border-radius: 50%; display: flex; justify-content: center; align-items: center; background: var(--primary-gradient); font-size: 18px; border: 2px solid rgba(255,255,255,0.2); flex-shrink: 0; position: relative; overflow: hidden; } 
+        .avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .online-dot { width: 8px; height: 8px; background: #22c55e; border-radius: 50%; position: absolute; bottom: 1px; right: 1px; border: 2px solid #111; }
+        .profile-info { flex: 1; min-width: 0; }
+        .profile-info h3 { font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } 
+        .profile-info p { font-size: 10px; color: #aab0c5; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .nexora-points-tag { font-size: 10px; color: #fbbf24; font-weight: bold; display: block; }
+        .status { color: #5eead4; font-size: 9px; } 
+
+        .sidebar-tabs { display: flex; gap: 4px; flex-shrink: 0; }
+        .tab-btn { flex: 1; padding: 7px 4px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); color: #aab0c5; border-radius: 8px; cursor: pointer; font-size: 10px; font-weight: bold; text-align: center; }
         .tab-btn.active { background: var(--accent-color); color: white; border-color: transparent; }
         
-        .users-list-container { flex: 1; overflow-y: auto; background: rgba(0,0,0,0.15); border-radius: 10px; padding: 10px; border: 1px solid var(--border-color); } 
-        .users-list-container h4 { font-size: 12px; color: #aab0c5; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; } 
+        .users-list-container { flex: 1; overflow-y: auto; background: rgba(0,0,0,0.2); border-radius: 12px; padding: 10px; border: 1px solid var(--border-color); } 
+        .users-list-container h4 { font-size: 11px; color: #aab0c5; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; text-transform: uppercase; letter-spacing: 0.5px; } 
         
-        .create-group-btn { background: var(--accent-color); border: none; color: white; padding: 3px 7px; border-radius: 6px; cursor: pointer; font-size: 10px; font-weight: bold; }
+        .create-group-btn { background: var(--accent-color); border: none; color: white; padding: 3px 8px; border-radius: 6px; cursor: pointer; font-size: 10px; font-weight: bold; }
         
-        .user-item { padding: 10px; border-radius: 8px; cursor: pointer; font-size: 12px; margin-bottom: 6px; display: flex; align-items: center; justify-content: space-between; background: rgba(255,255,255,0.03); transition: background 0.2s; word-break: break-all; } 
-        .user-item:hover, .user-item.active { background: rgba(255,255,255,0.12); } 
-        .user-status-indicator { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 6px; flex-shrink: 0; }
+        .user-item { padding: 10px 12px; border-radius: 10px; cursor: pointer; font-size: 13px; margin-bottom: 6px; display: flex; align-items: center; justify-content: space-between; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.04); } 
+        .user-item:active { background: rgba(255,255,255,0.12); } 
+        .user-status-indicator { width: 7px; height: 7px; border-radius: 50%; display: inline-block; margin-right: 8px; flex-shrink: 0; }
         .is-online { background: #22c55e; }
         .is-offline { background: #64748b; }
 
-        .chat-area { flex: 1; height: 100%; display: flex; flex-direction: column; min-width: 0; background: rgba(0,0,0,0.05); position: relative; background-size: cover; background-position: center; transition: background 0.3s ease; } 
-        .chat-header { padding: 12px 20px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; background: rgba(8, 11, 29, 0.75); backdrop-filter: blur(10px); z-index: 5; } 
+        /* CHAT AREA VIEW */
+        .chat-area { width: 100%; height: 100%; display: flex; flex-direction: column; position: absolute; top: 0; left: 0; background: rgba(0,0,0,0.1); background-size: cover; background-position: center; transition: transform 0.25s ease; z-index: 1; transform: translateX(100%); } 
+        .chat-area.active-mobile { transform: translateX(0); z-index: 3; }
+
+        .chat-header { padding: 10px 14px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; background: rgba(8, 11, 29, 0.85); backdrop-filter: blur(12px); z-index: 5; } 
+        .chat-header-profile { display: flex; align-items: center; gap: 10px; cursor: pointer; min-width: 0; }
         
-        .chat-header-profile { display: flex; align-items: center; gap: 10px; cursor: pointer; }
-        .header-avatar { width: 38px; height: 38px; border-radius: 50%; background: var(--primary-gradient); display: flex; align-items: center; justify-content: center; font-size: 18px; overflow: hidden; border: 1.5px solid rgba(255,255,255,0.3); }
+        .back-btn-mobile { background: none; border: none; color: white; font-size: 18px; cursor: pointer; padding-right: 4px; display: none; }
+        @media (max-width: 1024px) { .back-btn-mobile { display: inline-block; } }
+
+        .header-avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--primary-gradient); display: flex; align-items: center; justify-content: center; font-size: 16px; overflow: hidden; border: 1.5px solid rgba(255,255,255,0.3); flex-shrink: 0; }
         .header-avatar img { width: 100%; height: 100%; object-fit: cover; }
 
         /* FLOATING TYPING INDICATOR */
         .typing-floating-banner {
-            position: absolute;
-            top: 70px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(139, 92, 246, 0.25);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(139, 92, 246, 0.5);
-            color: #d8b4fe;
-            padding: 4px 14px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-style: italic;
-            z-index: 15;
-            display: none;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            max-width: 80%;
-            text-align: center;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+            position: absolute; top: 60px; left: 50%; transform: translateX(-50%);
+            background: rgba(139, 92, 246, 0.25); backdrop-filter: blur(10px);
+            border: 1px solid rgba(139, 92, 246, 0.4); color: #d8b4fe;
+            padding: 3px 12px; border-radius: 20px; font-size: 10px; font-style: italic;
+            z-index: 15; display: none; box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            max-width: 80%; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
         }
 
-        .messages { flex: 1; padding: 15px 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; background: rgba(0, 0, 0, 0.35); } 
-        .message { max-width: 75%; padding: 10px 14px; border-radius: 14px; background: rgba(255,255,255,.15); backdrop-filter: blur(5px); word-break: break-word; font-size: 14px; position: relative; } 
-        .sent { align-self: flex-end; background: var(--primary-gradient); } 
-        .sender-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; gap: 10px; } 
-        .sender { font-size: 11px; color: #aab0c5; } 
-        .msg-footer { display: flex; justify-content: flex-end; align-items: center; gap: 6px; margin-top: 4px; } 
-        .tick { font-size: 12px; opacity: 0.8; } 
+        .messages { flex: 1; padding: 12px 14px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; background: rgba(0, 0, 0, 0.3); } 
+        .message { max-width: 80%; padding: 10px 12px; border-radius: 14px; background: rgba(255,255,255,.12); backdrop-filter: blur(5px); word-break: break-word; font-size: 13px; position: relative; border: 1px solid rgba(255,255,255,0.06); } 
+        .sent { align-self: flex-end; background: var(--primary-gradient); border: none; } 
+        .sender-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px; gap: 8px; } 
+        .sender { font-size: 10px; color: #aab0c5; } 
+        .msg-footer { display: flex; justify-content: flex-end; align-items: center; gap: 4px; margin-top: 3px; } 
+        .tick { font-size: 11px; opacity: 0.8; } 
         .tick.blue { color: #38bdf8; font-weight: bold; }
-        .delete-btn { background: none; border: none; color: #fca5a5; font-size: 11px; cursor: pointer; opacity: 0.8; } 
+        .delete-btn { background: none; border: none; color: #fca5a5; font-size: 10px; cursor: pointer; opacity: 0.8; } 
         
-        .message-input { display: flex; gap: 8px; padding: 12px 20px; border-top: 1px solid var(--border-color); background: rgba(8, 11, 29, 0.85); backdrop-filter: blur(10px); align-items: center; flex-shrink: 0; z-index: 5; } 
-        .message-input input { flex: 1; min-width: 0; padding: 12px; font-size: 14px; } 
-        .attach-btn, .snap-btn-icon { background: transparent; border: none; color: #cbd5e1; font-size: 20px; cursor: pointer; padding: 5px; }
-        .send-btn { width: 45px; height: 44px; background: var(--accent-color); font-size: 16px; color: white; display: flex; align-items: center; justify-content: center; border: none; border-radius: 12px; cursor: pointer; flex-shrink: 0; } 
-        .media-preview { max-width: 220px; border-radius: 8px; margin-top: 6px; display: block; }
+        .message-input { display: flex; gap: 6px; padding: 10px 12px; border-top: 1px solid var(--border-color); background: rgba(8, 11, 29, 0.9); backdrop-filter: blur(12px); align-items: center; flex-shrink: 0; z-index: 5; } 
+        .message-input input { flex: 1; min-width: 0; padding: 11px 12px; font-size: 13px; border-radius: 20px; } 
+        .attach-btn, .snap-btn-icon { background: transparent; border: none; color: #cbd5e1; font-size: 18px; cursor: pointer; padding: 4px; }
+        .send-btn { width: 40px; height: 40px; background: var(--accent-color); font-size: 14px; color: white; display: flex; align-items: center; justify-content: center; border: none; border-radius: 50%; cursor: pointer; flex-shrink: 0; box-shadow: 0 3px 10px rgba(0,0,0,0.3); } 
+        .media-preview { max-width: 200px; border-radius: 8px; margin-top: 5px; display: block; }
 
         /* SEARCH RESULTS */
-        .search-container { display: flex; gap: 6px; margin-bottom: 10px; }
-        .search-results-box { max-height: 120px; overflow-y: auto; background: rgba(0,0,0,0.2); border-radius: 6px; padding: 5px; margin-top: 5px; text-align: left; }
-        .search-result-item { padding: 6px; font-size: 11px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center; }
-        .search-result-item:hover { background: rgba(255,255,255,0.1); }
+        .search-container { display: flex; gap: 6px; margin-bottom: 8px; }
+        .search-results-box { max-height: 110px; overflow-y: auto; background: rgba(0,0,0,0.2); border-radius: 8px; padding: 6px; margin-top: 4px; text-align: left; }
+        .search-result-item { padding: 6px 8px; font-size: 11px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center; }
 
         /* LIVE CAMERA SNAP MODAL WITH FILTERS */
-        .camera-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.92); display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 2000; padding: 15px; }
-        .camera-view { width: min(380px, 90%); height: 48vh; border-radius: 16px; object-fit: cover; background: #000; border: 2px solid var(--accent-color); }
+        .camera-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 2000; padding: 12px; }
+        .camera-view { width: min(360px, 94%); height: 46vh; border-radius: 16px; object-fit: cover; background: #000; border: 2px solid var(--accent-color); }
         .filter-normal { filter: none; }
         .filter-cyberpunk { filter: contrast(140%) saturate(180%) hue-rotate(310deg); }
         .filter-neon { filter: brightness(120%) contrast(150%) drop-shadow(0 0 10px #06b6d4); }
         .filter-cinematic { filter: sepia(30%) contrast(120%) brightness(95%); }
         .filter-grayscale { filter: grayscale(100%) contrast(130%); }
-        .filter-options-bar { display: flex; gap: 8px; margin: 10px 0; overflow-x: auto; max-width: 90%; padding: 4px; }
-        .filter-chip { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 6px 12px; border-radius: 20px; font-size: 11px; cursor: pointer; white-space: nowrap; }
+        .filter-options-bar { display: flex; gap: 6px; margin: 8px 0; overflow-x: auto; max-width: 94%; padding: 4px; }
+        .filter-chip { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 5px 10px; border-radius: 20px; font-size: 11px; cursor: pointer; white-space: nowrap; }
         .filter-chip.active { background: var(--accent-color); border-color: white; font-weight: bold; }
         
-        .camera-action-row { display: flex; gap: 10px; margin-bottom: 8px; }
-        .switch-cam-btn { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); color: white; padding: 6px 14px; border-radius: 20px; font-size: 12px; cursor: pointer; font-weight: bold; }
+        .camera-action-row { display: flex; gap: 8px; margin-bottom: 6px; }
+        .switch-cam-btn { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); color: white; padding: 5px 12px; border-radius: 20px; font-size: 11px; cursor: pointer; font-weight: bold; }
         
-        .camera-controls { display: flex; gap: 15px; margin-top: 5px; }
-        .cam-btn { padding: 10px 22px; border-radius: 30px; border: none; font-weight: bold; cursor: pointer; color: white; font-size: 13px; }
+        .camera-controls { display: flex; gap: 12px; margin-top: 4px; }
+        .cam-btn { padding: 9px 20px; border-radius: 30px; border: none; font-weight: bold; cursor: pointer; color: white; font-size: 12px; }
         .capture-btn { background: #22c55e; }
         .close-cam-btn { background: #ef4444; }
 
         /* MODALS */
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; justify-content: center; align-items: center; z-index: 999; }
-        .modal-content { background: #1e1e2f; padding: 22px; border-radius: 16px; width: 380px; text-align: center; border: 1px solid rgba(255,255,255,0.1); max-height: 90vh; overflow-y: auto; }
-        .avatar-preview-box { width: 75px; height: 75px; margin: 0 auto 10px; border-radius: 50%; background: var(--primary-gradient); display: flex; align-items: center; justify-content: center; font-size: 34px; border: 2px solid rgba(255,255,255,0.3); overflow: hidden; }
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.75); display: none; justify-content: center; align-items: center; z-index: 1000; padding: 10px; backdrop-filter: blur(5px); }
+        .modal-content { background: #13172e; padding: 18px; border-radius: 20px; width: min(360px, 94%); text-align: center; border: 1px solid rgba(255,255,255,0.12); max-height: 88vh; overflow-y: auto; box-shadow: 0 15px 35px rgba(0,0,0,0.6); }
+        .avatar-preview-box { width: 68px; height: 68px; margin: 0 auto 8px; border-radius: 50%; background: var(--primary-gradient); display: flex; align-items: center; justify-content: center; font-size: 30px; border: 2px solid rgba(255,255,255,0.3); overflow: hidden; }
         .avatar-preview-box img { width: 100%; height: 100%; object-fit: cover; }
 
-        .outfit-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 8px; }
-        .outfit-card { padding: 10px 6px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; cursor: pointer; font-size: 11px; text-align: center; color: #fff; transition: all 0.2s; }
-        .outfit-card:hover, .outfit-card.selected { background: var(--accent-color); border-color: #fff; font-weight: bold; }
+        .outfit-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 6px; }
+        .outfit-card { padding: 8px 4px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; cursor: pointer; font-size: 10px; text-align: center; color: #fff; }
+        .outfit-card.selected { background: var(--accent-color); border-color: #fff; font-weight: bold; }
         
-        .group-member-checkbox-item { display: flex; align-items: center; justify-content: space-between; padding: 6px 10px; background: rgba(255,255,255,0.03); border-radius: 6px; margin-bottom: 5px; font-size: 12px; }
-
-        @media (max-width: 768px) {
-            #app { padding: 4px; }
-            .app-container { flex-direction: column; border-radius: 10px; }
-            .sidebar { width: 100%; height: 35%; padding: 10px; border-right: none; border-bottom: 1px solid var(--border-color); }
-            .chat-area { width: 100%; height: 65%; }
-            .profile-section { height: 100%; }
-        }
+        .group-member-checkbox-item { display: flex; align-items: center; justify-content: space-between; padding: 5px 8px; background: rgba(255,255,255,0.03); border-radius: 6px; margin-bottom: 4px; font-size: 11px; }
     </style>
 </head>
 <body class="theme-purple">
@@ -190,7 +178,7 @@
     <!-- SPLASH SCREEN -->
     <div id="splashScreen">
         <div class="splash-logo">💬 NEXORA</div>
-        <p style="color: #aab0c5; margin-top: 10px; font-size: 14px;">Connecting to Secure Chat...</p>
+        <p style="color: #aab0c5; margin-top: 8px; font-size: 13px;">Connecting to Secure Chat...</p>
     </div>
 
     <!-- LOGIN PAGE -->
@@ -207,7 +195,7 @@
                 <label>Password</label>
                 <div class="password-wrapper">
                     <input type="password" id="password" placeholder="Enter your password">
-                    <button type="button" class="toggle-password" onclick="togglePasswordVisibility()" title="Show/Hide Password">👁️</button>
+                    <button type="button" class="toggle-password" onclick="togglePasswordVisibility()">👁️</button>
                 </div>
             </div>
             <button class="login-btn" onclick="login()">Enter Nexora →</button>
@@ -219,65 +207,70 @@
     <!-- MAIN CHAT APP -->
     <div id="app">
         <div class="app-container">
-            <div class="sidebar">
-                <div class="profile-section">
-                    <div class="profile" onclick="openAccountSettings()">
-                        <div class="avatar" id="userAvatarDisplay">
-                            👨‍💻
-                            <div class="online-dot"></div>
+            <div class="mobile-view-container">
+                <!-- SIDEBAR / CHAT LIST VIEW -->
+                <div class="sidebar" id="sidebarView">
+                    <div class="profile-section">
+                        <div class="profile" onclick="openAccountSettings()">
+                            <div class="avatar" id="userAvatarDisplay">
+                                👨‍💻
+                                <div class="online-dot"></div>
+                            </div>
+                            <div class="profile-info">
+                                <h3 id="displayName">NEXORA User</h3>
+                                <p id="displayEmailId">user@email.com</p>
+                                <span class="nexora-points-tag" id="displayNexoraPoints">⭐ Points: 0</span>
+                            </div>
+                            <span class="status">⚙️</span>
                         </div>
-                        <div class="profile-info">
-                            <h3 id="displayName">NEXORA User</h3>
-                            <p id="displayEmailId" style="font-size:10px; color:#aab0c5;">user@email.com</p>
-                            <span class="nexora-points-tag" id="displayNexoraPoints">⭐ Points: 0</span>
-                            <span class="status">● Settings ⚙️</span>
+                        
+                        <!-- SIDEBAR TABS WITH NOTIFICATIONS -->
+                        <div class="sidebar-tabs">
+                            <button class="tab-btn active" id="chatsTabBtn" onclick="switchSidebarTab('chats')">💬 Chats</button>
+                            <button class="tab-btn" id="groupsTabBtn" onclick="switchSidebarTab('groups')">👥 Groups</button>
+                            <button class="tab-btn" id="notifsTabBtn" onclick="switchSidebarTab('notifs')">🔔 Notifs <span id="notifBadge" style="background:#ef4444; color:white; padding:1px 4px; border-radius:10px; font-size:8px; display:none;">0</span></button>
                         </div>
-                    </div>
-                    
-                    <!-- SIDEBAR TABS WITH NOTIFICATIONS -->
-                    <div class="sidebar-tabs">
-                        <button class="tab-btn active" id="chatsTabBtn" onclick="switchSidebarTab('chats')">💬 Chats</button>
-                        <button class="tab-btn" id="groupsTabBtn" onclick="switchSidebarTab('groups')">👥 Groups</button>
-                        <button class="tab-btn" id="notifsTabBtn" onclick="switchSidebarTab('notifs')">🔔 Notifs <span id="notifBadge" style="background:#ef4444; color:white; padding:1px 4px; border-radius:10px; font-size:9px; display:none;">0</span></button>
-                    </div>
 
-                    <div class="users-list-container">
-                        <h4 id="sidebarListHeader">
-                            <span id="sidebarTitleText">💬 Accepted Chats</span>
-                            <button class="create-group-btn" id="addGroupHeaderBtn" onclick="openCreateGroupModal()" style="display:none;">+ Group</button>
-                        </h4>
-                        <div id="chatList"></div>
+                        <div class="users-list-container">
+                            <h4 id="sidebarListHeader">
+                                <span id="sidebarTitleText">💬 Accepted Chats</span>
+                                <button class="create-group-btn" id="addGroupHeaderBtn" onclick="openCreateGroupModal()" style="display:none;">+ Group</button>
+                            </h4>
+                            <div id="chatList"></div>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="chat-area" id="chatAreaBackground">
-                <div class="typing-floating-banner" id="typingIndicator">✍️ someone is typing...</div>
+                <!-- CHAT AREA VIEW -->
+                <div class="chat-area" id="chatAreaBackground">
+                    <div class="typing-floating-banner" id="typingIndicator">✍️ someone is typing...</div>
 
-                <div class="chat-header">
-                    <div class="chat-header-profile" onclick="openSelectedUserProfile()" title="Click to view User Profile, Synced Chat Themes & Block Options">
-                        <div class="header-avatar" id="headerUserAvatar">👤</div>
+                    <div class="chat-header">
+                        <div class="chat-header-profile" onclick="openSelectedUserProfile()">
+                            <button class="back-btn-mobile" onclick="backToSidebar(event)">←</button>
+                            <div class="header-avatar" id="headerUserAvatar">👤</div>
+                            <div style="min-width: 0;">
+                                <h3 id="chatTitle" style="font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Select a Chat</h3>
+                                <small id="chatSub" style="font-size: 9px; color:#aab0c5; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block;">● Tap for profile</small>
+                            </div>
+                        </div>
                         <div>
-                            <h3 id="chatTitle" style="font-size: 14px;">Select a Chat</h3>
-                            <small id="chatSub" style="font-size: 10px; color:#aab0c5;">● Click user or group to chat</small>
+                            <select id="themeSelector" onchange="changeTheme(this.value)" style="padding: 4px 6px; font-size: 10px;">
+                                <option value="theme-purple">Purple</option>
+                                <option value="theme-cyan">Cyan</option>
+                                <option value="theme-midnight">Midnight</option>
+                            </select>
                         </div>
                     </div>
-                    <div style="display: flex; gap: 8px; align-items: center;">
-                        <select id="themeSelector" onchange="changeTheme(this.value)" style="padding: 5px 8px; font-size: 11px;">
-                            <option value="theme-purple">Purple</option>
-                            <option value="theme-cyan">Cyan</option>
-                            <option value="theme-midnight">Midnight</option>
-                        </select>
+                    <div class="messages" id="messages"></div>
+                    <div class="message-input" id="messageInputArea">
+                        <button class="snap-btn-icon" onclick="openCameraModal()" title="Take Live Snap">📸</button>
+                        <label class="attach-btn" title="Send Attachment">
+                            📎 <input type="file" id="mediaInput" accept="image/*,video/*" style="display:none;" onclick="event.stopPropagation();" onchange="handleMediaUpload(event)">
+                        </label>
+                        <input type="text" id="messageText" placeholder="Type a message..." oninput="handleTyping()" onkeydown="if(event.key==='Enter') sendMessage()">
+                        <button class="send-btn" onclick="sendMessage()">➤</button>
                     </div>
-                </div>
-                <div class="messages" id="messages"></div>
-                <div class="message-input" id="messageInputArea">
-                    <button class="snap-btn-icon" onclick="openCameraModal()" title="Take Live Snap (Earns +10 Nexora Points)">📸</button>
-                    <label class="attach-btn" title="Send Attachment">
-                        📎 <input type="file" id="mediaInput" accept="image/*,video/*" style="display:none;" onclick="event.stopPropagation();" onchange="handleMediaUpload(event)">
-                    </label>
-                    <input type="text" id="messageText" placeholder="Type a message..." oninput="handleTyping()" onkeydown="if(event.key==='Enter') sendMessage()">
-                    <button class="send-btn" onclick="sendMessage()">➤</button>
                 </div>
             </div>
         </div>
@@ -286,26 +279,26 @@
     <!-- CREATE PRIVATE GROUP MODAL -->
     <div class="modal-overlay" id="createGroupModal">
         <div class="modal-content">
-            <h3 style="margin-bottom:12px; color:#fff; font-size: 16px;">👥 Create Private Group</h3>
-            <div class="input-group" style="margin-bottom: 12px;">
+            <h3 style="margin-bottom:10px; color:#fff; font-size: 15px;">👥 Create Private Group</h3>
+            <div class="input-group" style="margin-bottom: 10px;">
                 <label>Group Name</label>
                 <input type="text" id="newGroupNameInput" placeholder="Enter group name...">
             </div>
-            <label style="color:#cbd5e1; font-size:12px; display:block; margin-bottom:6px; text-align:left; font-weight:bold;">Select Members:</label>
-            <div id="groupMembersCheckboxList" style="max-height: 140px; overflow-y: auto; margin-bottom: 15px; text-align: left;">
+            <label style="color:#cbd5e1; font-size:11px; display:block; margin-bottom:4px; text-align:left; font-weight:bold;">Select Members:</label>
+            <div id="groupMembersCheckboxList" style="max-height: 130px; overflow-y: auto; margin-bottom: 12px; text-align: left;">
                 <div style="font-size:11px; color:#aaa;">No contacts available.</div>
             </div>
-            <button onclick="createNewPrivateGroup()" style="width:100%; padding:9px; background:var(--accent-color); color:white; border:none; border-radius:8px; font-weight:bold; cursor:pointer; margin-bottom:6px;">Create Group</button>
-            <button onclick="closeCreateGroupModal()" style="width:100%; padding:6px; background:transparent; color:#aaa; border:none; cursor:pointer;">Cancel</button>
+            <button onclick="createNewPrivateGroup()" style="width:100%; padding:8px; background:var(--accent-color); color:white; border:none; border-radius:8px; font-weight:bold; cursor:pointer; margin-bottom:4px; font-size:12px;">Create Group</button>
+            <button onclick="closeCreateGroupModal()" style="width:100%; padding:5px; background:transparent; color:#aaa; border:none; cursor:pointer; font-size:11px;">Cancel</button>
         </div>
     </div>
 
-    <!-- LIVE CAMERA SNAP MODAL WITH TIME/LOCATION STAMP -->
+    <!-- LIVE CAMERA SNAP MODAL -->
     <div class="camera-overlay" id="cameraOverlay">
-        <h3 style="color:white; margin-bottom:8px;">📸 Nexora Snap Studio</h3>
+        <h3 style="color:white; margin-bottom:6px; font-size:15px;">📸 Nexora Snap Studio</h3>
         
         <div class="camera-action-row">
-            <button class="switch-cam-btn" onclick="switchCamera()">🔄 Switch Camera (<span id="camFacingLabel">Front</span>)</button>
+            <button class="switch-cam-btn" onclick="switchCamera()">🔄 Switch (<span id="camFacingLabel">Front</span>)</button>
         </div>
 
         <video id="cameraVideo" class="camera-view filter-normal" autoplay playsinline></video>
@@ -314,102 +307,97 @@
         <div class="filter-options-bar">
             <button class="filter-chip active" onclick="setSnapFilter('filter-normal', this)">Normal</button>
             <button class="filter-chip" onclick="setSnapFilter('filter-cyberpunk', this)">⚡ Cyberpunk</button>
-            <button class="filter-chip" onclick="setSnapFilter('filter-neon', this)">💎 Neon Glow</button>
+            <button class="filter-chip" onclick="setSnapFilter('filter-neon', this)">💎 Neon</button>
             <button class="filter-chip" onclick="setSnapFilter('filter-cinematic', this)">🎬 Cinematic</button>
-            <button class="filter-chip" onclick="setSnapFilter('filter-grayscale', this)">📼 Vintage B&W</button>
+            <button class="filter-chip" onclick="setSnapFilter('filter-grayscale', this)">📼 B&W</button>
         </div>
 
         <div class="camera-controls">
-            <button class="cam-btn capture-btn" onclick="captureLiveSnap()">Capture & Send Snap</button>
+            <button class="cam-btn capture-btn" onclick="captureLiveSnap()">Capture & Send (+10pts)</button>
             <button class="cam-btn close-cam-btn" onclick="closeCameraModal()">Cancel</button>
         </div>
     </div>
 
-    <!-- ACCOUNT SETTINGS & AVATAR CUSTOMIZATION MODAL -->
+    <!-- ACCOUNT SETTINGS MODAL -->
     <div class="modal-overlay" id="accountSettingsModal">
         <div class="modal-content">
-            <h3 style="margin-bottom:10px; color:#fff; font-size: 16px;">⚙️ Account & Avatar Settings</h3>
+            <h3 style="margin-bottom:8px; color:#fff; font-size: 15px;">⚙️ Account Settings</h3>
             
-            <div style="background: rgba(255,255,255,0.05); padding: 8px; border-radius: 8px; margin-bottom: 8px; text-align: left;">
-                <label style="color:#cbd5e1; font-size:11px; display:block; margin-bottom:3px; font-weight:bold;">✏️ Customize Name</label>
-                <input type="text" id="customNameInput" placeholder="Enter display name..." style="padding: 6px; font-size: 11px; margin-bottom: 4px;">
-                <button onclick="saveCustomName()" style="width:100%; padding:5px; background:var(--accent-color); border:none; border-radius:6px; color:white; cursor:pointer; font-size:11px;">Save Name</button>
+            <div style="background: rgba(255,255,255,0.05); padding: 8px; border-radius: 8px; margin-bottom: 6px; text-align: left;">
+                <label style="color:#cbd5e1; font-size:10px; display:block; margin-bottom:2px; font-weight:bold;">✏️ Customize Name</label>
+                <input type="text" id="customNameInput" placeholder="Display name..." style="padding: 5px 8px; font-size: 11px; margin-bottom: 4px;">
+                <button onclick="saveCustomName()" style="width:100%; padding:4px; background:var(--accent-color); border:none; border-radius:6px; color:white; cursor:pointer; font-size:10px;">Save Name</button>
             </div>
 
-            <div style="background: rgba(255,255,255,0.05); padding: 8px; border-radius: 8px; margin-bottom: 8px; text-align: left;">
-                <label style="color:#cbd5e1; font-size:11px; display:block; margin-bottom:3px; font-weight:bold;">🔒 Account Privacy Mode</label>
-                <select id="accountPrivacySelect" style="width:100%; padding:6px; font-size:11px; background:#111; color:#fff; border-radius:6px; border:1px solid #444;" onchange="updateAccountPrivacy(this.value)">
-                    <option value="private">Private (Requires Chat Request)</option>
-                    <option value="public">Public (Direct Chat Enabled)</option>
+            <div style="background: rgba(255,255,255,0.05); padding: 8px; border-radius: 8px; margin-bottom: 6px; text-align: left;">
+                <label style="color:#cbd5e1; font-size:10px; display:block; margin-bottom:2px; font-weight:bold;">🔒 Privacy Mode</label>
+                <select id="accountPrivacySelect" style="width:100%; padding:5px; font-size:11px; background:#111; color:#fff; border-radius:6px; border:1px solid #444;" onchange="updateAccountPrivacy(this.value)">
+                    <option value="private">Private (Requires Approval)</option>
+                    <option value="public">Public (Direct Chat)</option>
                 </select>
             </div>
 
-            <div style="background: rgba(255,255,255,0.05); padding: 8px; border-radius: 8px; margin-bottom: 8px; text-align: left;">
-                <label style="color:#cbd5e1; font-size:11px; display:block; margin-bottom:3px; font-weight:bold;">🎭 Select Gender & Custom Avatar</label>
-                <div class="avatar-preview-box" id="modalAvatarPreview">👨‍💻</div>
+            <div style="background: rgba(255,255,255,0.05); padding: 8px; border-radius: 8px; margin-bottom: 6px; text-align: left;">
+                <label style="color:#cbd5e1; font-size:10px; display:block; margin-bottom:2px; font-weight:bold;">🎭 Avatar & Style</label>
+                <div class="avatar-preview-box" id="modalAvatarPreview" style="width:50px; height:50px; font-size:24px;">👨‍💻</div>
                 
-                <select id="avatarGenderSelect" style="width:100%; padding:6px; font-size:11px; background:#111; color:#fff; border-radius:6px; border:1px solid #444; margin-top:4px;" onchange="renderAvatarOptions(this.value)">
+                <select id="avatarGenderSelect" style="width:100%; padding:5px; font-size:10px; background:#111; color:#fff; border-radius:6px; border:1px solid #444; margin-top:3px;" onchange="renderAvatarOptions(this.value)">
                     <option value="male">Male Avatars</option>
                     <option value="female">Female Avatars</option>
                 </select>
 
                 <div class="outfit-grid" id="outfitChoicesContainer"></div>
 
-                <div style="margin-top: 8px;">
-                    <label style="color:#cbd5e1; font-size:10px; display:block; margin-bottom:2px;">Or Upload Your Real Face Photo:</label>
-                    <input type="file" id="profileImageInput" accept="image/*" style="width:100%; font-size:10px; margin-bottom:4px;" onchange="previewProfileImage(event)">
+                <div style="margin-top: 6px;">
+                    <label style="color:#cbd5e1; font-size:9px; display:block; margin-bottom:1px;">Or Upload Photo:</label>
+                    <input type="file" id="profileImageInput" accept="image/*" style="width:100%; font-size:9px; margin-bottom:3px;" onchange="previewProfileImage(event)">
                 </div>
-                <button onclick="saveAvatarSettings()" style="width:100%; padding:6px; background:var(--primary-gradient); color:white; border:none; border-radius:6px; font-weight:bold; cursor:pointer; font-size: 11px;">Save Avatar</button>
+                <button onclick="saveAvatarSettings()" style="width:100%; padding:5px; background:var(--primary-gradient); color:white; border:none; border-radius:6px; font-weight:bold; cursor:pointer; font-size: 10px;">Save Avatar</button>
             </div>
 
-            <div style="background: rgba(255,255,255,0.05); padding: 8px; border-radius: 8px; margin-bottom: 8px; text-align: left;">
-                <label style="color:#cbd5e1; font-size:11px; display:block; margin-bottom:3px; font-weight:bold;">🔍 Search Users (By Email or Name)</label>
+            <div style="background: rgba(255,255,255,0.05); padding: 8px; border-radius: 8px; margin-bottom: 6px; text-align: left;">
+                <label style="color:#cbd5e1; font-size:10px; display:block; margin-bottom:2px; font-weight:bold;">🔍 Search Users</label>
                 <div class="search-container">
-                    <input type="text" id="userSearchInput" placeholder="Search email or name..." style="padding: 6px; font-size: 11px;">
-                    <button onclick="searchUsers()" style="padding: 6px 10px; background:var(--accent-color); border:none; border-radius:8px; color:white; cursor:pointer; font-size:12px;">🔍</button>
+                    <input type="text" id="userSearchInput" placeholder="Email or name..." style="padding: 5px 8px; font-size: 11px;">
+                    <button onclick="searchUsers()" style="padding: 5px 8px; background:var(--accent-color); border:none; border-radius:6px; color:white; cursor:pointer; font-size:11px;">🔍</button>
                 </div>
-                <div class="search-results-box" id="searchResultsBox">Type name or email to search...</div>
+                <div class="search-results-box" id="searchResultsBox" style="font-size:10px;">Type to search...</div>
             </div>
 
-            <button onclick="logout()" style="width:100%; padding:7px; background:#ef4444; color:white; border:none; border-radius:8px; font-weight:bold; cursor:pointer; margin-top:2px; font-size:12px;">Logout</button>
-            <button onclick="closeAccountSettings()" style="width:100%; padding:4px; background:transparent; color:#aaa; border:none; cursor:pointer; margin-top:3px; font-size:11px;">Close</button>
+            <button onclick="logout()" style="width:100%; padding:6px; background:#ef4444; color:white; border:none; border-radius:8px; font-weight:bold; cursor:pointer; margin-top:2px; font-size:11px;">Logout</button>
+            <button onclick="closeAccountSettings()" style="width:100%; padding:4px; background:transparent; color:#aaa; border:none; cursor:pointer; margin-top:2px; font-size:10px;">Close</button>
         </div>
     </div>
 
-    <!-- PROFILE & SYNCED CHAT THEMES MODAL -->
+    <!-- PROFILE & CHAT SETTINGS MODAL -->
     <div class="modal-overlay" id="selectedUserProfileModal">
         <div class="modal-content">
-            <div class="avatar-preview-box" id="modalTargetAvatar" style="margin: 0 auto 8px;">👤</div>
-            <h3 id="modalProfileName" style="margin-bottom:4px; color:#fff; font-size: 16px;">Profile & Settings</h3>
-            <p id="modalProfileEmail" style="font-size: 11px; color: #aab0c5; margin-bottom: 12px;">user@email.com</p>
+            <div class="avatar-preview-box" id="modalTargetAvatar" style="width:54px; height:54px; font-size:26px; margin: 0 auto 6px;">👤</div>
+            <h3 id="modalProfileName" style="margin-bottom:2px; color:#fff; font-size: 15px;">Profile</h3>
+            <p id="modalProfileEmail" style="font-size: 10px; color: #aab0c5; margin-bottom: 10px;">user@email.com</p>
             
-            <div style="background: rgba(255,255,255,0.05); padding: 8px; border-radius: 8px; margin-bottom: 8px; text-align: left;">
-                <label style="color:#cbd5e1; font-size:11px; display:block; margin-bottom:4px; font-weight:bold;">🎨 Synced Chat Theme (Applies to both users)</label>
-                <select id="chatThemeSelect" style="width:100%; padding:6px; font-size:11px; background:#111; color:#fff; border-radius:6px; border:1px solid #444;" onchange="updateChatTheme(this.value)">
+            <div style="background: rgba(255,255,255,0.05); padding: 8px; border-radius: 8px; margin-bottom: 6px; text-align: left;">
+                <label style="color:#cbd5e1; font-size:10px; display:block; margin-bottom:3px; font-weight:bold;">🎨 Synced Chat Theme</label>
+                <select id="chatThemeSelect" style="width:100%; padding:5px; font-size:10px; background:#111; color:#fff; border-radius:6px; border:1px solid #444;" onchange="updateChatTheme(this.value)">
                     <option value="chat-theme-purple">🌌 Deep Purple</option>
                     <option value="chat-theme-cyan">🌊 Ocean Cyan</option>
                     <option value="chat-theme-crimson">🔥 Crimson Dark</option>
                     <option value="chat-theme-gold">⭐ Luxury Gold</option>
                     <option value="chat-theme-emerald">💎 Emerald Neon</option>
                 </select>
-
-                <div style="margin-top: 8px;">
-                    <label style="color:#cbd5e1; font-size:10px; display:block; margin-bottom:2px;">Or Upload Custom Wallpaper from Gallery:</label>
-                    <input type="file" id="customWallpaperInput" accept="image/*" style="width:100%; font-size:10px;" onchange="uploadCustomChatWallpaper(event)">
-                </div>
             </div>
 
-            <div style="background: rgba(255,255,255,0.05); padding: 8px; border-radius: 8px; margin-bottom: 10px; text-align: left;">
-                <label style="color:#cbd5e1; font-size:11px; display:block; margin-bottom:4px; font-weight:bold;">⏳ Disappearing Messages Timer</label>
-                <select id="disappearingModeSelect" style="width:100%; padding:6px; font-size:11px; background:#111; color:#fff; border-radius:6px; border:1px solid #444;" onchange="updateDisappearingMode(this.value)">
+            <div style="background: rgba(255,255,255,0.05); padding: 8px; border-radius: 8px; margin-bottom: 8px; text-align: left;">
+                <label style="color:#cbd5e1; font-size:10px; display:block; margin-bottom:3px; font-weight:bold;">⏳ Disappearing Messages</label>
+                <select id="disappearingModeSelect" style="width:100%; padding:5px; font-size:10px; background:#111; color:#fff; border-radius:6px; border:1px solid #444;" onchange="updateDisappearingMode(this.value)">
                     <option value="off">Off (Standard)</option>
-                    <option value="view">After viewing (Disappears instantly once read)</option>
-                    <option value="24h">24 Hours after viewing</option>
+                    <option value="view">Instantly after viewing</option>
+                    <option value="24h">24 Hours</option>
                 </select>
             </div>
 
-            <button id="modalBlockBtn" onclick="toggleBlockUser()" style="width:100%; padding:8px; background:#ef4444; color:white; border:none; border-radius:8px; font-weight:bold; cursor:pointer; margin-bottom:8px;">🚫 Block User</button>
-            <button onclick="closeSelectedUserProfile()" style="width:100%; padding:6px; background:transparent; color:#aaa; border:none; cursor:pointer;">Close</button>
+            <button id="modalBlockBtn" onclick="toggleBlockUser()" style="width:100%; padding:7px; background:#ef4444; color:white; border:none; border-radius:8px; font-weight:bold; cursor:pointer; margin-bottom:6px; font-size:11px;">🚫 Block User</button>
+            <button onclick="closeSelectedUserProfile()" style="width:100%; padding:5px; background:transparent; color:#aaa; border:none; cursor:pointer; font-size:11px;">Close</button>
         </div>
     </div>
 
@@ -530,7 +518,7 @@
                     splash.style.display = "none";
                     document.getElementById("loginPage").style.display = "none";
                     document.getElementById("app").style.display = "flex";
-                }, 1000);
+                }, 800);
 
                 let email = user.email;
                 let displayName = "NEXORA User";
@@ -594,7 +582,7 @@
             const list = gender === 'female' ? femaleAvatars : maleAvatars;
             container.innerHTML = list.map(item => `
                 <div class="outfit-card" onclick="selectAvatarEmoji('${item.emoji}')">
-                    <div style="font-size:22px;">${item.emoji}</div>
+                    <div style="font-size:18px;">${item.emoji}</div>
                     <div>${item.name}</div>
                 </div>
             `).join("");
@@ -617,7 +605,7 @@
         window.updateAccountPrivacy = async function(mode) {
             if (!auth.currentUser) return;
             await setDoc(doc(db, "users", auth.currentUser.uid), { privacy: mode }, { merge: true });
-            alert(`Account privacy updated to: ${mode.toUpperCase()}`);
+            alert(`Privacy updated to: ${mode.toUpperCase()}`);
         };
 
         window.previewProfileImage = function(event) {
@@ -629,23 +617,12 @@
                 const img = new Image();
                 img.onload = function() {
                     const canvas = document.createElement("canvas");
-                    const MAX_WIDTH = 150;
-                    const MAX_HEIGHT = 150;
-                    let width = img.width;
-                    let height = img.height;
-
-                    if (width > height) {
-                        if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; }
-                    } else {
-                        if (height > MAX_HEIGHT) { width *= MAX_HEIGHT / height; height = MAX_HEIGHT; }
-                    }
-
-                    canvas.width = width;
-                    canvas.height = height;
+                    canvas.width = 120;
+                    canvas.height = 120;
                     const ctx = canvas.getContext("2d");
-                    ctx.drawImage(img, 0, 0, width, height);
+                    ctx.drawImage(img, 0, 0, 120, 120);
 
-                    compressedProfileImage = canvas.toDataURL("image/jpeg", 0.75);
+                    compressedProfileImage = canvas.toDataURL("image/jpeg", 0.7);
                     document.getElementById("modalAvatarPreview").innerHTML = `<img src="${compressedProfileImage}">`;
                 };
                 img.src = e.target.result;
@@ -708,10 +685,7 @@
 
         window.createNewPrivateGroup = async function() {
             const groupName = document.getElementById("newGroupNameInput").value.trim();
-            if (!groupName) {
-                alert("Please enter a group name.");
-                return;
-            }
+            if (!groupName) return alert("Please enter group name.");
 
             const checkboxes = document.querySelectorAll(".group-member-checkbox:checked");
             let memberIds = [auth.currentUser.uid];
@@ -722,10 +696,7 @@
                 memberNames.push(cb.getAttribute("data-name"));
             });
 
-            if (memberIds.length < 2) {
-                alert("Please select at least one member for the group.");
-                return;
-            }
+            if (memberIds.length < 2) return alert("Select at least one member.");
 
             await addDoc(collection(db, "groups"), {
                 groupName: groupName,
@@ -737,16 +708,12 @@
 
             document.getElementById("newGroupNameInput").value = "";
             closeCreateGroupModal();
-            alert("✨ Private Group created successfully!");
+            alert("✨ Group created successfully!");
         };
 
         window.openCameraModal = async function() {
-            if (!currentChatId) {
-                alert("Please select a chat user or group first to send a snap!");
-                return;
-            }
-            const overlay = document.getElementById("cameraOverlay");
-            overlay.style.display = "flex";
+            if (!currentChatId) return alert("Select an active chat first!");
+            document.getElementById("cameraOverlay").style.display = "flex";
             useFrontCamera = true;
             document.getElementById("camFacingLabel").innerText = "Front";
             await startCameraStream();
@@ -754,17 +721,14 @@
 
         async function startCameraStream() {
             const video = document.getElementById("cameraVideo");
-            if (mediaStream) {
-                mediaStream.getTracks().forEach(track => track.stop());
-            }
+            if (mediaStream) mediaStream.getTracks().forEach(t => t.stop());
             try {
                 mediaStream = await navigator.mediaDevices.getUserMedia({ 
-                    video: { facingMode: useFrontCamera ? "user" : "environment" }, 
-                    audio: false 
+                    video: { facingMode: useFrontCamera ? "user" : "environment" }, audio: false 
                 });
                 video.srcObject = mediaStream;
             } catch (err) {
-                alert("Camera access denied or unavailable: " + err.message);
+                alert("Camera unavailable: " + err.message);
                 closeCameraModal();
             }
         }
@@ -776,51 +740,39 @@
         };
 
         window.closeCameraModal = function() {
-            if (mediaStream) {
-                mediaStream.getTracks().forEach(track => track.stop());
-                mediaStream = null;
-            }
+            if (mediaStream) { mediaStream.getTracks().forEach(t => t.stop()); mediaStream = null; }
             document.getElementById("cameraOverlay").style.display = "none";
         };
 
         window.setSnapFilter = function(filterClass, btnElement) {
             selectedFilterClass = filterClass;
-            const video = document.getElementById("cameraVideo");
-            video.className = `camera-view ${filterClass}`;
-            document.querySelectorAll(".filter-chip").forEach(chip => chip.classList.remove("active"));
+            document.getElementById("cameraVideo").className = `camera-view ${filterClass}`;
+            document.querySelectorAll(".filter-chip").forEach(c => c.classList.remove("active"));
             btnElement.classList.add("active");
         };
 
         window.captureLiveSnap = async function() {
-            if (!currentChatId) {
-                alert("Please select an active chat first!");
-                closeCameraModal();
-                return;
-            }
-
+            if (!currentChatId) return;
             const video = document.getElementById("cameraVideo");
             const canvas = document.getElementById("cameraCanvas");
-            canvas.width = video.videoWidth || 400;
-            canvas.height = video.videoHeight || 400;
+            canvas.width = video.videoWidth || 360;
+            canvas.height = video.videoHeight || 360;
             const ctx = canvas.getContext("2d");
 
             ctx.filter = window.getComputedStyle(video).filter;
             ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
             ctx.filter = "none";
-            ctx.font = "bold 16px Arial";
+            ctx.font = "bold 14px Arial";
             ctx.fillStyle = "#22d3ee";
             const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            ctx.fillText(`🕒 ${timeStr} | 📍 Panagudi`, 20, canvas.height - 30);
+            ctx.fillText(`🕒 ${timeStr}`, 15, canvas.height - 20);
 
             const snapBase64 = canvas.toDataURL("image/jpeg", 0.7);
             closeCameraModal();
 
             await sendMessage(snapBase64, "image", "📸 [NEXORA SNAP]");
-            
-            const userRef = doc(db, "users", auth.currentUser.uid);
-            await updateDoc(userRef, { nexoraPoints: increment(10) });
-
+            await updateDoc(doc(db, "users", auth.currentUser.uid), { nexoraPoints: increment(10) });
             currentNexoraPoints += 10;
             document.getElementById("displayNexoraPoints").innerText = `⭐ Points: ${currentNexoraPoints}`;
         };
@@ -828,7 +780,7 @@
         window.searchUsers = async function() {
             const queryStr = document.getElementById("userSearchInput").value.trim().toLowerCase();
             const resultsBox = document.getElementById("searchResultsBox");
-            if (!queryStr) return resultsBox.innerHTML = "Please enter name or email.";
+            if (!queryStr) return resultsBox.innerHTML = "Enter query.";
 
             resultsBox.innerHTML = "Searching...";
             const usersSnapshot = await getDocs(collection(db, "users"));
@@ -838,26 +790,14 @@
             usersSnapshot.forEach(async (docSnap) => {
                 const userData = docSnap.data();
                 const userId = docSnap.id;
-                const userEmail = (userData.email || "").toLowerCase();
-                const userName = (userData.name || "").toLowerCase();
-
-                if (userId !== auth.currentUser.uid && (userEmail.includes(queryStr) || userName.includes(queryStr))) {
+                if (userId !== auth.currentUser.uid && ((userData.email||"").toLowerCase().includes(queryStr) || (userData.name||"").toLowerCase().includes(queryStr))) {
                     found = true;
                     const item = document.createElement("div");
                     item.className = "search-result-item";
-                    
-                    let avatarHtml = "";
-                    if (userData.avatar && userData.avatar.startsWith("data:")) {
-                        avatarHtml = `<img src="${userData.avatar}" style="width:22px;height:22px;border-radius:50%;object-fit:cover;vertical-align:middle;margin-right:5px;">`;
-                    } else {
-                        avatarHtml = `<span style="margin-right:5px;font-size:16px;">${userData.avatar || '👨‍💻'}</span>`;
-                    }
-
-                    let targetName = userData.name || "NEXORA User";
-                    item.innerHTML = `<span>${avatarHtml} ${targetName}</span>`;
+                    item.innerHTML = `<span>👤 ${userData.name || "User"}</span>`;
                     
                     const btn = document.createElement("button");
-                    btn.style.cssText = "padding:3px 8px; background:var(--accent-color); border:none; border-radius:4px; color:white; cursor:pointer; font-size:10px;";
+                    btn.style.cssText = "padding:3px 6px; background:var(--accent-color); border:none; border-radius:4px; color:white; cursor:pointer; font-size:10px;";
                     
                     let roomId = [auth.currentUser.uid, userId].sort().join('_');
                     const reqSnap = await getDoc(doc(db, "chat_requests", roomId));
@@ -865,126 +805,82 @@
                     if (userData.privacy === "private") {
                         if (reqSnap.exists() && reqSnap.data().status === "accepted") {
                             btn.innerText = "Chat";
-                            btn.onclick = () => { selectChat(userId, targetName, userData.avatar || '', userData.email || '', false, userData.online, userData.lastSeen || ''); closeAccountSettings(); };
+                            btn.onclick = () => { selectChat(userId, userData.name || "User", userData.avatar || '', userData.email || '', false, userData.online, userData.lastSeen || ''); closeAccountSettings(); };
                         } else if (reqSnap.exists() && reqSnap.data().status === "pending") {
-                            btn.innerText = "Requested";
-                            btn.disabled = true;
-                            btn.style.opacity = "0.6";
+                            btn.innerText = "Requested"; btn.disabled = true;
                         } else {
                             btn.innerText = "Request";
                             btn.onclick = () => { sendChatRequest(userId); searchUsers(); };
                         }
                     } else {
                         btn.innerText = "Chat";
-                        btn.onclick = () => { selectChat(userId, targetName, userData.avatar || '', userData.email || '', false, userData.online, userData.lastSeen || ''); closeAccountSettings(); };
+                        btn.onclick = () => { selectChat(userId, userData.name || "User", userData.avatar || '', userData.email || '', false, userData.online, userData.lastSeen || ''); closeAccountSettings(); };
                     }
-
                     item.appendChild(btn);
                     resultsBox.appendChild(item);
                 }
             });
-
-            if (!found) resultsBox.innerHTML = "No users found matching query.";
+            if (!found) resultsBox.innerHTML = "No users found.";
         };
 
         window.sendChatRequest = async function(targetUid) {
             let roomId = [auth.currentUser.uid, targetUid].sort().join('_');
             await setDoc(doc(db, "chat_requests", roomId), { from: auth.currentUser.uid, to: targetUid, status: "pending" });
-            alert("Chat request sent successfully!");
+            alert("Request sent!");
         };
 
         function listenToIncomingRequests() {
             if (unsubscribeRequests) unsubscribeRequests();
-            const reqRef = collection(db, "chat_requests");
-            unsubscribeRequests = onSnapshot(reqRef, async (snapshot) => {
+            unsubscribeRequests = onSnapshot(collection(db, "chat_requests"), (snapshot) => {
                 let pendingCount = 0;
                 if (!auth.currentUser) return;
-
                 snapshot.forEach(docSnap => {
-                    let data = docSnap.data();
-                    if (data.to === auth.currentUser.uid && data.status === "pending") {
-                        pendingCount++;
-                    }
+                    if (docSnap.data().to === auth.currentUser.uid && docSnap.data().status === "pending") pendingCount++;
                 });
-
                 const badge = document.getElementById("notifBadge");
-                if (pendingCount > 0) {
-                    badge.innerText = pendingCount;
-                    badge.style.display = "inline-block";
-                } else {
-                    badge.style.display = "none";
-                }
-
-                if (activeSidebarTab === 'notifs') {
-                    renderNotificationsList();
-                }
+                if (pendingCount > 0) { badge.innerText = pendingCount; badge.style.display = "inline-block"; }
+                else badge.style.display = "none";
+                if (activeSidebarTab === 'notifs') renderNotificationsList();
             });
         }
 
         async function renderNotificationsList() {
             const chatList = document.getElementById("chatList");
-            chatList.innerHTML = "Loading requests...";
-            const reqRef = collection(db, "chat_requests");
-            const snapshot = await getDocs(reqRef);
-
+            chatList.innerHTML = "Loading...";
+            const snapshot = await getDocs(collection(db, "chat_requests"));
             let reqHtml = "";
-            let foundRequests = false;
 
             for (let docSnap of snapshot.docs) {
                 let data = docSnap.data();
-                let roomId = docSnap.id;
-
                 if (data.to === auth.currentUser.uid && data.status === "pending") {
-                    foundRequests = true;
                     let senderSnap = await getDoc(doc(db, "users", data.from));
-                    let senderName = "NEXORA User";
-                    let senderEmail = "";
-                    let senderAvatar = "👨‍💻";
-
-                    if (senderSnap.exists()) {
-                        let sData = senderSnap.data();
-                        senderName = sData.name || "NEXORA User";
-                        senderEmail = sData.email || "";
-                        senderAvatar = sData.avatar || "👨‍💻";
-                    }
-
-                    let avatarIcon = senderAvatar.startsWith("data:") ? `<img src="${senderAvatar}" style="width:22px;height:22px;border-radius:50%;object-fit:cover;vertical-align:middle;margin-right:4px;">` : `<span style="margin-right:4px;font-size:15px;">${senderAvatar}</span>`;
-
+                    let sName = senderSnap.exists() ? (senderSnap.data().name || "User") : "User";
                     reqHtml += `
-                        <div class="user-item" style="flex-direction:column; align-items:flex-start; gap:6px;">
-                            <div style="display:flex; align-items:center; width:100%; justify-content:space-between;">
-                                <span>${avatarIcon} <b>${senderName}</b></span>
-                                <span style="font-size:9px; color:#aaa;">${senderEmail}</span>
-                            </div>
+                        <div class="user-item" style="flex-direction:column; align-items:flex-start; gap:4px;">
+                            <span><b>${sName}</b> wants to chat</span>
                             <div style="display:flex; gap:6px; width:100%;">
-                                <button onclick="acceptChatRequest('${roomId}')" style="flex:1; padding:4px; background:#22c55e; color:white; border:none; border-radius:6px; cursor:pointer; font-size:10px; font-weight:bold;">Accept</button>
-                                <button onclick="rejectChatRequest('${roomId}')" style="flex:1; padding:4px; background:#ef4444; color:white; border:none; border-radius:6px; cursor:pointer; font-size:10px; font-weight:bold;">Reject</button>
+                                <button onclick="acceptChatRequest('${docSnap.id}')" style="flex:1; padding:3px; background:#22c55e; color:white; border:none; border-radius:4px; font-size:10px;">Accept</button>
+                                <button onclick="rejectChatRequest('${docSnap.id}')" style="flex:1; padding:3px; background:#ef4444; color:white; border:none; border-radius:4px; font-size:10px;">Reject</button>
                             </div>
                         </div>
                     `;
                 }
             }
-
-            chatList.innerHTML = reqHtml || `<div style="font-size:11px; color:#aaa; padding:10px;">No pending chat requests.</div>`;
+            chatList.innerHTML = reqHtml || `<div style="font-size:11px; color:#aaa; padding:10px;">No requests.</div>`;
         }
 
         window.acceptChatRequest = async function(roomId) {
             await updateDoc(doc(db, "chat_requests", roomId), { status: "accepted" });
-            alert("Chat request accepted! You can now chat.");
             switchSidebarTab('chats');
         };
-
         window.rejectChatRequest = async function(roomId) {
             await deleteDoc(doc(db, "chat_requests", roomId));
-            alert("Chat request rejected.");
             renderNotificationsList();
         };
 
         function listenToActiveUsersAndGroups() {
-            const usersRef = collection(db, "users");
-            unsubscribeUsers = onSnapshot(usersRef, async (snapshot) => {
+            unsubscribeUsers = onSnapshot(collection(db, "users"), (snapshot) => {
                 availableUsersList = [];
-                
                 if (auth.currentUser) {
                     const mySnap = snapshot.docs.find(d => d.id === auth.currentUser.uid);
                     if (mySnap && mySnap.exists()) {
@@ -993,18 +889,13 @@
                         document.getElementById("displayNexoraPoints").innerText = `⭐ Points: ${currentNexoraPoints}`;
                     }
                 }
-
                 snapshot.forEach((docSnap) => {
                     const userData = docSnap.data();
-                    const userId = docSnap.id;
-                    if (auth.currentUser && userId !== auth.currentUser.uid && !myBlockedUsers.includes(userId)) {
-                        availableUsersList.push({ id: userId, name: userData.name || "NEXORA User" });
+                    if (auth.currentUser && docSnap.id !== auth.currentUser.uid && !myBlockedUsers.includes(docSnap.id)) {
+                        availableUsersList.push({ id: docSnap.id, name: userData.name || "User" });
                     }
                 });
-
-                if (activeSidebarTab !== 'notifs') {
-                    renderChatListAndGroups();
-                }
+                if (activeSidebarTab !== 'notifs') renderChatListAndGroups();
             });
         }
 
@@ -1013,66 +904,34 @@
             chatList.innerHTML = "";
 
             if (activeSidebarTab === 'groups') {
-                const groupsRef = collection(db, "groups");
-                unsubscribeGroups = onSnapshot(groupsRef, (groupSnapshot) => {
-                    let groupHtmlList = "";
+                unsubscribeGroups = onSnapshot(collection(db, "groups"), (groupSnapshot) => {
+                    let listHtml = "";
                     groupSnapshot.forEach((docSnap) => {
                         let gData = docSnap.data();
-                        let gId = docSnap.id;
                         if (gData.members && gData.members.includes(auth.currentUser.uid)) {
-                            let activeClass = currentChatId === gId ? 'active' : '';
-                            groupHtmlList += `
-                                <div class="user-item ${activeClass}" onclick="selectChat('${gId}', '${gData.groupName}', '', '', true)">
-                                    <div>👥 ${gData.groupName}</div>
-                                </div>
-                            `;
+                            listHtml += `<div class="user-item" onclick="selectChat('${docSnap.id}', '${gData.groupName}', '', '', true)"><div>👥 ${gData.groupName}</div></div>`;
                         }
                     });
-                    chatList.innerHTML = groupHtmlList || `<div style="font-size:11px; color:#aaa; padding:10px;">No groups found. Create one!</div>`;
+                    chatList.innerHTML = listHtml || `<div style="font-size:11px; color:#aaa; padding:10px;">No groups.</div>`;
                 });
             } else if (activeSidebarTab === 'chats') {
-                const usersRef = collection(db, "users");
-                getDocs(usersRef).then((usersSnapshot) => {
-                    let chatsHtmlList = "";
+                getDocs(collection(db, "users")).then((usersSnapshot) => {
+                    let listHtml = "";
                     usersSnapshot.forEach(async (docSnap) => {
                         const userData = docSnap.data();
                         const userId = docSnap.id;
-                        
                         if (auth.currentUser && userId !== auth.currentUser.uid && !myBlockedUsers.includes(userId)) {
                             let roomId = [auth.currentUser.uid, userId].sort().join('_');
-                            const reqRef = doc(db, "chat_requests", roomId);
-                            const reqSnap = await getDoc(reqRef);
-                            
-                            let onlineIndicator = `<span class="user-status-indicator ${userData.online ? 'is-online' : 'is-offline'}"></span>`;
-                            let userAvatarIcon = "";
-                            if (userData.avatar && userData.avatar.startsWith("data:")) {
-                                userAvatarIcon = `<img src="${userData.avatar}" style="width:22px;height:22px;border-radius:50%;object-fit:cover;vertical-align:middle;margin-right:4px;">`;
-                            } else {
-                                userAvatarIcon = `<span style="margin-right:4px;font-size:15px;">${userData.avatar || '👨‍💻'}</span>`;
-                            }
+                            const reqSnap = await getDoc(doc(db, "chat_requests", roomId));
+                            let indicator = `<span class="user-status-indicator ${userData.online ? 'is-online' : 'is-offline'}"></span>`;
+                            let name = userData.name || "User";
 
-                            let displayName = userData.name || "NEXORA User";
-                            let showInSidebar = false;
-
-                            if (userData.privacy !== "private") {
-                                showInSidebar = true;
-                            } else if (reqSnap.exists() && reqSnap.data().status === "accepted") {
-                                showInSidebar = true;
-                            }
-
-                            if (showInSidebar) {
-                                let activeClass = currentChatId === userId ? 'active' : '';
-                                chatsHtmlList += `
-                                    <div class="user-item ${activeClass}" onclick="selectChat('${userId}', '${displayName}', '${userData.avatar || ''}', '${userData.email || ''}', false, ${userData.online}, '${userData.lastSeen || ''}')">
-                                        <div>${onlineIndicator}${userAvatarIcon}${displayName}</div>
-                                    </div>
-                                `;
+                            if (userData.privacy !== "private" || (reqSnap.exists() && reqSnap.data().status === "accepted")) {
+                                listHtml += `<div class="user-item" onclick="selectChat('${userId}', '${name}', '${userData.avatar||''}', '${userData.email||''}', false, ${userData.online}, '${userData.lastSeen||''}')"><div>${indicator}${name}</div></div>`;
                             }
                         }
                     });
-                    setTimeout(() => {
-                        chatList.innerHTML = chatsHtmlList || `<div style="font-size:11px; color:#aaa; padding:10px;">No active chats. Search name/email to connect!</div>`;
-                    }, 200);
+                    setTimeout(() => { chatList.innerHTML = listHtml || `<div style="font-size:11px; color:#aaa; padding:10px;">No chats. Search to connect.</div>`; }, 150);
                 });
             }
         }
@@ -1085,19 +944,18 @@
             isCurrentChatGroup = isGroup;
 
             document.getElementById("chatTitle").innerText = chatName;
-            
             const headerAvatar = document.getElementById("headerUserAvatar");
             if (isGroup) {
                 headerAvatar.innerHTML = "👥";
-                document.getElementById("chatSub").innerText = "● Private Group Chat";
+                document.getElementById("chatSub").innerText = "Group Chat";
             } else {
-                if (chatAvatar && chatAvatar.startsWith("data:")) {
-                    headerAvatar.innerHTML = `<img src="${chatAvatar}">`;
-                } else {
-                    headerAvatar.innerHTML = chatAvatar || "👤";
-                }
-                document.getElementById("chatSub").innerText = isOnline ? "● Online (Click for Profile)" : (lastSeen ? `Last seen at ${lastSeen}` : "● Offline");
+                headerAvatar.innerHTML = chatAvatar && chatAvatar.startsWith("data:") ? `<img src="${chatAvatar}">` : (chatAvatar || "👤");
+                document.getElementById("chatSub").innerText = isOnline ? "Online" : (lastSeen ? `Last seen ${lastSeen}` : "Offline");
             }
+
+            // Slide to Chat View on Mobile
+            document.getElementById("sidebarView").classList.add("hidden-mobile");
+            document.getElementById("chatAreaBackground").classList.add("active-mobile");
 
             let roomId = isGroup ? chatId : [auth.currentUser.uid, chatId].sort().join('_');
             listenToChatMeta(roomId);
@@ -1105,32 +963,27 @@
             listenToTypingStatus();
         };
 
+        window.backToSidebar = function(e) {
+            if (e) e.stopPropagation();
+            document.getElementById("sidebarView").classList.remove("hidden-mobile");
+            document.getElementById("chatAreaBackground").classList.remove("active-mobile");
+        };
+
         window.openSelectedUserProfile = function() {
             if (!currentChatId) return;
             document.getElementById("modalProfileName").innerText = currentChatName;
-            document.getElementById("modalProfileEmail").innerText = isCurrentChatGroup ? "Private Group Chat" : (currentChatEmail || "nexora.user@chat");
-            
+            document.getElementById("modalProfileEmail").innerText = isCurrentChatGroup ? "Group Chat" : (currentChatEmail || "nexora.user");
             const targetAvatarBox = document.getElementById("modalTargetAvatar");
+            
             if (isCurrentChatGroup) {
-                targetAvatarBox.innerHTML = `👥`;
+                targetAvatarBox.innerHTML = "👥";
                 document.getElementById("modalBlockBtn").style.display = "none";
             } else {
                 document.getElementById("modalBlockBtn").style.display = "block";
-                if (currentChatAvatar && currentChatAvatar.startsWith("data:")) {
-                    targetAvatarBox.innerHTML = `<img src="${currentChatAvatar}">`;
-                } else {
-                    targetAvatarBox.innerHTML = currentChatAvatar || "👤";
-                }
-
-                if (myBlockedUsers.includes(currentChatId)) {
-                    document.getElementById("modalBlockBtn").innerText = "🔓 Unblock User";
-                    document.getElementById("modalBlockBtn").style.background = "#22c55e";
-                } else {
-                    document.getElementById("modalBlockBtn").innerText = "🚫 Block User";
-                    document.getElementById("modalBlockBtn").style.background = "#ef4444";
-                }
+                targetAvatarBox.innerHTML = currentChatAvatar && currentChatAvatar.startsWith("data:") ? `<img src="${currentChatAvatar}">` : (currentChatAvatar || "👤");
+                document.getElementById("modalBlockBtn").innerText = myBlockedUsers.includes(currentChatId) ? "Unblock User" : "Block User";
+                document.getElementById("modalBlockBtn").style.background = myBlockedUsers.includes(currentChatId) ? "#22c55e" : "#ef4444";
             }
-
             document.getElementById("selectedUserProfileModal").style.display = "flex";
         };
         window.closeSelectedUserProfile = () => document.getElementById("selectedUserProfileModal").style.display = "none";
@@ -1138,63 +991,24 @@
         window.updateChatTheme = async function(themeClass) {
             if (!currentChatId) return;
             let roomId = isCurrentChatGroup ? currentChatId : [auth.currentUser.uid, currentChatId].sort().join('_');
-            await setDoc(doc(db, "chat_meta", roomId), { chatTheme: themeClass, customWallpaper: "" }, { merge: true });
-        };
-
-        window.uploadCustomChatWallpaper = function(event) {
-            const file = event.target.files[0];
-            if (!file || !currentChatId) return;
-
-            const reader = new FileReader();
-            reader.onload = async function(e) {
-                const img = new Image();
-                img.onload = async function() {
-                    const canvas = document.createElement("canvas");
-                    canvas.width = 600;
-                    canvas.height = (img.height / img.width) * 600;
-                    const ctx = canvas.getContext("2d");
-                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                    let wallpaperBase64 = canvas.toDataURL("image/jpeg", 0.6);
-
-                    let roomId = isCurrentChatGroup ? currentChatId : [auth.currentUser.uid, currentChatId].sort().join('_');
-                    await setDoc(doc(db, "chat_meta", roomId), { customWallpaper: wallpaperBase64, chatTheme: "" }, { merge: true });
-                    alert("✨ Custom gallery wallpaper applied and synced successfully!");
-                };
-                img.src = e.target.result;
-            };
-            reader.readAsDataURL(file);
+            await setDoc(doc(db, "chat_meta", roomId), { chatTheme: themeClass }, { merge: true });
         };
 
         window.updateDisappearingMode = async function(mode) {
             if (!currentChatId) return;
             let roomId = isCurrentChatGroup ? currentChatId : [auth.currentUser.uid, currentChatId].sort().join('_');
             await setDoc(doc(db, "chat_meta", roomId), { disappearingMode: mode }, { merge: true });
-            alert(`Disappearing messages timer updated to: ${mode}`);
         };
 
         function listenToChatMeta(roomId) {
             if (unsubscribeChatMeta) unsubscribeChatMeta();
             if (!roomId) return;
-
             unsubscribeChatMeta = onSnapshot(doc(db, "chat_meta", roomId), (docSnap) => {
                 const chatArea = document.getElementById("chatAreaBackground");
-                const themeSelect = document.getElementById("chatThemeSelect");
-                const modeSelect = document.getElementById("disappearingModeSelect");
-
-                chatArea.className = "chat-area";
-                chatArea.style.backgroundImage = "none";
-
-                if (docSnap.exists()) {
-                    let data = docSnap.data();
-                    if (data.customWallpaper) {
-                        chatArea.style.backgroundImage = `url('${data.customWallpaper}')`;
-                    } else if (data.chatTheme) {
-                        chatArea.classList.add(data.chatTheme);
-                        themeSelect.value = data.chatTheme;
-                    }
-                    if (data.disappearingMode) {
-                        modeSelect.value = data.disappearingMode;
-                    }
+                chatArea.className = "chat-area active-mobile";
+                if (docSnap.exists() && docSnap.data().chatTheme) {
+                    chatArea.classList.add(docSnap.data().chatTheme);
+                    document.getElementById("chatThemeSelect").value = docSnap.data().chatTheme;
                 } else {
                     chatArea.classList.add("chat-theme-purple");
                 }
@@ -1204,32 +1018,19 @@
         window.toggleBlockUser = async function() {
             if (!currentChatId || isCurrentChatGroup) return;
             let isBlocked = myBlockedUsers.includes(currentChatId);
-
             if (isBlocked) {
-                if (confirm("Unblock this user?")) {
-                    await updateDoc(doc(db, "users", auth.currentUser.uid), { blocked: arrayRemove(currentChatId) });
-                    alert("User unblocked successfully.");
-                    closeSelectedUserProfile();
-                    window.location.reload();
-                }
+                await updateDoc(doc(db, "users", auth.currentUser.uid), { blocked: arrayRemove(currentChatId) });
             } else {
-                if (confirm("Are you sure you want to block this user?")) {
-                    await updateDoc(doc(db, "users", auth.currentUser.uid), { blocked: arrayUnion(currentChatId) });
-                    let roomId = [auth.currentUser.uid, currentChatId].sort().join('_');
-                    try { await deleteDoc(doc(db, "chat_requests", roomId)); } catch(e) {}
-                    
-                    alert("User blocked successfully.");
-                    closeSelectedUserProfile();
-                    window.location.reload();
-                }
+                await updateDoc(doc(db, "users", auth.currentUser.uid), { blocked: arrayUnion(currentChatId) });
             }
+            closeSelectedUserProfile();
+            window.location.reload();
         };
 
         window.handleTyping = async function() {
             if (!auth.currentUser || !currentChatId) return;
             const typingRef = doc(db, "typing", currentChatId + "_" + auth.currentUser.uid);
             await setDoc(typingRef, { isTyping: true, user: document.getElementById("displayName").innerText }, { merge: true });
-
             if (typingTimeout) clearTimeout(typingTimeout);
             typingTimeout = setTimeout(async () => {
                 await setDoc(typingRef, { isTyping: false }, { merge: true });
@@ -1240,74 +1041,50 @@
             const indicator = document.getElementById("typingIndicator");
             indicator.style.display = "none";
             if (unsubscribeTyping) unsubscribeTyping();
-
-            const typingRef = collection(db, "typing");
-            unsubscribeTyping = onSnapshot(typingRef, (snapshot) => {
+            unsubscribeTyping = onSnapshot(collection(db, "typing"), (snapshot) => {
                 let isSomeoneTyping = false;
-                let typingText = "";
+                let tText = "";
                 snapshot.forEach((docSnap) => {
                     let data = docSnap.data();
                     if (docSnap.id.startsWith(currentChatId) && data.isTyping && !docSnap.id.includes(auth.currentUser.uid)) {
                         isSomeoneTyping = true;
-                        typingText = `✍️ ${data.user} is typing...`;
+                        tText = `✍️ ${data.user} is typing...`;
                     }
                 });
-
-                if (isSomeoneTyping) {
-                    indicator.innerText = typingText;
-                    indicator.style.display = "block";
-                } else {
-                    indicator.style.display = "none";
-                }
+                if (isSomeoneTyping) { indicator.innerText = tText; indicator.style.display = "block"; }
+                else indicator.style.display = "none";
             });
         }
 
         window.sendMessage = async function(mediaUrl = "", mediaType = "", customText = "") {
             const input = document.getElementById("messageText");
             const text = customText || input.value.trim();
-            if ((!text && !mediaUrl) || !auth.currentUser || !currentChatId) {
-                if (!currentChatId) alert("Please select a chat to send messages!");
-                return;
-            }
+            if ((!text && !mediaUrl) || !auth.currentUser || !currentChatId) return;
 
             let roomId = isCurrentChatGroup ? currentChatId : [auth.currentUser.uid, currentChatId].sort().join('_');
             let metaSnap = await getDoc(doc(db, "chat_meta", roomId));
             let dispMode = (metaSnap && metaSnap.exists()) ? metaSnap.data().disappearingMode : "off";
 
             await addDoc(collection(db, "messages"), {
-                text: text,
-                mediaUrl: mediaUrl,
-                mediaType: mediaType,
-                senderId: auth.currentUser.uid,
-                senderName: document.getElementById("displayName").innerText,
-                chatRoom: roomId,
-                status: 'sent',
-                disappearingMode: dispMode,
-                viewedBy: [],
-                createdAt: serverTimestamp()
+                text: text, mediaUrl: mediaUrl, mediaType: mediaType,
+                senderId: auth.currentUser.uid, senderName: document.getElementById("displayName").innerText,
+                chatRoom: roomId, status: 'sent', disappearingMode: dispMode, createdAt: serverTimestamp()
             });
             input.value = "";
         };
 
         window.handleMediaUpload = function(event) {
             const file = event.target.files[0];
-            if (!file || !currentChatId) {
-                if (!currentChatId) alert("Please select a chat first!");
-                return;
-            }
-
+            if (!file || !currentChatId) return;
             const reader = new FileReader();
             reader.onload = function(e) {
                 const img = new Image();
                 img.onload = function() {
                     const canvas = document.createElement("canvas");
-                    canvas.width = 500;
-                    canvas.height = (img.height / img.width) * 500;
+                    canvas.width = 400; canvas.height = (img.height / img.width) * 400;
                     const ctx = canvas.getContext("2d");
                     ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                    
-                    const compressedBase64 = canvas.toDataURL("image/jpeg", 0.6);
-                    sendMessage(compressedBase64, "image");
+                    sendMessage(canvas.toDataURL("image/jpeg", 0.6), "image");
                 };
                 img.src = e.target.result;
             };
@@ -1317,17 +1094,11 @@
         function listenToMessages(targetRoom) {
             if (unsubscribeMessages) unsubscribeMessages();
             if (!targetRoom) return;
-            const q = query(collection(db, "messages"));
-            
-            unsubscribeMessages = onSnapshot(q, async (snapshot) => {
+            unsubscribeMessages = onSnapshot(query(collection(db, "messages")), async (snapshot) => {
                 const messagesBox = document.getElementById("messages");
                 messagesBox.innerHTML = "";
-                const now = Date.now();
-
                 let docsArray = [];
-                snapshot.forEach(docSnap => {
-                    docsArray.push({ id: docSnap.id, ...docSnap.data() });
-                });
+                snapshot.forEach(docSnap => docsArray.push({ id: docSnap.id, ...docSnap.data() }));
 
                 docsArray.sort((a, b) => {
                     let t1 = a.createdAt?.toMillis ? a.createdAt.toMillis() : 0;
@@ -1338,48 +1109,23 @@
                 for (let data of docsArray) {
                     if (data.chatRoom === targetRoom) {
                         if (!isCurrentChatGroup && myBlockedUsers.includes(data.senderId)) continue;
-
-                        const messageId = data.id;
                         let isMine = data.senderId === auth.currentUser.uid;
-
-                        if (!isMine && data.disappearingMode === "view" && data.status === 'read') {
-                            await deleteDoc(doc(db, "messages", messageId));
-                            continue;
-                        }
-                        if (data.disappearingMode === "24h" && data.createdAt) {
-                            let msgTime = data.createdAt.toMillis ? data.createdAt.toMillis() : now;
-                            if (now - msgTime > 24 * 60 * 60 * 1000) {
-                                await deleteDoc(doc(db, "messages", messageId));
-                                continue;
-                            }
-                        }
-
                         const message = document.createElement("div");
                         message.className = isMine ? "message sent" : "message";
                         
-                        let mediaHTML = "";
-                        if (data.mediaUrl) {
-                            if (data.mediaType === "video") {
-                                mediaHTML = `<video src="${data.mediaUrl}" controls class="media-preview"></video>`;
-                            } else {
-                                mediaHTML = `<img src="${data.mediaUrl}" class="media-preview">`;
-                            }
-                        }
-
+                        let mediaHTML = data.mediaUrl ? `<img src="${data.mediaUrl}" class="media-preview">` : "";
                         message.innerHTML = `
                             <div class="sender-row">
                                 <span class="sender">${isMine ? "You" : data.senderName}</span>
-                                ${isMine ? `<button class="delete-btn" onclick="deleteMessage('${messageId}')">Delete</button>` : ''}
+                                ${isMine ? `<button class="delete-btn" onclick="deleteMessage('${data.id}')">Delete</button>` : ''}
                             </div>
                             <div>${data.text || ""}</div>
                             ${mediaHTML}
                             ${isMine ? `<div class="msg-footer"><span class="tick ${data.status === 'read' ? 'blue' : ''}">${data.status === 'read' ? '✓✓' : '✓'}</span></div>` : ''}
                         `;
-
                         messagesBox.appendChild(message);
-
                         if (!isMine && data.status !== 'read') {
-                            await updateDoc(doc(db, "messages", messageId), { status: 'read' });
+                            await updateDoc(doc(db, "messages", data.id), { status: 'read' });
                         }
                     }
                 }
@@ -1388,24 +1134,14 @@
         }
 
         window.deleteMessage = async function(messageId) {
-            if (confirm("Delete this message?")) {
-                await deleteDoc(doc(db, "messages", messageId));
-            }
+            if (confirm("Delete message?")) await deleteDoc(doc(db, "messages", messageId));
         };
 
         window.openAccountSettings = () => document.getElementById("accountSettingsModal").style.display = "flex";
         window.closeAccountSettings = () => document.getElementById("accountSettingsModal").style.display = "none";
-
-        window.changeTheme = (themeName) => {
-            document.body.className = themeName;
-            localStorage.setItem("nexora_theme", themeName);
-        };
-
+        window.changeTheme = (themeName) => document.body.className = themeName;
         window.logout = async () => {
-            if (auth.currentUser) {
-                let timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                await setDoc(doc(db, "users", auth.currentUser.uid), { online: false, lastSeen: timeStr }, { merge: true });
-            }
+            if (auth.currentUser) await setDoc(doc(db, "users", auth.currentUser.uid), { online: false }, { merge: true });
             await signOut(auth);
         };
     </script>
