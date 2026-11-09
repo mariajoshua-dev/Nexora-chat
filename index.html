@@ -109,18 +109,25 @@
         .header-avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--primary-gradient); display: flex; align-items: center; justify-content: center; font-size: 16px; overflow: hidden; border: 1.5px solid rgba(255,255,255,0.3); flex-shrink: 0; }
         .header-avatar img { width: 100%; height: 100%; object-fit: cover; }
 
-        /* FLOATING TYPING INDICATOR */
+        .header-actions { display: flex; align-items: center; gap: 8px; }
+        .call-btn { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #22c55e; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; cursor: pointer; }
+
+        /* ANIMATED FLOATING TYPING INDICATOR (.....) */
         .typing-floating-banner {
             position: absolute; top: 60px; left: 50%; transform: translateX(-50%);
-            background: rgba(139, 92, 246, 0.25); backdrop-filter: blur(10px);
-            border: 1px solid rgba(139, 92, 246, 0.4); color: #d8b4fe;
-            padding: 3px 12px; border-radius: 20px; font-size: 10px; font-style: italic;
-            z-index: 15; display: none; box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-            max-width: 80%; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+            background: rgba(139, 92, 246, 0.3); backdrop-filter: blur(10px);
+            border: 1px solid rgba(139, 92, 246, 0.5); color: #f3e8ff;
+            padding: 4px 14px; border-radius: 20px; font-size: 11px; font-style: italic;
+            z-index: 15; display: none; box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+            animation: typingPulse 1.2s infinite alternate;
+        }
+        @keyframes typingPulse {
+            0% { opacity: 0.7; transform: translateX(-50%) scale(0.98); }
+            100% { opacity: 1; transform: translateX(-50%) scale(1.02); }
         }
 
         .messages { flex: 1; padding: 12px 14px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; background: rgba(0, 0, 0, 0.3); } 
-        .message { max-width: 80%; padding: 10px 12px; border-radius: 14px; background: rgba(255,255,255,.12); backdrop-filter: blur(5px); word-break: break-word; font-size: 13px; position: relative; border: 1px solid rgba(255,255,255,0.06); } 
+        .message { max-width: 80%; padding: 10px 12px; border-radius: 14px; background: rgba(255,255,255,.12); backdrop-filter: blur(5px); word-break: break-word; font-size: 13px; position: relative; border: 1px solid rgba(255,255,255,0.06); transition: transform 0.2s ease; } 
         .sent { align-self: flex-end; background: var(--primary-gradient); border: none; } 
         .sender-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px; gap: 8px; } 
         .sender { font-size: 10px; color: #aab0c5; } 
@@ -130,12 +137,39 @@
         .action-btns-row { display: flex; gap: 6px; align-items: center; }
         .delete-btn { background: none; border: none; color: #fca5a5; font-size: 10px; cursor: pointer; opacity: 0.8; } 
         .download-btn { background: none; border: none; color: #38bdf8; font-size: 10px; cursor: pointer; font-weight: bold; text-decoration: underline; }
+
+        .reply-quote-preview { background: rgba(0, 0, 0, 0.25); border-left: 3px solid var(--accent-color); padding: 4px 8px; border-radius: 6px; margin-bottom: 6px; font-size: 11px; color: #cbd5e1; }
+        .reply-quote-name { font-weight: bold; color: #a78bfa; font-size: 10px; }
+
+        .reaction-bar { position: absolute; bottom: -14px; right: 10px; background: rgba(15, 23, 42, 0.9); border: 1px solid rgba(255,255,255,0.15); border-radius: 20px; padding: 2px 6px; display: flex; gap: 4px; font-size: 11px; z-index: 2; box-shadow: 0 4px 10px rgba(0,0,0,0.4); }
+        .react-picker-popup { position: absolute; top: -35px; right: 0; background: #1e1b4b; border: 1px solid rgba(255,255,255,0.2); border-radius: 20px; padding: 4px 8px; display: none; gap: 6px; z-index: 20; box-shadow: 0 4px 15px rgba(0,0,0,0.6); }
+        .react-picker-popup span { cursor: pointer; font-size: 14px; transition: transform 0.1s; }
+        .react-picker-popup span:hover { transform: scale(1.3); }
+
+        .active-reply-container { display: none; background: rgba(15, 23, 42, 0.95); padding: 6px 12px; border-top: 1px solid var(--border-color); justify-content: space-between; align-items: center; font-size: 11px; }
         
         .message-input { display: flex; gap: 6px; padding: 10px 12px; border-top: 1px solid var(--border-color); background: rgba(8, 11, 29, 0.9); backdrop-filter: blur(12px); align-items: center; flex-shrink: 0; z-index: 5; } 
         .message-input input { flex: 1; min-width: 0; padding: 11px 12px; font-size: 13px; border-radius: 20px; } 
-        .attach-btn, .snap-btn-icon { background: transparent; border: none; color: #cbd5e1; font-size: 18px; cursor: pointer; padding: 4px; }
+        .attach-btn, .snap-btn-icon, .sticker-btn-icon { background: transparent; border: none; color: #cbd5e1; font-size: 18px; cursor: pointer; padding: 4px; }
         .send-btn { width: 40px; height: 40px; background: var(--accent-color); font-size: 14px; color: white; display: flex; align-items: center; justify-content: center; border: none; border-radius: 50%; cursor: pointer; flex-shrink: 0; box-shadow: 0 3px 10px rgba(0,0,0,0.3); } 
         .media-preview { max-width: 200px; border-radius: 8px; margin-top: 5px; display: block; }
+        .sticker-msg-preview { width: 90px; height: 90px; object-fit: contain; margin-top: 4px; }
+
+        .stickers-popup { position: absolute; bottom: 65px; left: 10px; width: min(320px, 94%); background: rgba(15, 23, 42, 0.96); backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.15); border-radius: 16px; padding: 12px; display: none; flex-direction: column; z-index: 100; box-shadow: 0 10px 30px rgba(0,0,0,0.6); }
+        .stickers-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; max-height: 180px; overflow-y: auto; margin-top: 8px; }
+        .sticker-item { width: 100%; aspect-ratio: 1; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 26px; cursor: pointer; transition: transform 0.15s; }
+        .sticker-item:hover { transform: scale(1.1); background: rgba(255,255,255,0.12); }
+
+        /* VOICE CALL & INCOMING CALL MODAL UI */
+        .call-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle, #1e1b4b 0%, #09090b 100%); display: none; flex-direction: column; justify-content: space-between; align-items: center; z-index: 3000; padding: 40px 20px; }
+        .call-avatar-ring { width: 110px; height: 110px; border-radius: 50%; background: var(--primary-gradient); display: flex; align-items: center; justify-content: center; font-size: 50px; border: 3px solid rgba(255,255,255,0.3); box-shadow: 0 0 30px rgba(139,92,246,0.6); animation: callPulse 2s infinite alternate; margin-top: 30px; }
+        @keyframes callPulse { 0% { transform: scale(1); box-shadow: 0 0 20px rgba(139,92,246,0.4); } 100% { transform: scale(1.05); box-shadow: 0 0 40px rgba(6,182,212,0.8); } }
+        .call-controls-row { display: flex; gap: 24px; margin-bottom: 30px; align-items: center; }
+        .call-action-btn { width: 56px; height: 56px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; font-size: 22px; cursor: pointer; color: white; box-shadow: 0 6px 20px rgba(0,0,0,0.4); }
+        .call-mute-btn { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); }
+        .call-mute-btn.muted { background: #eab308; }
+        .call-accept-btn { background: #22c55e; }
+        .call-end-btn { background: #ef4444; }
 
         /* SEARCH RESULTS */
         .search-container { display: flex; gap: 6px; margin-bottom: 8px; }
@@ -245,7 +279,8 @@
 
                 <!-- CHAT AREA VIEW -->
                 <div class="chat-area" id="chatAreaBackground">
-                    <div class="typing-floating-banner" id="typingIndicator">✍️ someone is typing...</div>
+                    <!-- ANIMATED TYPING INDICATOR BANNER -->
+                    <div class="typing-floating-banner" id="typingIndicator">✍️ Typing.....</div>
 
                     <div class="chat-header">
                         <div class="chat-header-profile" onclick="openSelectedUserProfile()">
@@ -256,7 +291,8 @@
                                 <small id="chatSub" style="font-size: 9px; color:#aab0c5; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block;">● Tap for profile</small>
                             </div>
                         </div>
-                        <div>
+                        <div class="header-actions">
+                            <button class="call-btn" onclick="startVoiceCall()" title="Start Voice Call">📞</button>
                             <select id="themeSelector" onchange="changeTheme(this.value)" style="padding: 4px 6px; font-size: 10px;">
                                 <option value="theme-purple">Purple</option>
                                 <option value="theme-cyan">Cyan</option>
@@ -264,9 +300,30 @@
                             </select>
                         </div>
                     </div>
+
                     <div class="messages" id="messages"></div>
+
+                    <!-- ACTIVE REPLY PREVIEW BAR -->
+                    <div class="active-reply-container" id="activeReplyContainer">
+                        <div>
+                            <div style="font-size:9px; color:#a78bfa; font-weight:bold;">Replying to <span id="replyTargetName">User</span></div>
+                            <div id="replyTargetText" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:260px;">Message content...</div>
+                        </div>
+                        <button onclick="cancelReply()" style="background:none; border:none; color:#fca5a5; font-size:14px; cursor:pointer;">✕</button>
+                    </div>
+
+                    <!-- STICKERS POPUP PANEL -->
+                    <div class="stickers-popup" id="stickersPopup">
+                        <div style="display:flex; justify-content:space-between; align-items:center; font-size:11px; font-weight:bold; color:#a78bfa;">
+                            <span>🌟 Nexora Stickers</span>
+                            <button onclick="toggleStickersPanel()" style="background:none; border:none; color:#aaa; cursor:pointer;">✕</button>
+                        </div>
+                        <div class="stickers-grid" id="stickersGrid"></div>
+                    </div>
+
                     <div class="message-input" id="messageInputArea">
                         <button class="snap-btn-icon" onclick="openCameraModal()" title="Take Live Snap">📸</button>
+                        <button class="sticker-btn-icon" onclick="toggleStickersPanel()" title="Nexora Stickers">🌟</button>
                         <label class="attach-btn" title="Send Attachment">
                             📎 <input type="file" id="mediaInput" accept="image/*,video/*" style="display:none;" onclick="event.stopPropagation();" onchange="handleMediaUpload(event)">
                         </label>
@@ -275,6 +332,25 @@
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- VOICE CALL & INCOMING CALL MODAL UI -->
+    <div class="call-overlay" id="voiceCallModal">
+        <div style="text-align:center;">
+            <p style="color:#aab0c5; font-size:11px; letter-spacing:1px; text-transform:uppercase;">Nexora Voice Call</p>
+            <h2 id="callTargetName" style="color:white; font-size:22px; margin-top:6px;">User Name</h2>
+            <p id="callStatusText" style="color:#22c55e; font-size:12px; margin-top:4px;">Connecting...</p>
+        </div>
+        
+        <div class="call-avatar-ring" id="callTargetAvatarEmoji">📞</div>
+        
+        <div id="callTimerDisplay" style="font-size:14px; color:#cbd5e1; font-family:monospace;">00:00</div>
+
+        <div class="call-controls-row">
+            <button class="call-action-btn call-mute-btn" id="callMuteBtn" onclick="toggleCallMute()" title="Mute Call" style="display:none;">🎤</button>
+            <button class="call-action-btn call-accept-btn" id="callAcceptBtn" onclick="acceptIncomingCall()" title="Accept Call" style="display:none;">📞</button>
+            <button class="call-action-btn call-end-btn" onclick="endVoiceCall()" title="End/Decline Call">📵</button>
         </div>
     </div>
 
@@ -434,6 +510,7 @@
         let unsubscribeTyping = null;
         let unsubscribeChatMeta = null;
         let unsubscribeRequests = null;
+        let unsubscribeCalls = null;
         let typingTimeout = null;
         let compressedProfileImage = "";
         let selectedAvatarEmoji = "👨‍💻";
@@ -443,6 +520,20 @@
         let useFrontCamera = true;
         let selectedFilterClass = "filter-normal";
         let availableUsersList = [];
+        let replyingToMessage = null;
+        let callTimerInterval = null;
+        let callSeconds = 0;
+        let isCallMuted = false;
+        let activeAudioStream = null;
+
+        const nexoraStickers = [
+            "🔥", "🚀", "💎", "⭐", "🎉", "😎", "🦄", "⚡", "🍀", "💖",
+            "👑", "🐱", "🐶", "🐼", "🦊", "🦁", "🐯", "🐨", "🐰", "👻",
+            "🍕", "🍔", "🍿", "🍩", "🍫", "☕", "🍺", "🍹", "🏆", "🎯",
+            "🎨", "🎸", "🎧", "🎮", "🕹️", "💻", "📱", "⌚", "📷", "💡",
+            "🌊", "🔥", "🌈", "☀️", "🌙", "⭐", "🪐", "🛸", "💯", "💥",
+            "✨", "🌟", "💫", "🎯", "🧩", "🔮", "🧿", "🎁", "🎈", "🧨"
+        ];
 
         const maleAvatars = [
             { name: "Developer", emoji: "👨‍💻" },
@@ -461,6 +552,169 @@
             { name: "Artist", emoji: "👩‍🎨" },
             { name: "Angel", emoji: "🧚‍♀️" }
         ];
+
+        function renderStickersGrid() {
+            const grid = document.getElementById("stickersGrid");
+            if(grid) {
+                grid.innerHTML = nexoraStickers.map(st => `
+                    <div class="sticker-item" onclick="sendSticker('${st}')">${st}</div>
+                `).join("");
+            }
+        }
+        renderStickersGrid();
+
+        window.toggleStickersPanel = function() {
+            const popup = document.getElementById("stickersPopup");
+            popup.style.display = popup.style.display === "flex" ? "none" : "flex";
+        };
+
+        window.sendSticker = async function(stickerEmoji) {
+            toggleStickersPanel();
+            await sendMessage(stickerEmoji, "sticker", "🌟 [NEXORA STICKER]");
+        };
+
+        // VOICE CALL & DEVICE MIC ACCESS METHODS
+        window.startVoiceCall = async function() {
+            if (!currentChatId || isCurrentChatGroup) return alert("Select an individual chat to call!");
+            
+            try {
+                activeAudioStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+            } catch (err) {
+                alert("Microphone access denied or unavailable: " + err.message);
+                return;
+            }
+
+            let roomId = [auth.currentUser.uid, currentChatId].sort().join('_');
+            
+            await setDoc(doc(db, "calls", roomId), {
+                callerId: auth.currentUser.uid,
+                callerName: document.getElementById("displayName").innerText,
+                receiverId: currentChatId,
+                status: "ringing",
+                createdAt: serverTimestamp()
+            });
+
+            document.getElementById("callTargetName").innerText = currentChatName;
+            document.getElementById("callTargetAvatarEmoji").innerHTML = currentChatAvatar && currentChatAvatar.startsWith("data:") ? `<img src="${currentChatAvatar}" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">` : (currentChatAvatar || "📞");
+            document.getElementById("callStatusText").innerText = "Calling...";
+            document.getElementById("callMuteBtn").style.display = "flex";
+            document.getElementById("callAcceptBtn").style.display = "none";
+            document.getElementById("voiceCallModal").style.display = "flex";
+
+            callSeconds = 0;
+            document.getElementById("callTimerDisplay").innerText = "00:00";
+            
+            setTimeout(() => {
+                document.getElementById("callStatusText").innerText = "Connected";
+                callTimerInterval = setInterval(() => {
+                    callSeconds++;
+                    let m = Math.floor(callSeconds / 60).toString().padStart(2, '0');
+                    let s = (callSeconds % 60).toString().padStart(2, '0');
+                    document.getElementById("callTimerDisplay").innerText = `${m}:${s}`;
+                }, 1000);
+            }, 2000);
+        };
+
+        function listenToIncomingCalls() {
+            if (unsubscribeCalls) unsubscribeCalls();
+            if (!auth.currentUser) return;
+
+            unsubscribeCalls = onSnapshot(collection(db, "calls"), (snapshot) => {
+                snapshot.forEach(async (docSnap) => {
+                    let callData = docSnap.data();
+                    if (callData.receiverId === auth.currentUser.uid && callData.status === "ringing") {
+                        document.getElementById("callTargetName").innerText = callData.callerName || "User";
+                        document.getElementById("callStatusText").innerText = "Incoming Voice Call...";
+                        document.getElementById("callMuteBtn").style.display = "none";
+                        document.getElementById("callAcceptBtn").style.display = "flex";
+                        document.getElementById("voiceCallModal").style.display = "flex";
+                        document.getElementById("callTimerDisplay").innerText = "Ring...";
+                    }
+                });
+            });
+        }
+
+        window.acceptIncomingCall = async function() {
+            try {
+                activeAudioStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+            } catch (err) {
+                alert("Microphone permission required for calls: " + err.message);
+                endVoiceCall();
+                return;
+            }
+
+            document.getElementById("callAcceptBtn").style.display = "none";
+            document.getElementById("callMuteBtn").style.display = "flex";
+            document.getElementById("callStatusText").innerText = "Connected";
+
+            callSeconds = 0;
+            if (callTimerInterval) clearInterval(callTimerInterval);
+            callTimerInterval = setInterval(() => {
+                callSeconds++;
+                let m = Math.floor(callSeconds / 60).toString().padStart(2, '0');
+                let s = (callSeconds % 60).toString().padStart(2, '0');
+                document.getElementById("callTimerDisplay").innerText = `${m}:${s}`;
+            }, 1000);
+        };
+
+        window.endVoiceCall = async function() {
+            if (callTimerInterval) clearInterval(callTimerInterval);
+            if (activeAudioStream) {
+                activeAudioStream.getTracks().forEach(t => t.stop());
+                activeAudioStream = null;
+            }
+            document.getElementById("voiceCallModal").style.display = "none";
+            isCallMuted = false;
+            document.getElementById("callMuteBtn").className = "call-action-btn call-mute-btn";
+            document.getElementById("callMuteBtn").innerText = "🎤";
+
+            if (auth.currentUser && currentChatId) {
+                let roomId = [auth.currentUser.uid, currentChatId].sort().join('_');
+                try { await deleteDoc(doc(db, "calls", roomId)); } catch(e){}
+            }
+        };
+
+        window.toggleCallMute = function() {
+            if (!activeAudioStream) return;
+            isCallMuted = !isCallMuted;
+            activeAudioStream.getAudioTracks().forEach(track => {
+                track.enabled = !isCallMuted;
+            });
+            const btn = document.getElementById("callMuteBtn");
+            btn.className = isCallMuted ? "call-action-btn call-mute-btn muted" : "call-action-btn call-mute-btn";
+            btn.innerText = isCallMuted ? "🔇" : "🎤";
+        };
+
+        window.setReplyTo = function(msgId, senderName, text) {
+            replyingToMessage = { id: msgId, name: senderName, text: text };
+            document.getElementById("replyTargetName").innerText = senderName;
+            document.getElementById("replyTargetText").innerText = text || "[Attachment]";
+            document.getElementById("activeReplyContainer").style.display = "flex";
+            document.getElementById("messageText").focus();
+        };
+
+        window.cancelReply = function() {
+            replyingToMessage = null;
+            document.getElementById("activeReplyContainer").style.display = "none";
+        };
+
+        window.toggleReactionPicker = function(msgId) {
+            const picker = document.getElementById(`picker_${msgId}`);
+            if (picker) {
+                picker.style.display = picker.style.display === "flex" ? "none" : "flex";
+            }
+        };
+
+        window.addReactionToMessage = async function(msgId, emoji) {
+            const msgRef = doc(db, "messages", msgId);
+            const msgSnap = await getDoc(msgRef);
+            if (msgSnap.exists()) {
+                let reactions = msgSnap.data().reactions || {};
+                reactions[auth.currentUser.uid] = emoji;
+                await updateDoc(msgRef, { reactions: reactions });
+            }
+            toggleReactionPicker(msgId);
+        };
 
         window.togglePasswordVisibility = function() {
             const pwdInput = document.getElementById("password");
@@ -550,6 +804,7 @@
                 
                 listenToActiveUsersAndGroups();
                 listenToIncomingRequests();
+                listenToIncomingCalls();
             } else {
                 if (auth.currentUser) {
                     let timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -563,6 +818,7 @@
                 if (unsubscribeTyping) unsubscribeTyping();
                 if (unsubscribeChatMeta) unsubscribeChatMeta();
                 if (unsubscribeRequests) unsubscribeRequests();
+                if (unsubscribeCalls) unsubscribeCalls();
             }
         });
 
@@ -955,7 +1211,6 @@
                 document.getElementById("chatSub").innerText = isOnline ? "Online" : (lastSeen ? `Last seen ${lastSeen}` : "Offline");
             }
 
-            // Slide to Chat View on Mobile
             document.getElementById("sidebarView").classList.add("hidden-mobile");
             document.getElementById("chatAreaBackground").classList.add("active-mobile");
 
@@ -1031,11 +1286,12 @@
 
         window.handleTyping = async function() {
             if (!auth.currentUser || !currentChatId) return;
-            const typingRef = doc(db, "typing", currentChatId + "_" + auth.currentUser.uid);
-            await setDoc(typingRef, { isTyping: true, user: document.getElementById("displayName").innerText }, { merge: true });
+            let roomId = isCurrentChatGroup ? currentChatId : [auth.currentUser.uid, currentChatId].sort().join('_');
+            const typingRef = doc(db, "typing", roomId + "_" + auth.currentUser.uid);
+            await setDoc(typingRef, { isTyping: true, user: document.getElementById("displayName").innerText, roomId: roomId }, { merge: true });
             if (typingTimeout) clearTimeout(typingTimeout);
             typingTimeout = setTimeout(async () => {
-                await setDoc(typingRef, { isTyping: false }, { merge: true });
+                await setDoc(typingRef, { isTyping: false, roomId: roomId }, { merge: true });
             }, 2000);
         };
 
@@ -1043,14 +1299,17 @@
             const indicator = document.getElementById("typingIndicator");
             indicator.style.display = "none";
             if (unsubscribeTyping) unsubscribeTyping();
+            
+            let roomId = isCurrentChatGroup ? currentChatId : [auth.currentUser.uid, currentChatId].sort().join('_');
+
             unsubscribeTyping = onSnapshot(collection(db, "typing"), (snapshot) => {
                 let isSomeoneTyping = false;
                 let tText = "";
                 snapshot.forEach((docSnap) => {
                     let data = docSnap.data();
-                    if (docSnap.id.startsWith(currentChatId) && data.isTyping && !docSnap.id.includes(auth.currentUser.uid)) {
+                    if (data.roomId === roomId && data.isTyping && !docSnap.id.includes(auth.currentUser.uid)) {
                         isSomeoneTyping = true;
-                        tText = `✍️ ${data.user} is typing...`;
+                        tText = `✍️ ${data.user} is typing.....`;
                     }
                 });
                 if (isSomeoneTyping) { indicator.innerText = tText; indicator.style.display = "block"; }
@@ -1058,7 +1317,7 @@
             });
         }
 
-        window.sendMessage = async function(mediaUrl = "", mediaType = "", customText = "") {
+        window.sendMessage = async function(mediaUrl = "", mediaType = "text", customText = "") {
             const input = document.getElementById("messageText");
             const text = customText || input.value.trim();
             if ((!text && !mediaUrl) || !auth.currentUser || !currentChatId) return;
@@ -1067,12 +1326,17 @@
             let metaSnap = await getDoc(doc(db, "chat_meta", roomId));
             let dispMode = (metaSnap && metaSnap.exists()) ? metaSnap.data().disappearingMode : "off";
 
+            let replyPayload = replyingToMessage ? { ...replyingToMessage } : null;
+
             await addDoc(collection(db, "messages"), {
                 text: text, mediaUrl: mediaUrl, mediaType: mediaType,
                 senderId: auth.currentUser.uid, senderName: document.getElementById("displayName").innerText,
-                chatRoom: roomId, status: 'sent', disappearingMode: dispMode, createdAt: serverTimestamp()
+                chatRoom: roomId, status: 'sent', disappearingMode: dispMode,
+                replyTo: replyPayload, reactions: {}, createdAt: serverTimestamp()
             });
+
             input.value = "";
+            cancelReply();
         };
 
         window.handleMediaUpload = function(event) {
@@ -1124,19 +1388,60 @@
                         const message = document.createElement("div");
                         message.className = isMine ? "message sent" : "message";
                         
-                        let mediaHTML = data.mediaUrl ? `<img src="${data.mediaUrl}" class="media-preview">` : "";
-                        let downloadBtnHTML = data.mediaUrl ? `<button class="download-btn" onclick="downloadMedia('${data.mediaUrl}')">Download</button>` : "";
+                        message.ontouchstart = handleTouchStart;
+                        message.ontouchend = (e) => handleTouchEnd(e, data.id, isMine ? "You" : data.senderName, data.text || "Attachment");
+
+                        let replyHTML = "";
+                        if (data.replyTo) {
+                            replyHTML = `
+                                <div class="reply-quote-preview">
+                                    <div class="reply-quote-name">${data.replyTo.name}</div>
+                                    <div>${data.replyTo.text}</div>
+                                </div>
+                            `;
+                        }
+
+                        let mediaHTML = "";
+                        if (data.mediaUrl) {
+                            if (data.mediaType === "sticker") {
+                                mediaHTML = `<div style="font-size:42px; margin-top:4px; text-align:center;">${data.mediaUrl}</div>`;
+                            } else {
+                                mediaHTML = `<img src="${data.mediaUrl}" class="media-preview">`;
+                            }
+                        }
+
+                        let downloadBtnHTML = (data.mediaUrl && data.mediaType !== "sticker") ? `<button class="download-btn" onclick="downloadMedia('${data.mediaUrl}')">Download</button>` : "";
                         
+                        let reactionsHTML = "";
+                        let reactionsObj = data.reactions || {};
+                        let reactionEntries = Object.entries(reactionsObj);
+                        if (reactionEntries.length > 0) {
+                            let reactedEmojis = reactionEntries.map(([uid, em]) => em).join(" ");
+                            reactionsHTML = `<div class="reaction-bar">${reactedEmojis}</div>`;
+                        }
+
+                        let displayText = (data.mediaType === "sticker") ? "" : (data.text || "");
+
                         message.innerHTML = `
                             <div class="sender-row">
                                 <span class="sender">${isMine ? "You" : data.senderName}</span>
                                 <div class="action-btns-row">
+                                    <button style="background:none; border:none; cursor:pointer; font-size:12px;" onclick="toggleReactionPicker('${data.id}')" title="React">😊</button>
                                     ${downloadBtnHTML}
                                     ${isMine ? `<button class="delete-btn" onclick="deleteMessage('${data.id}')">Delete</button>` : ''}
                                 </div>
                             </div>
-                            <div>${data.text || ""}</div>
+                            <div class="react-picker-popup" id="picker_${data.id}">
+                                <span onclick="addReactionToMessage('${data.id}', '❤️')">❤️</span>
+                                <span onclick="addReactionToMessage('${data.id}', '👍')">👍</span>
+                                <span onclick="addReactionToMessage('${data.id}', '😂')">😂</span>
+                                <span onclick="addReactionToMessage('${data.id}', '🔥')">🔥</span>
+                                <span onclick="addReactionToMessage('${data.id}', '😮')">😮</span>
+                            </div>
+                            ${replyHTML}
+                            <div>${displayText}</div>
                             ${mediaHTML}
+                            ${reactionsHTML}
                             ${isMine ? `<div class="msg-footer"><span class="tick ${data.status === 'read' ? 'blue' : ''}">${data.status === 'read' ? '✓✓' : '✓'}</span></div>` : ''}
                         `;
                         messagesBox.appendChild(message);
@@ -1147,6 +1452,15 @@
                 }
                 messagesBox.scrollTop = messagesBox.scrollHeight;
             });
+        }
+
+        let touchStartX = 0;
+        function handleTouchStart(e) { touchStartX = e.changedTouches[0].screenX; }
+        function handleTouchEnd(e, msgId, senderName, text) {
+            let touchEndX = e.changedTouches[0].screenX;
+            if (touchEndX - touchStartX > 60) {
+                setReplyTo(msgId, senderName, text);
+            }
         }
 
         window.deleteMessage = async function(messageId) {
