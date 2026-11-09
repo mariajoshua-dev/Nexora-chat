@@ -525,6 +525,7 @@
         let callSeconds = 0;
         let isCallMuted = false;
         let activeAudioStream = null;
+        let activeCallRoomId = null;
 
         const nexoraStickers = [
             "🔥", "🚀", "💎", "⭐", "🎉", "😎", "🦄", "⚡", "🍀", "💖",
@@ -573,7 +574,7 @@
             await sendMessage(stickerEmoji, "sticker", "🌟 [NEXORA STICKER]");
         };
 
-        // VOICE CALL & DEVICE MIC ACCESS METHODS
+        // VOICE CALL & REAL-TIME STATE MANAGEMENT
         window.startVoiceCall = async function() {
             if (!currentChatId || isCurrentChatGroup) return alert("Select an individual chat to call!");
             
@@ -584,9 +585,10 @@
                 return;
             }
 
-            let roomId = [auth.currentUser.uid, currentChatId].sort().join('_');
+            activeCallRoomId = [auth.currentUser.uid, currentChatId].sort().join('_');
             
-            await setDoc(doc(db, "calls", roomId), {
+            // Push call state to Firestore so the receiver gets notified
+            await setDoc(doc(db, "calls", activeCallRoomId), {
                 callerId: auth.currentUser.uid,
                 callerName: document.getElementById("displayName").innerText,
                 receiverId: currentChatId,
@@ -597,22 +599,14 @@
             document.getElementById("callTargetName").innerText = currentChatName;
             document.getElementById("callTargetAvatarEmoji").innerHTML = currentChatAvatar && currentChatAvatar.startsWith("data:") ? `<img src="${currentChatAvatar}" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">` : (currentChatAvatar || "📞");
             document.getElementById("callStatusText").innerText = "Calling...";
+            
+            // Caller UI: Can Mute or End, but NO Accept button
             document.getElementById("callMuteBtn").style.display = "flex";
             document.getElementById("callAcceptBtn").style.display = "none";
             document.getElementById("voiceCallModal").style.display = "flex";
 
             callSeconds = 0;
             document.getElementById("callTimerDisplay").innerText = "00:00";
-            
-            setTimeout(() => {
-                document.getElementById("callStatusText").innerText = "Connected";
-                callTimerInterval = setInterval(() => {
-                    callSeconds++;
-                    let m = Math.floor(callSeconds / 60).toString().padStart(2, '0');
-                    let s = (callSeconds % 60).toString().padStart(2, '0');
-                    document.getElementById("callTimerDisplay").innerText = `${m}:${s}`;
-                }, 1000);
-            }, 2000);
         };
 
         function listenToIncomingCalls() {
@@ -620,17 +614,52 @@
             if (!auth.currentUser) return;
 
             unsubscribeCalls = onSnapshot(collection(db, "calls"), (snapshot) => {
+                let callFound = false;
                 snapshot.forEach(async (docSnap) => {
                     let callData = docSnap.data();
+                    let roomId = docSnap.id;
+
+                    // If I am the receiver and call is ringing
                     if (callData.receiverId === auth.currentUser.uid && callData.status === "ringing") {
+                        callFound = true;
+                        activeCallRoomId = roomId;
+
                         document.getElementById("callTargetName").innerText = callData.callerName || "User";
                         document.getElementById("callStatusText").innerText = "Incoming Voice Call...";
+                        
+                        // Receiver UI: Show Accept and Decline/End buttons
                         document.getElementById("callMuteBtn").style.display = "none";
                         document.getElementById("callAcceptBtn").style.display = "flex";
                         document.getElementById("voiceCallModal").style.display = "flex";
                         document.getElementById("callTimerDisplay").innerText = "Ring...";
+                    } 
+                    // If I am caller and receiver accepted the call
+                    else if (callData.callerId === auth.currentUser.uid && callData.status === "connected") {
+                        callFound = true;
+                        activeCallRoomId = roomId;
+                        document.getElementById("callStatusText").innerText = "Connected";
+                        document.getElementById("callMuteBtn").style.display = "flex";
+                        
+                        if (!callTimerInterval) {
+                            callSeconds = 0;
+                            callTimerInterval = setInterval(() => {
+                                callSeconds++;
+                                let m = Math.floor(callSeconds / 60).toString().padStart(2, '0');
+                                let s = (callSeconds % 60).toString().padStart(2, '0');
+                                document.getElementById("callTimerDisplay").innerText = `${m}:${s}`;
+                            }, 1000);
+                        }
+                    }
+                    // If call is ended or deleted
+                    else if (activeCallRoomId === roomId && callData.status === "ended") {
+                        closeCallModalUI();
                     }
                 });
+
+                // If call document was deleted from Firestore
+                if (!snapshot.docs.some(d => d.id === activeCallRoomId) && activeCallRoomId) {
+                    closeCallModalUI();
+                }
             });
         }
 
@@ -641,6 +670,10 @@
                 alert("Microphone permission required for calls: " + err.message);
                 endVoiceCall();
                 return;
+            }
+
+            if (activeCallRoomId) {
+                await updateDoc(doc(db, "calls", activeCallRoomId), { status: "connected" });
             }
 
             document.getElementById("callAcceptBtn").style.display = "none";
@@ -658,7 +691,19 @@
         };
 
         window.endVoiceCall = async function() {
-            if (callTimerInterval) clearInterval(callTimerInterval);
+            if (activeCallRoomId) {
+                try {
+                    await updateDoc(doc(db, "calls", activeCallRoomId), { status: "ended" });
+                    await deleteDoc(doc(db, "calls", activeCallRoomId));
+                } catch(e) {
+                    try { await deleteDoc(doc(db, "calls", activeCallRoomId)); } catch(err){}
+                }
+            }
+            closeCallModalUI();
+        };
+
+        function closeCallModalUI() {
+            if (callTimerInterval) { clearInterval(callTimerInterval); callTimerInterval = null; }
             if (activeAudioStream) {
                 activeAudioStream.getTracks().forEach(t => t.stop());
                 activeAudioStream = null;
@@ -667,12 +712,8 @@
             isCallMuted = false;
             document.getElementById("callMuteBtn").className = "call-action-btn call-mute-btn";
             document.getElementById("callMuteBtn").innerText = "🎤";
-
-            if (auth.currentUser && currentChatId) {
-                let roomId = [auth.currentUser.uid, currentChatId].sort().join('_');
-                try { await deleteDoc(doc(db, "calls", roomId)); } catch(e){}
-            }
-        };
+            activeCallRoomId = null;
+        }
 
         window.toggleCallMute = function() {
             if (!activeAudioStream) return;
