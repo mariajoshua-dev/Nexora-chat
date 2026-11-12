@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>NEXORA - Chat, 24h Expiring Stories & Notes</title>
+    <title>NEXORA - Chat, Snap, Stories & Notes</title>
     <style>
         :root { 
             --bg-main: #080b1d; 
@@ -179,7 +179,7 @@
         .search-result-item { padding: 6px 8px; font-size: 11px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center; }
 
         .camera-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.96); display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 2000; padding: 10px; }
-        .camera-view { width: min(350px, 94%); height: 42vh; border-radius: 16px; object-fit: cover; background: #000; border: 2px solid var(--accent-color); }
+        .camera-view { width: min(350px, 94%); height: 42vh; border-radius: 16px; object-fit: cover; background: #000; border: 2px solid var(--accent-color); cursor: pointer; }
         .filter-options-bar { display: flex; gap: 6px; margin: 10px 0; overflow-x: auto; max-width: 94%; padding: 4px; scrollbar-width: thin; }
         .filter-chip { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: #cbd5e1; padding: 6px 12px; border-radius: 20px; font-size: 11px; cursor: pointer; white-space: nowrap; flex-shrink: 0; }
         .filter-chip.active { background: var(--accent-color); border-color: white; color: white; font-weight: bold; }
@@ -318,7 +318,7 @@
                             📎 <input type="file" id="mediaInput" accept="image/*,video/*,application/pdf,text/plain,application/zip" style="display:none;" onclick="event.stopPropagation();" onchange="handleMediaUpload(event)">
                         </label>
                         
-                        <input type="text" id="messageText" placeholder="Type a message or @AI ..." oninput="handleTyping()" onkeydown="if(event.key==='Enter') sendMessage()">
+                        <input type="text" id="messageText" placeholder="Type a message or @AI (+5 pts) ..." oninput="handleTyping()" onkeydown="if(event.key==='Enter') sendMessage()">
                         
                         <div class="voice-record-ui" id="voiceRecordUI">
                             <span style="font-size:14px;">🔴</span>
@@ -492,8 +492,8 @@
 
     <!-- CAMERA OVERLAY -->
     <div class="camera-overlay" id="cameraOverlay">
-        <h3 style="color:white; margin-bottom:4px; font-size:14px;">📸 Nexora Snap Studio</h3>
-        <video id="cameraVideo" class="camera-view f-normal" autoplay playsinline></video>
+        <h3 style="color:white; margin-bottom:4px; font-size:14px;">📸 Nexora Snap Studio (Double Tap screen to flip camera)</h3>
+        <video id="cameraVideo" class="camera-view f-normal" autoplay playsinline ondblclick="toggleCameraFacing()"></video>
         <canvas id="cameraCanvas" style="display:none;"></canvas>
         <div class="filter-options-bar" id="filterChipsContainer"></div>
         <div class="camera-controls">
@@ -608,6 +608,7 @@
         let myBlockedUsers = [];
         let currentNexoraPoints = 0;
         let mediaStream = null;
+        let currentFacingMode = "user"; // "user" for front, "environment" for back
         let availableUsersList = [];
         let replyingToMessage = null;
         let mediaRecorder = null, audioChunks = [], isRecordingAudio = false, audioRecordTimer = null, audioSeconds = 0;
@@ -665,7 +666,7 @@
         window.toggleStickersPanel = () => { const p = document.getElementById("stickersPopup"); p.style.display = p.style.display === "flex" ? "none" : "flex"; };
         window.sendSticker = async (st) => { toggleStickersPanel(); await sendMessage(st, "sticker", "🌟 [STICKER]"); };
 
-        // ================= NOTES FEATURE (24H EXPIRATION & ONE PER USER) =================
+        // ================= NOTES FEATURE =================
         window.triggerAddNote = () => { document.getElementById("addNoteModal").style.display = "flex"; };
         window.closeAddNoteModal = () => {
             document.getElementById("addNoteModal").style.display = "none";
@@ -692,7 +693,6 @@
         };
 
         async function saveNoteToDb(comment, privacy, songUrl) {
-            // Using setDoc with userId as doc ID enforces strictly ONE note per user
             const userNoteRef = doc(db, "notes", auth.currentUser.uid);
             await setDoc(userNoteRef, {
                 userId: auth.currentUser.uid,
@@ -724,17 +724,13 @@
 
                 for(let docSnap of snapshot.docs) {
                     let n = docSnap.data(); let nId = docSnap.id;
-                    
-                    // 24 Hours Expiration Check
                     let createdAtMillis = n.createdAt?.toMillis ? n.createdAt.toMillis() : now;
                     if(now - createdAtMillis > TWENTY_FOUR_HOURS) {
                         await deleteDoc(doc(db, "notes", nId)).catch(e => {});
                         continue;
                     }
 
-                    if(n.userId === auth.currentUser.uid) {
-                        hasMyNote = true;
-                    }
+                    if(n.userId === auth.currentUser.uid) { hasMyNote = true; }
 
                     let canSee = await checkCanView(n.userId, n.privacy || "friends");
                     if(canSee) {
@@ -746,7 +742,6 @@
                 if(!hasMyNote) {
                     notesHtml = `<div class="note-bubble-card" onclick="triggerAddNote()"><div class="note-bubble-text">＋ Add Note</div><div class="note-bubble-user">Your Note</div></div>` + notesHtml;
                 }
-
                 list.innerHTML = notesHtml;
             });
         }
@@ -810,7 +805,7 @@
             }
         };
 
-        // ================= STORIES SYSTEM (24H EXPIRATION) =================
+        // ================= STORIES SYSTEM =================
         window.triggerAddStory = () => { document.getElementById("addStoryModal").style.display = "flex"; };
         window.closeAddStoryModal = () => { document.getElementById("addStoryModal").style.display = "none"; document.getElementById("storyIsaiifyUrlInput").value = ""; };
 
@@ -844,8 +839,6 @@
 
                 for(let docSnap of snapshot.docs) {
                     let s = docSnap.data(); let sId = docSnap.id;
-
-                    // 24 Hours Expiration Check
                     let createdAtMillis = s.createdAt?.toMillis ? s.createdAt.toMillis() : now;
                     if(now - createdAtMillis > TWENTY_FOUR_HOURS) {
                         await deleteDoc(doc(db, "stories", sId)).catch(e => {});
@@ -914,7 +907,7 @@
             }
         };
 
-        // VOICE RECORDING
+        // ================= VOICE RECORDING =================
         window.toggleVoiceRecording = async () => {
             if (!isRecordingAudio) {
                 try {
@@ -1025,23 +1018,44 @@
             });
         }
 
+        // ================= CAMERA & DOUBLE TAP FLIP FEATURE =================
         window.openCameraModal = async () => {
             if(!currentChatId) return alert("Select chat first!");
             document.getElementById("cameraOverlay").style.display = "flex";
-            mediaStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" }, audio: false });
-            document.getElementById("cameraVideo").srcObject = mediaStream;
+            await startCameraStream();
         };
-        window.closeCameraModal = () => { if(mediaStream) mediaStream.getTracks().forEach(t => t.stop()); document.getElementById("cameraOverlay").style.display = "none"; };
+
+        async function startCameraStream() {
+            if(mediaStream) { mediaStream.getTracks().forEach(t => t.stop()); }
+            try {
+                mediaStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: currentFacingMode }, audio: false });
+                document.getElementById("cameraVideo").srcObject = mediaStream;
+            } catch(err) { alert("Camera access error: " + err.message); }
+        }
+
+        window.toggleCameraFacing = async () => {
+            currentFacingMode = currentFacingMode === "user" ? "environment" : "user";
+            await startCameraStream();
+        };
+
+        window.closeCameraModal = () => { 
+            if(mediaStream) mediaStream.getTracks().forEach(t => t.stop()); 
+            document.getElementById("cameraOverlay").style.display = "none"; 
+        };
+
         window.setSnapFilter = (cls, btn) => {
             document.getElementById("cameraVideo").className = `camera-view ${cls}`;
             document.querySelectorAll(".filter-chip").forEach(c => c.classList.remove("active")); btn.classList.add("active");
         };
+
         window.captureLiveSnap = async () => {
             const v = document.getElementById("cameraVideo"), c = document.getElementById("cameraCanvas");
             c.width = v.videoWidth || 360; c.height = v.videoHeight || 360;
             const ctx = c.getContext("2d"); ctx.filter = window.getComputedStyle(v).filter;
             ctx.drawImage(v, 0, 0, c.width, c.height); closeCameraModal();
             await sendMessage(c.toDataURL("image/jpeg", 0.75), "image", "📸 [SNAP]");
+            
+            // +10 Points for capturing snap
             currentNexoraPoints += 10;
             await updateDoc(doc(db, "users", auth.currentUser.uid), { nexoraPoints: currentNexoraPoints });
             document.getElementById("displayNexoraPoints").innerText = `⭐ Points: ${currentNexoraPoints} (Open Store)`;
@@ -1292,6 +1306,7 @@
             typingTimeout = setTimeout(async () => { await setDoc(doc(db, "typing", roomId + "_" + auth.currentUser.uid), { isTyping: false, roomId }, { merge: true }); }, 2000);
         };
 
+        // ================= SEND MESSAGE & CHAT ACTIVITY POINTS (+5 PTS) =================
         window.sendMessage = async (mediaUrl="", mediaType="text", customText="") => {
             const input = document.getElementById("messageText");
             const text = customText || input.value.trim();
@@ -1308,6 +1323,11 @@
             });
 
             if(text.trim().startsWith("@AI")) { await handleAIResponse(text, roomId); }
+
+            // +5 Points for sending a chat message activity
+            currentNexoraPoints += 5;
+            await updateDoc(doc(db, "users", auth.currentUser.uid), { nexoraPoints: currentNexoraPoints });
+            document.getElementById("displayNexoraPoints").innerText = `⭐ Points: ${currentNexoraPoints} (Open Store)`;
 
             input.value = ""; 
             if(typeof cancelReply === 'function') cancelReply();
