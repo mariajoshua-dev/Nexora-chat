@@ -187,6 +187,13 @@
         .cam-btn { padding: 9px 20px; border-radius: 30px; border: none; font-weight: bold; cursor: pointer; color: white; font-size: 12px; }
         .capture-btn { background: #22c55e; }
         .close-cam-btn { background: #ef4444; }
+
+        /* Working Snap Filters */
+        .f-normal { filter: none; }
+        .f-cyberpunk { filter: contrast(150%) saturate(200%) hue-rotate(310deg); }
+        .f-neon { filter: brightness(120%) drop-shadow(0 0 10px #06b6d4) contrast(140%); }
+        .f-grayscale { filter: grayscale(100%); }
+        .f-sepia { filter: sepia(90%); }
     </style>
 </head>
 <body class="theme-purple">
@@ -492,7 +499,7 @@
 
     <!-- CAMERA OVERLAY -->
     <div class="camera-overlay" id="cameraOverlay">
-        <h3 style="color:white; margin-bottom:4px; font-size:14px;">📸 Nexora Snap Studio (Double Tap screen to flip camera)</h3>
+        <h3 style="color:white; margin-bottom:4px; font-size:14px;">📸 Snap Studio (Double Tap screen to flip camera)</h3>
         <video id="cameraVideo" class="camera-view f-normal" autoplay playsinline ondblclick="toggleCameraFacing()"></video>
         <canvas id="cameraCanvas" style="display:none;"></canvas>
         <div class="filter-options-bar" id="filterChipsContainer"></div>
@@ -608,7 +615,8 @@
         let myBlockedUsers = [];
         let currentNexoraPoints = 0;
         let mediaStream = null;
-        let currentFacingMode = "user"; // "user" for front, "environment" for back
+        let currentFacingMode = "user"; 
+        let activeSnapFilterClass = "f-normal";
         let availableUsersList = [];
         let replyingToMessage = null;
         let mediaRecorder = null, audioChunks = [], isRecordingAudio = false, audioRecordTimer = null, audioSeconds = 0;
@@ -951,6 +959,8 @@
         };
 
         window.playVoiceNote = (id, src) => { let audio = document.getElementById(id) || new Audio(src); audio.id = id; audio.paused ? audio.play() : audio.pause(); };
+        
+        // ================= LOCAL FILE DOWNLOAD FEATURE =================
         window.handleMediaUpload = (e) => {
             const file = e.target.files[0]; if (!file || !currentChatId) return;
             const reader = new FileReader();
@@ -960,7 +970,16 @@
             };
             reader.readAsDataURL(file);
         };
-        window.downloadMedia = (url, name) => { const a = document.createElement("a"); a.href = url; a.download = name || `nexora_file_${Date.now()}`; document.body.appendChild(a); a.click(); document.body.removeChild(a); };
+
+        window.downloadMedia = (url, name) => { 
+            const a = document.createElement("a"); 
+            a.href = url; 
+            a.download = name || `nexora_local_file_${Date.now()}`; 
+            document.body.appendChild(a); 
+            a.click(); 
+            document.body.removeChild(a); 
+            alert("📥 File downloaded successfully to your local device!");
+        };
 
         window.pinMessage = async (msgId, text) => {
             let roomId = isCurrentChatGroup ? currentChatId : [auth.currentUser.uid, currentChatId].sort().join('_');
@@ -1018,7 +1037,7 @@
             });
         }
 
-        // ================= CAMERA & DOUBLE TAP FLIP FEATURE =================
+        // ================= CAMERA, WORKING FILTERS & REAL-TIME TIMESTAMP SNAP =================
         window.openCameraModal = async () => {
             if(!currentChatId) return alert("Select chat first!");
             document.getElementById("cameraOverlay").style.display = "flex";
@@ -1044,6 +1063,7 @@
         };
 
         window.setSnapFilter = (cls, btn) => {
+            activeSnapFilterClass = cls;
             document.getElementById("cameraVideo").className = `camera-view ${cls}`;
             document.querySelectorAll(".filter-chip").forEach(c => c.classList.remove("active")); btn.classList.add("active");
         };
@@ -1051,11 +1071,30 @@
         window.captureLiveSnap = async () => {
             const v = document.getElementById("cameraVideo"), c = document.getElementById("cameraCanvas");
             c.width = v.videoWidth || 360; c.height = v.videoHeight || 360;
-            const ctx = c.getContext("2d"); ctx.filter = window.getComputedStyle(v).filter;
-            ctx.drawImage(v, 0, 0, c.width, c.height); closeCameraModal();
-            await sendMessage(c.toDataURL("image/jpeg", 0.75), "image", "📸 [SNAP]");
+            const ctx = c.getContext("2d"); 
             
-            // +10 Points for capturing snap
+            // Apply filter style manually on canvas export
+            ctx.save();
+            if(activeSnapFilterClass === "f-cyberpunk") ctx.filter = "contrast(150%) saturate(200%) hue-rotate(310deg)";
+            else if(activeSnapFilterClass === "f-neon") ctx.filter = "brightness(120%) contrast(140%)";
+            else if(activeSnapFilterClass === "f-grayscale") ctx.filter = "grayscale(100%)";
+            else if(activeSnapFilterClass === "f-sepia") ctx.filter = "sepia(90%)";
+            
+            ctx.drawImage(v, 0, 0, c.width, c.height);
+            ctx.restore();
+
+            // Draw Real-time Timestamp on Image
+            const now = new Date();
+            const timeStr = now.toLocaleString();
+            ctx.font = "bold 16px sans-serif";
+            ctx.fillStyle = "#00ffff";
+            ctx.shadowColor = "#000";
+            ctx.shadowBlur = 6;
+            ctx.fillText(`📍 NEXORA SNAP | ${timeStr}`, 20, c.height - 25);
+
+            closeCameraModal();
+            await sendMessage(c.toDataURL("image/jpeg", 0.85), "image", "📸 [SNAP with Timestamp]");
+            
             currentNexoraPoints += 10;
             await updateDoc(doc(db, "users", auth.currentUser.uid), { nexoraPoints: currentNexoraPoints });
             document.getElementById("displayNexoraPoints").innerText = `⭐ Points: ${currentNexoraPoints} (Open Store)`;
@@ -1306,7 +1345,6 @@
             typingTimeout = setTimeout(async () => { await setDoc(doc(db, "typing", roomId + "_" + auth.currentUser.uid), { isTyping: false, roomId }, { merge: true }); }, 2000);
         };
 
-        // ================= SEND MESSAGE & CHAT ACTIVITY POINTS (+5 PTS) =================
         window.sendMessage = async (mediaUrl="", mediaType="text", customText="") => {
             const input = document.getElementById("messageText");
             const text = customText || input.value.trim();
@@ -1324,7 +1362,6 @@
 
             if(text.trim().startsWith("@AI")) { await handleAIResponse(text, roomId); }
 
-            // +5 Points for sending a chat message activity
             currentNexoraPoints += 5;
             await updateDoc(doc(db, "users", auth.currentUser.uid), { nexoraPoints: currentNexoraPoints });
             document.getElementById("displayNexoraPoints").innerText = `⭐ Points: ${currentNexoraPoints} (Open Store)`;
@@ -1344,6 +1381,14 @@
         window.cancelReply = () => {
             replyingToMessage = null;
             document.getElementById("activeReplyContainer").style.display = "none";
+        };
+
+        // ================= DOUBLE TAP TO SAVE MESSAGE FEATURE =================
+        window.saveMessageLocally = (text) => {
+            let savedMsgs = JSON.parse(localStorage.getItem("nexora_saved_messages") || "[]");
+            savedMsgs.push({ text, savedAt: new Date().toLocaleString() });
+            localStorage.setItem("nexora_saved_messages", JSON.stringify(savedMsgs));
+            alert(`💾 Message saved locally!\n"${text}"`);
         };
 
         function listenToMessages(roomId) {
@@ -1368,7 +1413,7 @@
                         if(d.mediaUrl) {
                             if(d.mediaType === "sticker") mediaHTML = `<div style="font-size:36px;">${d.mediaUrl}</div>`;
                             else if(d.mediaType === "audio") mediaHTML = `<div class="voice-msg-player"><button class="voice-play-btn" onclick="playVoiceNote('aud_${d.id}','${d.mediaUrl}')">▶</button><span>Voice Note</span></div>`;
-                            else if(d.mediaType === "file") mediaHTML = `<button class="download-btn" onclick="downloadMedia('${d.mediaUrl}')">📥 Download File</button>`;
+                            else if(d.mediaType === "file") mediaHTML = `<button class="download-btn" onclick="downloadMedia('${d.mediaUrl}', 'nexora_file')">📥 Download File</button>`;
                             else mediaHTML = `<img src="${d.mediaUrl}" class="media-preview">`;
                         }
 
@@ -1391,7 +1436,11 @@
                         let lastTap = 0;
                         msg.onclick = (e) => {
                             let now = new Date().getTime();
-                            if(now - lastTap < 300) openReactionsModal(d.id);
+                            if(now - lastTap < 300) {
+                                // Double tap detected: Save message locally & open reactions
+                                saveMessageLocally(d.text || "Media Attachment");
+                                openReactionsModal(d.id);
+                            }
                             lastTap = now;
                         };
 
