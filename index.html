@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>NEXORA - Chat, Stories & Notes with Delete Option</title>
+    <title>NEXORA - Chat, Stories & Notes with Reactions & Swipe Reply</title>
     <style>
         :root { 
             --bg-main: #080b1d; 
@@ -68,7 +68,6 @@
         .profile-info p { font-size: 10px; color: #aab0c5; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .nexora-points-tag { font-size: 10px; color: #fbbf24; font-weight: bold; display: block; cursor: pointer; text-decoration: underline; }
 
-        /* STORIES & NOTES TRAYS */
         .stories-tray { display: flex; gap: 8px; padding: 6px 4px; overflow-x: auto; background: rgba(0,0,0,0.25); border-radius: 12px; flex-shrink: 0; border: 1px solid var(--border-color); }
         .story-ring { width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(45deg, #f58529, #dd2a7b, #8134af, #515bd4); padding: 2px; cursor: pointer; flex-shrink: 0; display: flex; align-items: center; justify-content: center; position: relative; }
         .story-ring.seen { background: #64748b; }
@@ -91,7 +90,6 @@
         .create-group-btn { background: var(--accent-color); border: none; color: white; padding: 3px 8px; border-radius: 6px; cursor: pointer; font-size: 10px; font-weight: bold; }
         
         .user-item { padding: 10px 12px; border-radius: 10px; cursor: pointer; font-size: 13px; margin-bottom: 6px; display: flex; align-items: center; justify-content: space-between; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.04); } 
-        .user-item:active { background: rgba(255,255,255,0.12); } 
         .user-status-indicator { width: 7px; height: 7px; border-radius: 50%; display: inline-block; margin-right: 8px; flex-shrink: 0; }
         .is-online { background: #22c55e; }
         .is-offline { background: #64748b; }
@@ -115,8 +113,15 @@
         .typing-floating-banner { position: absolute; top: 60px; left: 50%; transform: translateX(-50%); background: rgba(139, 92, 246, 0.3); backdrop-filter: blur(10px); border: 1px solid rgba(139, 92, 246, 0.5); color: #f3e8ff; padding: 4px 14px; border-radius: 20px; font-size: 11px; font-style: italic; z-index: 15; display: none; }
 
         .messages { flex: 1; padding: 12px 14px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; background: rgba(0, 0, 0, 0.3); } 
-        .message { max-width: 80%; padding: 10px 12px; border-radius: 14px; background: rgba(255,255,255,.12); backdrop-filter: blur(5px); word-break: break-word; font-size: 13px; position: relative; border: 1px solid rgba(255,255,255,0.06); } 
-        .sent { align-self: flex-end; background: var(--primary-gradient); border: none; } 
+        
+        /* MESSAGE & SWIPE REPLY & REACTIONS */
+        .message-wrapper { position: relative; width: 100%; display: flex; flex-direction: column; transition: transform 0.2s ease; }
+        .message-wrapper.sent-wrap { align-items: flex-end; }
+        .message-wrapper.received-wrap { align-items: flex-start; }
+
+        .message { max-width: 80%; padding: 10px 12px; border-radius: 14px; background: rgba(255,255,255,.12); backdrop-filter: blur(5px); word-break: break-word; font-size: 13px; position: relative; border: 1px solid rgba(255,255,255,0.06); cursor: pointer; user-select: none; } 
+        .sent { background: var(--primary-gradient); border: none; } 
+        
         .sender-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px; gap: 8px; } 
         .sender { font-size: 10px; color: #aab0c5; } 
         .msg-footer { display: flex; justify-content: flex-end; align-items: center; gap: 6px; margin-top: 3px; font-size: 9px; color: rgba(255,255,255,0.7); } 
@@ -127,6 +132,17 @@
         .action-icon-btn { background: none; border: none; cursor: pointer; font-size: 12px; opacity: 0.8; }
         .delete-btn { color: #fca5a5; font-size: 10px; } 
         .download-btn { color: #38bdf8; font-size: 10px; font-weight: bold; text-decoration: underline; background:none; border:none; cursor:pointer; }
+
+        /* REACTION PILLS BADGE ON MESSAGE */
+        .msg-reactions-badge { display: flex; gap: 3px; flex-wrap: wrap; margin-top: 4px; }
+        .reaction-pill { background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.15); padding: 2px 6px; border-radius: 12px; font-size: 11px; display: inline-flex; align-items: center; gap: 2px; }
+
+        /* POPUP FOR 20 EMOJIS ON DOUBLE TAP */
+        .reactions-popup-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center; z-index: 5000; backdrop-filter: blur(4px); }
+        .reactions-grid-box { background: #13172e; border: 1px solid rgba(255,255,255,0.15); border-radius: 20px; padding: 16px; width: min(320px, 90%); text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
+        .reactions-20-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin: 12px 0; }
+        .reaction-emoji-item { font-size: 24px; cursor: pointer; padding: 6px; background: rgba(255,255,255,0.06); border-radius: 12px; transition: transform 0.1s; }
+        .reaction-emoji-item:active { transform: scale(1.2); background: rgba(255,255,255,0.2); }
 
         .active-reply-container { display: none; background: rgba(15, 23, 42, 0.95); padding: 6px 12px; border-top: 1px solid var(--border-color); justify-content: space-between; align-items: center; font-size: 11px; }
         
@@ -325,7 +341,17 @@
         </div>
     </div>
 
-    <!-- NOTE VIEWER MODAL (WITH DELETE & ISAIIFY MUSIC) -->
+    <!-- 20 EMOJIS REACTION POPUP MODAL -->
+    <div class="reactions-popup-overlay" id="reactionsModal">
+        <div class="reactions-grid-box">
+            <h3 style="font-size:14px; color:#a78bfa; margin-bottom:4px;">React with Emoji</h3>
+            <p style="font-size:10px; color:#aaa;">Tap any emoji to react</p>
+            <div class="reactions-20-grid" id="reactions20Grid"></div>
+            <button onclick="closeReactionsModal()" style="width:100%; padding:6px; background:transparent; border:none; color:#aaa; cursor:pointer; font-size:11px; margin-top:8px;">Cancel</button>
+        </div>
+    </div>
+
+    <!-- NOTE VIEWER MODAL -->
     <div class="story-viewer-overlay" id="noteViewerModal">
         <div class="story-container" style="background:#13172e; padding:16px; justify-content: space-between;">
             <div style="display:flex; justify-content:space-between; align-items:center;">
@@ -369,7 +395,7 @@
         </div>
     </div>
 
-    <!-- STORY VIEWER MODAL (WITH DELETE) -->
+    <!-- STORY VIEWER MODAL -->
     <div class="story-viewer-overlay" id="storyViewerModal">
         <div class="story-container">
             <div class="story-header-bar">
@@ -578,10 +604,46 @@
         let messageToForward = null;
         let currentViewingStoryId = null;
         let currentStoryOwnerId = null;
-
-        // NOTES STATE
         let currentViewingNoteId = null;
         let currentNoteOwnerId = null;
+
+        // REACTIONS 20 EMOJIS STATE
+        let activeReactingMessageId = null;
+        const twentyEmojisList = ["❤️", "👍", "🔥", "😂", "😮", "😢", "👏", "🎉", "💩", "🚀", "⭐", "💯", "💀", "😍", "🙏", "💪", "🍀", "💎", "🦄", "⚡"];
+
+        function renderReactions20Grid() {
+            const grid = document.getElementById("reactions20Grid");
+            if(grid) {
+                grid.innerHTML = twentyEmojisList.map(em => `
+                    <div class="reaction-emoji-item" onclick="selectReactionEmoji('${em}')">${em}</div>
+                `).join("");
+            }
+        }
+        renderReactions20Grid();
+
+        window.openReactionsModal = (msgId) => {
+            activeReactingMessageId = msgId;
+            document.getElementById("reactionsModal").style.display = "flex";
+        };
+        window.closeReactionsModal = () => {
+            document.getElementById("reactionsModal").style.display = "none";
+            activeReactingMessageId = null;
+        };
+
+        window.selectReactionEmoji = async (emoji) => {
+            if(!activeReactingMessageId) return;
+            const msgRef = doc(db, "messages", activeReactingMessageId);
+            const snap = await getDoc(msgRef);
+            if(snap.exists()) {
+                let reactions = snap.data().reactions || {};
+                let userKey = auth.currentUser.uid;
+                
+                // Toggle reaction or set emoji
+                reactions[userKey] = emoji;
+                await updateDoc(msgRef, { reactions });
+            }
+            closeReactionsModal();
+        };
 
         const nexoraStickers = ["🔥", "🚀", "💎", "⭐", "🎉", "😎", "🦄", "⚡", "🍀", "💖", "👑", "🐱", "🐶", "🐼", "🍕", "🍔", "🍿", "🍩", "☕", "🍺", "🏆", "🎯", "💻", "📱", "⌚", "💡"];
         const maleAvatars = [{ name: "Developer", emoji: "👨‍💻" }, { name: "Gentleman", emoji: "👨‍💼" }, { name: "Cool Guy", emoji: "😎" }, { name: "Hacker", emoji: "🥷" }];
@@ -611,10 +673,8 @@
         window.toggleStickersPanel = () => { const p = document.getElementById("stickersPopup"); p.style.display = p.style.display === "flex" ? "none" : "flex"; };
         window.sendSticker = async (st) => { toggleStickersPanel(); await sendMessage(st, "sticker", "🌟 [STICKER]"); };
 
-        // NOTES FEATURE WITH DELETE
-        window.triggerAddNote = () => {
-            document.getElementById("addNoteModal").style.display = "flex";
-        };
+        // NOTES FEATURE
+        window.triggerAddNote = () => { document.getElementById("addNoteModal").style.display = "flex"; };
         window.closeAddNoteModal = () => {
             document.getElementById("addNoteModal").style.display = "none";
             document.getElementById("noteIsaiifyUrlInput").value = "";
@@ -627,78 +687,44 @@
             const comment = document.getElementById("noteCommentText").value.trim();
             const isaiifyUrl = document.getElementById("noteIsaiifyUrlInput").value.trim();
             const fileInput = document.getElementById("noteAudioFileInput");
-
             if(!comment) return alert("Please type a comment for your note!");
 
             let finalSongUrl = isaiifyUrl;
-
             if(!finalSongUrl && fileInput && fileInput.files[0]) {
                 const reader = new FileReader();
-                reader.onload = async function(evt) {
-                    await saveNoteToDb(comment, evt.target.result);
-                };
+                reader.onload = async function(evt) { await saveNoteToDb(comment, evt.target.result); };
                 reader.readAsDataURL(fileInput.files[0]);
                 return;
             }
-
             await saveNoteToDb(comment, finalSongUrl);
         };
 
         async function saveNoteToDb(comment, songUrl) {
             await addDoc(collection(db, "notes"), {
-                userId: auth.currentUser.uid,
-                userName: document.getElementById("displayName").innerText,
-                comment: comment,
-                songUrl: songUrl || "",
-                likes: [],
-                comments: [],
-                createdAt: serverTimestamp()
+                userId: auth.currentUser.uid, userName: document.getElementById("displayName").innerText,
+                comment, songUrl: songUrl || "", likes: [], comments: [], createdAt: serverTimestamp()
             });
-            closeAddNoteModal();
-            alert("Note published successfully!");
+            closeAddNoteModal(); alert("Note published successfully!");
         }
 
         function listenToNotes() {
             if(unsubscribeNotes) unsubscribeNotes();
             unsubscribeNotes = onSnapshot(collection(db, "notes"), async (snapshot) => {
                 const list = document.getElementById("activeNotesList");
-                let notesHtml = `
-                    <div class="note-bubble-card" onclick="triggerAddNote()">
-                        <div class="note-bubble-text">＋ Add Note</div>
-                        <div class="note-bubble-user">Your Note</div>
-                    </div>
-                `;
-                
-                let hasMyNote = false;
-                snapshot.forEach(docSnap => {
-                    let n = docSnap.data();
-                    if(n.userId === auth.currentUser.uid) hasMyNote = true;
-                });
-
+                let notesHtml = `<div class="note-bubble-card" onclick="triggerAddNote()"><div class="note-bubble-text">＋ Add Note</div><div class="note-bubble-user">Your Note</div></div>`;
                 document.getElementById("notesTrayContainer").style.display = "flex";
 
                 for(let docSnap of snapshot.docs) {
-                    let n = docSnap.data();
-                    let nId = docSnap.id;
-                    
+                    let n = docSnap.data(); let nId = docSnap.id;
                     let showNote = false;
-                    if(n.userId === auth.currentUser.uid) {
-                        showNote = true;
-                    } else {
+                    if(n.userId === auth.currentUser.uid) showNote = true;
+                    else {
                         let roomId = [auth.currentUser.uid, n.userId].sort().join('_');
                         const reqSnap = await getDoc(doc(db, "chat_requests", roomId));
-                        if(reqSnap.exists() && reqSnap.data().status === "accepted") {
-                            showNote = true;
-                        }
+                        if(reqSnap.exists() && reqSnap.data().status === "accepted") showNote = true;
                     }
-
                     if(showNote) {
-                        notesHtml += `
-                            <div class="note-bubble-card" onclick="openNoteViewer('${nId}', '${n.comment.replace(/'/g, "\\'")}', '${n.userName}', '${n.songUrl||''}', '${JSON.stringify(n.likes||[])}', '${n.userId}')">
-                                <div class="note-bubble-text">💬 ${n.comment}</div>
-                                <div class="note-bubble-user">${n.userId === auth.currentUser.uid ? 'Your Note' : n.userName}</div>
-                            </div>
-                        `;
+                        notesHtml += `<div class="note-bubble-card" onclick="openNoteViewer('${nId}', '${n.comment.replace(/'/g, "\\'")}', '${n.userName}', '${n.songUrl||''}', '${JSON.stringify(n.likes||[])}', '${n.userId}')"><div class="note-bubble-text">💬 ${n.comment}</div><div class="note-bubble-user">${n.userId === auth.currentUser.uid ? 'Your Note' : n.userName}</div></div>`;
                     }
                 }
                 list.innerHTML = notesHtml;
@@ -706,38 +732,18 @@
         }
 
         window.openNoteViewer = async (noteId, comment, uName, songUrl, likesJson, ownerId) => {
-            currentViewingNoteId = noteId;
-            currentNoteOwnerId = ownerId;
+            currentViewingNoteId = noteId; currentNoteOwnerId = ownerId;
             document.getElementById("noteViewerUser").innerText = `${uName}'s Note`;
             document.getElementById("noteViewerText").innerText = comment;
-            
             let likes = JSON.parse(likesJson);
             document.getElementById("noteLikesCount").innerText = likes.length;
-
             const likeBtn = document.getElementById("noteLikeBtn");
-            if(likes.includes(auth.currentUser.uid)) {
-                likeBtn.innerText = `❤️ Liked (${likes.length})`;
-                likeBtn.style.background = "#ef4444";
-            } else {
-                likeBtn.innerText = `🤍 Like (${likes.length})`;
-                likeBtn.style.background = "rgba(255,255,255,0.15)";
-            }
-
-            const deleteNoteBtn = document.getElementById("deleteNoteBtn");
-            if(ownerId === auth.currentUser.uid) {
-                deleteNoteBtn.style.display = "inline-block";
-            } else {
-                deleteNoteBtn.style.display = "none";
-            }
-
+            if(likes.includes(auth.currentUser.uid)) { likeBtn.innerText = `❤️ Liked (${likes.length})`; likeBtn.style.background = "#ef4444"; }
+            else { likeBtn.innerText = `🤍 Like (${likes.length})`; likeBtn.style.background = "rgba(255,255,255,0.15)"; }
+            document.getElementById("deleteNoteBtn").style.display = ownerId === auth.currentUser.uid ? "inline-block" : "none";
             const audioEl = document.getElementById("viewerNoteAudio");
-            if(songUrl) {
-                audioEl.src = songUrl;
-                audioEl.play().catch(e => console.log("Audio play error:", e));
-            } else {
-                audioEl.pause(); audioEl.src = "";
-            }
-
+            if(songUrl) { audioEl.src = songUrl; audioEl.play().catch(e => console.log(e)); }
+            else { audioEl.pause(); audioEl.src = ""; }
             document.getElementById("noteViewerModal").style.display = "flex";
         };
 
@@ -745,17 +751,12 @@
             document.getElementById("noteViewerModal").style.display = "none";
             const audioEl = document.getElementById("viewerNoteAudio");
             audioEl.pause(); audioEl.src = "";
-            currentViewingNoteId = null;
-            currentNoteOwnerId = null;
+            currentViewingNoteId = null; currentNoteOwnerId = null;
         };
 
         window.deleteCurrentNote = async () => {
             if(!currentViewingNoteId || currentNoteOwnerId !== auth.currentUser.uid) return;
-            if(confirm("Are you sure you want to delete this note?")) {
-                await deleteDoc(doc(db, "notes", currentViewingNoteId));
-                closeNoteViewer();
-                alert("Note deleted successfully!");
-            }
+            if(confirm("Delete this note?")) { await deleteDoc(doc(db, "notes", currentViewingNoteId)); closeNoteViewer(); alert("Note deleted!"); }
         };
 
         window.toggleNoteLike = async () => {
@@ -763,24 +764,14 @@
             const noteRef = doc(db, "notes", currentViewingNoteId);
             const snap = await getDoc(noteRef);
             if(snap.exists()) {
-                let data = snap.data();
-                let likes = data.likes || [];
-                const likeBtn = document.getElementById("noteLikeBtn");
-                
-                if(likes.includes(auth.currentUser.uid)) {
-                    likes = likes.filter(id => id !== auth.currentUser.uid);
-                } else {
-                    likes.push(auth.currentUser.uid);
-                }
+                let data = snap.data(); let likes = data.likes || [];
+                if(likes.includes(auth.currentUser.uid)) likes = likes.filter(id => id !== auth.currentUser.uid);
+                else likes.push(auth.currentUser.uid);
                 await updateDoc(noteRef, { likes });
                 document.getElementById("noteLikesCount").innerText = likes.length;
-                if(likes.includes(auth.currentUser.uid)) {
-                    likeBtn.innerText = `❤️ Liked (${likes.length})`;
-                    likeBtn.style.background = "#ef4444";
-                } else {
-                    likeBtn.innerText = `🤍 Like (${likes.length})`;
-                    likeBtn.style.background = "rgba(255,255,255,0.15)";
-                }
+                const likeBtn = document.getElementById("noteLikeBtn");
+                if(likes.includes(auth.currentUser.uid)) { likeBtn.innerText = `❤️ Liked (${likes.length})`; likeBtn.style.background = "#ef4444"; }
+                else { likeBtn.innerText = `🤍 Like (${likes.length})`; likeBtn.style.background = "rgba(255,255,255,0.15)"; }
             }
         };
 
@@ -788,109 +779,62 @@
             const commentInput = document.getElementById("noteCommentInput");
             const replyText = commentInput.value.trim();
             if(!replyText || !currentViewingNoteId) return;
-
             const noteSnap = await getDoc(doc(db, "notes", currentViewingNoteId));
             if(noteSnap.exists()) {
                 let noteOwnerId = noteSnap.data().userId;
                 let roomId = [auth.currentUser.uid, noteOwnerId].sort().join('_');
                 await addDoc(collection(db, "messages"), {
-                    text: `Replied to Note: "${noteSnap.data().comment}" -> ${replyText}`,
-                    mediaUrl: "", mediaType: "text",
+                    text: `Replied to Note: "${noteSnap.data().comment}" -> ${replyText}`, mediaUrl: "", mediaType: "text",
                     senderId: auth.currentUser.uid, senderName: document.getElementById("displayName").innerText,
                     chatRoom: roomId, status: 'sent', createdAt: serverTimestamp(), reactions: {}
                 });
-                commentInput.value = "";
-                alert("Reply sent as direct chat message!");
-                closeNoteViewer();
+                commentInput.value = ""; alert("Reply sent as direct chat!"); closeNoteViewer();
             }
         };
 
-        // STORIES SYSTEM LOGIC WITH DELETE
+        // STORIES SYSTEM
         window.triggerAddStory = () => { document.getElementById("addStoryModal").style.display = "flex"; };
-        window.closeAddStoryModal = () => {
-            document.getElementById("addStoryModal").style.display = "none";
-            document.getElementById("storyIsaiifyUrlInput").value = "";
-            const fileInput = document.getElementById("storyAudioFileInput");
-            if(fileInput) fileInput.value = "";
-        };
+        window.closeAddStoryModal = () => { document.getElementById("addStoryModal").style.display = "none"; document.getElementById("storyIsaiifyUrlInput").value = ""; };
 
         window.publishNewStory = async () => {
             const fileInput = document.getElementById("storyMediaFileInput");
             const isaiifyUrl = document.getElementById("storyIsaiifyUrlInput").value.trim();
-            const audioFileInput = document.getElementById("storyAudioFileInput");
-
-            if(!fileInput.files[0]) return alert("Please select an image for your story!");
-
+            if(!fileInput.files[0]) return alert("Select an image for your story!");
             const reader = new FileReader();
-            reader.onload = async function(evt) {
-                let mediaUrl = evt.target.result;
-                let finalSongUrl = isaiifyUrl;
-
-                if(!finalSongUrl && audioFileInput && audioFileInput.files[0]) {
-                    const audioReader = new FileReader();
-                    audioReader.onload = async function(audioEvt) {
-                        await saveStoryToDb(mediaUrl, audioEvt.target.result);
-                    };
-                    audioReader.readAsDataURL(audioFileInput.files[0]);
-                    return;
-                }
-
-                await saveStoryToDb(mediaUrl, finalSongUrl);
-            };
+            reader.onload = async function(evt) { await saveStoryToDb(evt.target.result, isaiifyUrl); };
             reader.readAsDataURL(fileInput.files[0]);
         };
 
         async function saveStoryToDb(mediaUrl, songUrl) {
             await addDoc(collection(db, "stories"), {
-                userId: auth.currentUser.uid,
-                userName: document.getElementById("displayName").innerText,
-                userAvatar: selectedAvatarEmoji,
-                mediaUrl: mediaUrl,
-                songUrl: songUrl || "",
-                viewers: [], likes: [], createdAt: serverTimestamp()
+                userId: auth.currentUser.uid, userName: document.getElementById("displayName").innerText,
+                userAvatar: selectedAvatarEmoji, mediaUrl, songUrl: songUrl || "", viewers: [], likes: [], createdAt: serverTimestamp()
             });
-            closeAddStoryModal();
-            alert("Story published successfully!");
+            closeAddStoryModal(); alert("Story published!");
         }
 
         function listenToStories() {
             if(unsubscribeStories) unsubscribeStories();
             unsubscribeStories = onSnapshot(collection(db, "stories"), async (snapshot) => {
                 const list = document.getElementById("activeStoriesList");
-                let storiesHtml = "";
-                let hasMyStory = false;
-                
+                let storiesHtml = ""; let hasMyStory = false;
                 snapshot.forEach(docSnap => {
                     let s = docSnap.data();
-                    if(s.userId === auth.currentUser.uid) {
-                        hasMyStory = true;
-                        document.getElementById("myStoryThumb").innerHTML = `<img src="${s.mediaUrl}">`;
-                    }
+                    if(s.userId === auth.currentUser.uid) { hasMyStory = true; document.getElementById("myStoryThumb").innerHTML = `<img src="${s.mediaUrl}">`; }
                 });
-
-                if(!hasMyStory) {
-                    document.getElementById("myStoryThumb").innerHTML = "➕";
-                }
+                if(!hasMyStory) document.getElementById("myStoryThumb").innerHTML = "➕";
 
                 for(let docSnap of snapshot.docs) {
-                    let s = docSnap.data();
-                    let sId = docSnap.id;
-                    let showStory = false;
-                    if(s.userId === auth.currentUser.uid) {
-                        showStory = true;
-                    } else {
+                    let s = docSnap.data(); let sId = docSnap.id;
+                    let showStory = s.userId === auth.currentUser.uid;
+                    if(!showStory) {
                         let roomId = [auth.currentUser.uid, s.userId].sort().join('_');
                         const reqSnap = await getDoc(doc(db, "chat_requests", roomId));
                         if(reqSnap.exists() && reqSnap.data().status === "accepted") showStory = true;
                     }
-
                     if(showStory) {
                         let hasSeen = s.viewers && s.viewers.includes(auth.currentUser.uid);
-                        storiesHtml += `
-                            <div class="story-ring ${hasSeen ? 'seen' : ''}" onclick="openStoryViewer('${sId}', '${s.mediaUrl}', '${s.userName}', '${s.userAvatar}', '${s.songUrl||''}', '${JSON.stringify(s.viewers||[])}', '${JSON.stringify(s.likes||[])}', '${s.userId}')">
-                                <div class="story-thumb">${s.userAvatar.startsWith('data:')?`<img src="${s.userAvatar}">`:s.userAvatar}</div>
-                            </div>
-                        `;
+                        storiesHtml += `<div class="story-ring ${hasSeen ? 'seen' : ''}" onclick="openStoryViewer('${sId}', '${s.mediaUrl}', '${s.userName}', '${s.userAvatar}', '${s.songUrl||''}', '${JSON.stringify(s.viewers||[])}', '${JSON.stringify(s.likes||[])}', '${s.userId}')"><div class="story-thumb">${s.userAvatar.startsWith('data:')?`<img src="${s.userAvatar}">`:s.userAvatar}</div></div>`;
                     }
                 }
                 list.innerHTML = storiesHtml;
@@ -898,60 +842,34 @@
         }
 
         window.openStoryViewer = async (storyId, mediaUrl, uName, uAvatar, songUrl, viewersJson, likesJson, ownerId) => {
-            currentViewingStoryId = storyId;
-            currentStoryOwnerId = ownerId;
+            currentViewingStoryId = storyId; currentStoryOwnerId = ownerId;
             document.getElementById("viewerUserName").innerText = uName;
             document.getElementById("viewerUserAvatar").innerHTML = uAvatar.startsWith('data:') ? `<img src="${uAvatar}">` : uAvatar;
             document.getElementById("viewerStoryImage").src = mediaUrl;
-            
-            let viewers = JSON.parse(viewersJson);
-            let likes = JSON.parse(likesJson);
-
+            let viewers = JSON.parse(viewersJson); let likes = JSON.parse(likesJson);
             document.getElementById("storyViewersCount").innerText = viewers.length;
             document.getElementById("storyLikesCount").innerText = likes.length;
-
             const likeBtn = document.getElementById("storyLikeBtn");
-            if(likes.includes(auth.currentUser.uid)) {
-                likeBtn.innerText = "❤️ Liked"; likeBtn.style.background = "#ef4444";
-            } else {
-                likeBtn.innerText = "🤍 Like"; likeBtn.style.background = "rgba(255,255,255,0.2)";
-            }
-
-            const deleteStoryBtn = document.getElementById("deleteStoryBtn");
-            if(ownerId === auth.currentUser.uid) {
-                deleteStoryBtn.style.display = "inline-block";
-            } else {
-                deleteStoryBtn.style.display = "none";
-            }
-
+            if(likes.includes(auth.currentUser.uid)) { likeBtn.innerText = "❤️ Liked"; likeBtn.style.background = "#ef4444"; }
+            else { likeBtn.innerText = "🤍 Like"; likeBtn.style.background = "rgba(255,255,255,0.2)"; }
+            document.getElementById("deleteStoryBtn").style.display = ownerId === auth.currentUser.uid ? "inline-block" : "none";
             const audioEl = document.getElementById("viewerStoryAudio");
-            if(songUrl) {
-                audioEl.src = songUrl; audioEl.play().catch(e => console.log(e));
-            } else { audioEl.pause(); audioEl.src = ""; }
-
+            if(songUrl) { audioEl.src = songUrl; audioEl.play().catch(e => console.log(e)); } else { audioEl.pause(); audioEl.src = ""; }
             document.getElementById("storyViewerModal").style.display = "flex";
-
             if(ownerId !== auth.currentUser.uid && !viewers.includes(auth.currentUser.uid)) {
-                viewers.push(auth.currentUser.uid);
-                await updateDoc(doc(db, "stories", storyId), { viewers });
+                viewers.push(auth.currentUser.uid); await updateDoc(doc(db, "stories", storyId), { viewers });
             }
         };
 
         window.closeStoryViewer = () => {
             document.getElementById("storyViewerModal").style.display = "none";
-            const audioEl = document.getElementById("viewerStoryAudio");
-            audioEl.pause(); audioEl.src = "";
-            currentViewingStoryId = null;
-            currentStoryOwnerId = null;
+            const audioEl = document.getElementById("viewerStoryAudio"); audioEl.pause(); audioEl.src = "";
+            currentViewingStoryId = null; currentStoryOwnerId = null;
         };
 
         window.deleteCurrentStory = async () => {
             if(!currentViewingStoryId || currentStoryOwnerId !== auth.currentUser.uid) return;
-            if(confirm("Are you sure you want to delete this story?")) {
-                await deleteDoc(doc(db, "stories", currentViewingStoryId));
-                closeStoryViewer();
-                alert("Story deleted successfully!");
-            }
+            if(confirm("Delete story?")) { await deleteDoc(doc(db, "stories", currentViewingStoryId)); closeStoryViewer(); alert("Story deleted!"); }
         };
 
         window.toggleStoryLike = async () => {
@@ -959,18 +877,11 @@
             const storyRef = doc(db, "stories", currentViewingStoryId);
             const snap = await getDoc(storyRef);
             if(snap.exists()) {
-                let data = snap.data();
-                let likes = data.likes || [];
+                let data = snap.data(); let likes = data.likes || [];
                 const likeBtn = document.getElementById("storyLikeBtn");
-                if(likes.includes(auth.currentUser.uid)) {
-                    likes = likes.filter(id => id !== auth.currentUser.uid);
-                    likeBtn.innerText = "🤍 Like"; likeBtn.style.background = "rgba(255,255,255,0.2)";
-                } else {
-                    likes.push(auth.currentUser.uid);
-                    likeBtn.innerText = "❤️ Liked"; likeBtn.style.background = "#ef4444";
-                }
-                await updateDoc(storyRef, { likes });
-                document.getElementById("storyLikesCount").innerText = likes.length;
+                if(likes.includes(auth.currentUser.uid)) { likes = likes.filter(id => id !== auth.currentUser.uid); likeBtn.innerText = "🤍 Like"; likeBtn.style.background = "rgba(255,255,255,0.2)"; }
+                else { likes.push(auth.currentUser.uid); likeBtn.innerText = "❤️ Liked"; likeBtn.style.background = "#ef4444"; }
+                await updateDoc(storyRef, { likes }); document.getElementById("storyLikesCount").innerText = likes.length;
             }
         };
 
@@ -979,18 +890,15 @@
             if (!isRecordingAudio) {
                 try {
                     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                    mediaRecorder = new MediaRecorder(stream);
-                    audioChunks = [];
+                    mediaRecorder = new MediaRecorder(stream); audioChunks = [];
                     mediaRecorder.ondataavailable = e => { if(e.data.size > 0) audioChunks.push(e.data); };
                     mediaRecorder.onstop = async () => {
                         const blob = new Blob(audioChunks, { type: 'audio/webm' });
-                        const reader = new FileReader();
-                        reader.readAsDataURL(blob);
+                        const reader = new FileReader(); reader.readAsDataURL(blob);
                         reader.onloadend = async () => { await sendMessage(reader.result, "audio", "🎙️ [Voice Note]"); };
                         stream.getTracks().forEach(t => t.stop());
                     };
-                    mediaRecorder.start();
-                    isRecordingAudio = true;
+                    mediaRecorder.start(); isRecordingAudio = true;
                     document.getElementById("messageText").style.display = "none";
                     document.getElementById("voiceRecordUI").style.display = "flex";
                     document.getElementById("micToggleBtn").className = "mic-btn recording";
@@ -1003,9 +911,7 @@
                     }, 1000);
                 } catch(err) { alert("Mic error: " + err.message); }
             } else {
-                mediaRecorder.stop();
-                isRecordingAudio = false;
-                clearInterval(audioRecordTimer);
+                mediaRecorder.stop(); isRecordingAudio = false; clearInterval(audioRecordTimer);
                 document.getElementById("messageText").style.display = "block";
                 document.getElementById("voiceRecordUI").style.display = "none";
                 document.getElementById("micToggleBtn").className = "mic-btn";
@@ -1022,36 +928,22 @@
             }
         };
 
-        window.playVoiceNote = (id, src) => {
-            let audio = document.getElementById(id) || new Audio(src);
-            audio.id = id;
-            audio.paused ? audio.play() : audio.pause();
-        };
-
+        window.playVoiceNote = (id, src) => { let audio = document.getElementById(id) || new Audio(src); audio.id = id; audio.paused ? audio.play() : audio.pause(); };
         window.handleMediaUpload = (e) => {
-            const file = e.target.files[0];
-            if (!file || !currentChatId) return;
+            const file = e.target.files[0]; if (!file || !currentChatId) return;
             const reader = new FileReader();
             reader.onload = function(evt) {
-                let type = "image";
-                let name = file.name;
-                if(file.type.includes("pdf") || file.type.includes("text") || file.type.includes("zip")) type = "file";
-                sendMessage(evt.target.result, type, `📎 [File: ${name}]`);
+                let type = file.type.includes("pdf") || file.type.includes("text") || file.type.includes("zip") ? "file" : "image";
+                sendMessage(evt.target.result, type, `📎 [File: ${file.name}]`);
             };
             reader.readAsDataURL(file);
         };
-
-        window.downloadMedia = (url, name) => {
-            const a = document.createElement("a");
-            a.href = url; a.download = name || `nexora_file_${Date.now()}`;
-            document.body.appendChild(a); a.click(); document.body.removeChild(a);
-        };
+        window.downloadMedia = (url, name) => { const a = document.createElement("a"); a.href = url; a.download = name || `nexora_file_${Date.now()}`; document.body.appendChild(a); a.click(); document.body.removeChild(a); };
 
         window.pinMessage = async (msgId, text) => {
             let roomId = isCurrentChatGroup ? currentChatId : [auth.currentUser.uid, currentChatId].sort().join('_');
             await setDoc(doc(db, "chat_meta", roomId), { pinnedId: msgId, pinnedText: text }, { merge: true });
         };
-
         window.unpinMessage = async () => {
             let roomId = isCurrentChatGroup ? currentChatId : [auth.currentUser.uid, currentChatId].sort().join('_');
             await setDoc(doc(db, "chat_meta", roomId), { pinnedId: "", pinnedText: "" }, { merge: true });
@@ -1064,7 +956,6 @@
             document.getElementById("forwardModal").style.display = "flex";
         };
         window.closeForwardModal = () => document.getElementById("forwardModal").style.display = "none";
-
         window.forwardMessageToUser = async (targetId) => {
             if(!messageToForward) return;
             let roomId = [auth.currentUser.uid, targetId].sort().join('_');
@@ -1079,8 +970,7 @@
         window.translateMessage = async (msgId, text) => {
             const el = document.getElementById(`trans_${msgId}`);
             if(el.style.display === "block") { el.style.display = "none"; return; }
-            el.innerText = "Translating...";
-            el.style.display = "block";
+            el.innerText = "Translating..."; el.style.display = "block";
             setTimeout(() => { el.innerText = `🌐 (Translated): ${text} [Verified]`; }, 600);
         };
 
@@ -1091,24 +981,17 @@
         window.closeStoreModal = () => document.getElementById("nexoraStoreModal").style.display = "none";
 
         window.buyStoreItem = async (item, cost) => {
-            if(currentNexoraPoints < cost) return alert("Not enough Nexora Points!");
+            if(currentNexoraPoints < cost) return alert("Not enough Points!");
             currentNexoraPoints -= cost;
             await updateDoc(doc(db, "users", auth.currentUser.uid), { nexoraPoints: currentNexoraPoints });
             document.getElementById("displayNexoraPoints").innerText = `⭐ Points: ${currentNexoraPoints} (Open Store)`;
-            alert(`🎉 Success! You unlocked ${item}!`);
-            closeStoreModal();
+            alert(`🎉 Success! Unlocked ${item}!`); closeStoreModal();
         };
 
         async function handleAIResponse(queryText, roomId) {
-            let replyContent = "🤖 Nexora AI: Hello! How can I help you today?";
-            let lower = queryText.toLowerCase();
-            if(lower.includes("time")) replyContent = `🤖 Nexora AI: Time is ${new Date().toLocaleTimeString()}`;
-            else if(lower.includes("joke")) replyContent = "🤖 Nexora AI: Why do programmers prefer dark mode? Because light attracts bugs! 🐛";
-            else replyContent = `🤖 Nexora AI: Received query: "${queryText}".`;
-
+            let replyContent = queryText.toLowerCase().includes("joke") ? "🤖 Nexora AI: Why do programmers wear glasses? Because they can't C#! 👓" : `🤖 Nexora AI: Received query: "${queryText}".`;
             await addDoc(collection(db, "messages"), {
-                text: replyContent, mediaUrl: "", mediaType: "text",
-                senderId: "nexora_ai_bot", senderName: "🤖 Nexora AI",
+                text: replyContent, mediaUrl: "", mediaType: "text", senderId: "nexora_ai_bot", senderName: "🤖 Nexora AI",
                 chatRoom: roomId, status: 'read', createdAt: serverTimestamp(), reactions: {}
             });
         }
@@ -1120,21 +1003,15 @@
             document.getElementById("cameraVideo").srcObject = mediaStream;
         };
         window.closeCameraModal = () => { if(mediaStream) mediaStream.getTracks().forEach(t => t.stop()); document.getElementById("cameraOverlay").style.display = "none"; };
-        
         window.setSnapFilter = (cls, btn) => {
-            const v = document.getElementById("cameraVideo");
-            v.className = `camera-view ${cls}`;
-            document.querySelectorAll(".filter-chip").forEach(c => c.classList.remove("active"));
-            btn.classList.add("active");
+            document.getElementById("cameraVideo").className = `camera-view ${cls}`;
+            document.querySelectorAll(".filter-chip").forEach(c => c.classList.remove("active")); btn.classList.add("active");
         };
-
         window.captureLiveSnap = async () => {
             const v = document.getElementById("cameraVideo"), c = document.getElementById("cameraCanvas");
             c.width = v.videoWidth || 360; c.height = v.videoHeight || 360;
-            const ctx = c.getContext("2d");
-            ctx.filter = window.getComputedStyle(v).filter;
-            ctx.drawImage(v, 0, 0, c.width, c.height);
-            closeCameraModal();
+            const ctx = c.getContext("2d"); ctx.filter = window.getComputedStyle(v).filter;
+            ctx.drawImage(v, 0, 0, c.width, c.height); closeCameraModal();
             await sendMessage(c.toDataURL("image/jpeg", 0.75), "image", "📸 [SNAP]");
             currentNexoraPoints += 10;
             await updateDoc(doc(db, "users", auth.currentUser.uid), { nexoraPoints: currentNexoraPoints });
@@ -1147,31 +1024,25 @@
             if (!queryStr) return resultsBox.innerHTML = "Enter query.";
             resultsBox.innerHTML = "Searching...";
             const usersSnapshot = await getDocs(collection(db, "users"));
-            resultsBox.innerHTML = "";
-            let found = false;
+            resultsBox.innerHTML = ""; let found = false;
             usersSnapshot.forEach(async (docSnap) => {
-                const userData = docSnap.data();
-                const userId = docSnap.id;
+                const userData = docSnap.data(); const userId = docSnap.id;
                 if (userId !== auth.currentUser.uid && ((userData.email||"").toLowerCase().includes(queryStr) || (userData.name||"").toLowerCase().includes(queryStr))) {
                     found = true;
-                    const item = document.createElement("div");
-                    item.className = "search-result-item";
+                    const item = document.createElement("div"); item.className = "search-result-item";
                     item.innerHTML = `<span>👤 ${userData.name || "User"}</span>`;
                     const btn = document.createElement("button");
                     btn.style.cssText = "padding:3px 6px; background:var(--accent-color); border:none; border-radius:4px; color:white; cursor:pointer; font-size:10px;";
                     let roomId = [auth.currentUser.uid, userId].sort().join('_');
                     const reqSnap = await getDoc(doc(db, "chat_requests", roomId));
                     if (reqSnap.exists() && reqSnap.data().status === "accepted") {
-                        btn.innerText = "Chat";
-                        btn.onclick = () => { selectChat(userId, userData.name || "User", userData.avatar || '', userData.email || '', false, userData.online, userData.statusMsg || ''); closeAccountSettings(); };
+                        btn.innerText = "Chat"; btn.onclick = () => { selectChat(userId, userData.name || "User", userData.avatar||'', userData.email||'', false, userData.online, userData.statusMsg||''); closeAccountSettings(); };
                     } else if (reqSnap.exists() && reqSnap.data().status === "pending") {
                         btn.innerText = "Requested"; btn.disabled = true;
                     } else {
-                        btn.innerText = "Request";
-                        btn.onclick = () => { sendChatRequest(userId); searchUsers(); };
+                        btn.innerText = "Request"; btn.onclick = () => { sendChatRequest(userId); searchUsers(); };
                     }
-                    item.appendChild(btn);
-                    resultsBox.appendChild(item);
+                    item.appendChild(btn); resultsBox.appendChild(item);
                 }
             });
             if (!found) resultsBox.innerHTML = "No users found.";
@@ -1186,15 +1057,10 @@
         function listenToIncomingRequests() {
             if (unsubscribeRequests) unsubscribeRequests();
             unsubscribeRequests = onSnapshot(collection(db, "chat_requests"), (snapshot) => {
-                let pendingCount = 0;
-                if (!auth.currentUser) return;
-                snapshot.forEach(docSnap => {
-                    let data = docSnap.data();
-                    if (data.to === auth.currentUser.uid && data.status === "pending") pendingCount++;
-                });
+                let pendingCount = 0; if (!auth.currentUser) return;
+                snapshot.forEach(docSnap => { let data = docSnap.data(); if (data.to === auth.currentUser.uid && data.status === "pending") pendingCount++; });
                 const badge = document.getElementById("notifBadge");
-                if (pendingCount > 0) { badge.innerText = pendingCount; badge.style.display = "inline-block"; }
-                else badge.style.display = "none";
+                if (pendingCount > 0) { badge.innerText = pendingCount; badge.style.display = "inline-block"; } else badge.style.display = "none";
                 if (activeSidebarTab === 'notifs') renderNotificationsList();
             });
         }
@@ -1202,64 +1068,38 @@
         async function renderNotificationsList() {
             const chatList = document.getElementById("chatList");
             chatList.innerHTML = "<div style='font-size:11px; color:#aaa; padding:10px;'>Loading requests...</div>";
-            const snapshot = await getDocs(collection(db, "chat_requests"));
-            let reqHtml = "";
+            const snapshot = await getDocs(collection(db, "chat_requests")); let reqHtml = "";
             for (let docSnap of snapshot.docs) {
                 let data = docSnap.data();
                 if (data.to === auth.currentUser.uid && data.status === "pending") {
                     let senderSnap = await getDoc(doc(db, "users", data.from));
                     let sName = senderSnap.exists() ? (senderSnap.data().name || "User") : "User";
-                    reqHtml += `
-                        <div class="user-item" style="flex-direction:column; align-items:flex-start; gap:6px; padding:10px;">
-                            <span>🔔 <b>${sName}</b> sent a chat request.</span>
-                            <div style="display:flex; gap:6px; width:100%;">
-                                <button onclick="acceptChatRequest('${docSnap.id}')" style="flex:1; padding:5px; background:#22c55e; color:white; border:none; border-radius:6px; font-size:11px; font-weight:bold; cursor:pointer;">Accept</button>
-                                <button onclick="rejectChatRequest('${docSnap.id}')" style="flex:1; padding:5px; background:#ef4444; color:white; border:none; border-radius:6px; font-size:11px; font-weight:bold; cursor:pointer;">Reject</button>
-                            </div>
-                        </div>
-                    `;
+                    reqHtml += `<div class="user-item" style="flex-direction:column; align-items:flex-start; gap:6px; padding:10px;"><span>🔔 <b>${sName}</b> sent a chat request.</span><div style="display:flex; gap:6px; width:100%;"><button onclick="acceptChatRequest('${docSnap.id}')" style="flex:1; padding:5px; background:#22c55e; color:white; border:none; border-radius:6px; font-size:11px; font-weight:bold; cursor:pointer;">Accept</button><button onclick="rejectChatRequest('${docSnap.id}')" style="flex:1; padding:5px; background:#ef4444; color:white; border:none; border-radius:6px; font-size:11px; font-weight:bold; cursor:pointer;">Reject</button></div></div>`;
                 }
             }
             chatList.innerHTML = reqHtml || `<div style="font-size:11px; color:#aaa; padding:10px;">No pending notifications.</div>`;
         }
 
-        window.acceptChatRequest = async function(roomId) {
-            await updateDoc(doc(db, "chat_requests", roomId), { status: "accepted" });
-            switchSidebarTab('chats');
-        };
-
-        window.rejectChatRequest = async function(roomId) {
-            await deleteDoc(doc(db, "chat_requests", roomId));
-            renderNotificationsList();
-        };
+        window.acceptChatRequest = async function(roomId) { await updateDoc(doc(db, "chat_requests", roomId), { status: "accepted" }); switchSidebarTab('chats'); };
+        window.rejectChatRequest = async function(roomId) { await deleteDoc(doc(db, "chat_requests", roomId)); renderNotificationsList(); };
 
         window.removeOrDisconnectUser = async function() {
             if (!currentChatId || isCurrentChatGroup) return;
-            if (confirm(`Remove ${currentChatName} from your chats?`)) {
+            if (confirm(`Remove ${currentChatName}?`)) {
                 let roomId = [auth.currentUser.uid, currentChatId].sort().join('_');
-                await deleteDoc(doc(db, "chat_requests", roomId));
-                alert("User removed!");
-                closeSelectedUserProfile();
-                backToSidebar();
-                renderChatListAndGroups();
+                await deleteDoc(doc(db, "chat_requests", roomId)); alert("Removed!");
+                closeSelectedUserProfile(); backToSidebar(); renderChatListAndGroups();
             }
         };
 
-        window.togglePasswordVisibility = () => {
-            const p = document.getElementById("password");
-            p.type = p.type === "password" ? "text" : "password";
-        };
-
+        window.togglePasswordVisibility = () => { const p = document.getElementById("password"); p.type = p.type === "password" ? "text" : "password"; };
         window.login = async () => {
-            const email = document.getElementById("email").value.trim();
-            const password = document.getElementById("password").value;
+            const email = document.getElementById("email").value.trim(); const password = document.getElementById("password").value;
             if (!email || !password) return alert("Enter credentials.");
             try { await signInWithEmailAndPassword(auth, email, password); } catch(e) { alert(e.message); }
         };
-
         window.createAccount = async () => {
-            const email = document.getElementById("email").value.trim();
-            const password = document.getElementById("password").value;
+            const email = document.getElementById("email").value.trim(); const password = document.getElementById("password").value;
             if (!email || !password) return alert("Enter credentials.");
             try {
                 const res = await createUserWithEmailAndPassword(auth, email, password);
@@ -1275,7 +1115,6 @@
                     document.getElementById("loginPage").style.display = "none";
                     document.getElementById("app").style.display = "flex";
                 }, 800);
-
                 const snap = await getDoc(doc(db, "users", user.uid));
                 let data = snap.exists() ? snap.data() : {};
                 document.getElementById("displayName").innerText = data.name || "NEXORA User";
@@ -1283,17 +1122,12 @@
                 currentNexoraPoints = data.nexoraPoints || 0;
                 document.getElementById("displayNexoraPoints").innerText = `⭐ Points: ${currentNexoraPoints} (Open Store)`;
                 myBlockedUsers = data.blocked || [];
-                updateAvatarDisplay(data.avatar || "👨‍💻");
-                renderAvatarOptions("male");
+                updateAvatarDisplay(data.avatar || "👨‍💻"); renderAvatarOptions("male");
                 await setDoc(doc(db, "users", user.uid), { online: true }, { merge: true });
-                listenToActiveUsersAndGroups();
-                listenToIncomingRequests();
-                listenToStories();
-                listenToNotes();
+                listenToActiveUsersAndGroups(); listenToIncomingRequests(); listenToStories(); listenToNotes();
             } else {
-                if(auth.currentUser) await setDoc(doc(db, "users", auth.currentUser.uid), { online: false, lastSeen: new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) }, { merge: true });
-                document.getElementById("app").style.display = "none";
-                document.getElementById("loginPage").style.display = "flex";
+                if(auth.currentUser) await setDoc(doc(db, "users", auth.currentUser.uid), { online: false }, { merge: true });
+                document.getElementById("app").style.display = "none"; document.getElementById("loginPage").style.display = "flex";
             }
         });
 
@@ -1349,8 +1183,7 @@
         }
 
         function renderChatListAndGroups() {
-            const chatList = document.getElementById("chatList");
-            chatList.innerHTML = "";
+            const chatList = document.getElementById("chatList"); chatList.innerHTML = "";
             if (activeSidebarTab === 'groups') {
                 unsubscribeGroups = onSnapshot(collection(db, "groups"), (groupSnapshot) => {
                     let listHtml = "";
@@ -1366,19 +1199,14 @@
                 getDocs(collection(db, "users")).then(async (usersSnapshot) => {
                     let listHtml = "";
                     for (let docSnap of usersSnapshot.docs) {
-                        const userData = docSnap.data();
-                        const userId = docSnap.id;
+                        const userData = docSnap.data(); const userId = docSnap.id;
                         if (auth.currentUser && userId !== auth.currentUser.uid && !myBlockedUsers.includes(userId)) {
                             let roomId = [auth.currentUser.uid, userId].sort().join('_');
                             const reqSnap = await getDoc(doc(db, "chat_requests", roomId));
                             if (reqSnap.exists() && reqSnap.data().status === "accepted") {
                                 let indicator = `<span class="user-status-indicator ${userData.online ? 'is-online' : 'is-offline'}"></span>`;
                                 let name = userData.name || "User";
-                                listHtml += `
-                                    <div class="user-item" onclick="selectChat('${userId}', '${name}', '${userData.avatar||''}', '${userData.email||''}', false, ${userData.online}, '${userData.statusMsg||'Available'}')">
-                                        <div>${indicator}${name} <small style="color:#aaa; font-size:9px;">(${userData.statusMsg||'Available'})</small></div>
-                                    </div>
-                                `;
+                                listHtml += `<div class="user-item" onclick="selectChat('${userId}', '${name}', '${userData.avatar||''}', '${userData.email||''}', false, ${userData.online}, '${userData.statusMsg||'Available'}')"><div>${indicator}${name} <small style="color:#aaa; font-size:9px;">(${userData.statusMsg||'Available'})</small></div></div>`;
                             }
                         }
                     }
@@ -1456,20 +1284,37 @@
             if(typeof cancelReply === 'function') cancelReply();
         };
 
+        window.setReplyMessage = (msgId, text, senderName) => {
+            replyingToMessage = { id: msgId, text, senderName };
+            document.getElementById("replyTargetName").innerText = senderName;
+            document.getElementById("replyTargetText").innerText = text;
+            document.getElementById("activeReplyContainer").style.display = "flex";
+            document.getElementById("messageText").focus();
+        };
+
+        window.cancelReply = () => {
+            replyingToMessage = null;
+            document.getElementById("activeReplyContainer").style.display = "none";
+        };
+
         function listenToMessages(roomId) {
             if(unsubscribeMessages) unsubscribeMessages();
             unsubscribeMessages = onSnapshot(query(collection(db, "messages")), snap => {
                 const box = document.getElementById("messages"); box.innerHTML = "";
-                let arr = [];
-                snap.forEach(d => arr.push({ id: d.id, ...d.data() }));
+                let arr = []; snap.forEach(d => arr.push({ id: d.id, ...d.data() }));
                 arr.sort((a,b) => (a.createdAt?.toMillis()||0) - (b.createdAt?.toMillis()||0));
 
                 arr.forEach(async d => {
                     if(d.chatRoom === roomId) {
                         let isMine = d.senderId === auth.currentUser.uid;
-                        const msg = document.createElement("div");
-                        msg.className = isMine ? "message sent" : "message";
-                        
+                        const wrap = document.createElement("div");
+                        wrap.className = isMine ? "message-wrapper sent-wrap" : "message-wrapper received-wrap";
+
+                        let replyBannerHTML = "";
+                        if(d.replyTo && d.replyTo.text) {
+                            replyBannerHTML = `<div style="background:rgba(0,0,0,0.25); border-left:3px solid #a78bfa; padding:4px 8px; border-radius:4px; font-size:10px; margin-bottom:4px;"><b>${d.replyTo.senderName}</b>: ${d.replyTo.text}</div>`;
+                        }
+
                         let mediaHTML = "";
                         if(d.mediaUrl) {
                             if(d.mediaType === "sticker") mediaHTML = `<div style="font-size:36px;">${d.mediaUrl}</div>`;
@@ -1478,12 +1323,54 @@
                             else mediaHTML = `<img src="${d.mediaUrl}" class="media-preview">`;
                         }
 
+                        let reactionsHTML = "";
+                        if(d.reactions) {
+                            let rCounts = {};
+                            Object.values(d.reactions).forEach(emoji => { rCounts[emoji] = (rCounts[emoji]||0) + 1; });
+                            let pills = "";
+                            for(let [emoji, count] of Object.entries(rCounts)) {
+                                pills += `<span class="reaction-pill">${emoji} ${count > 1 ? count : ''}</span>`;
+                            }
+                            if(pills) reactionsHTML = `<div class="msg-reactions-badge">${pills}</div>`;
+                        }
+
                         let timeString = d.createdAt?.toDate ? d.createdAt.toDate().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : "Just now";
+
+                        const msg = document.createElement("div");
+                        msg.className = isMine ? "message sent" : "message";
+                        
+                        // DOUBLE TAP FOR 20 EMOJIS POPUP
+                        let lastTap = 0;
+                        msg.onclick = (e) => {
+                            let now = new Date().getTime();
+                            if(now - lastTap < 300) {
+                                openReactionsModal(d.id);
+                            }
+                            lastTap = now;
+                        };
+
+                        // SWIPE RIGHT TO REPLY SETUP FOR MOBILE / MOUSE
+                        let startX = 0;
+                        msg.ontouchstart = (e) => { startX = e.touches[0].clientX; };
+                        msg.ontouchend = (e) => {
+                            let endX = e.changedTouches[0].clientX;
+                            if(endX - startX > 50) {
+                                setReplyMessage(d.id, d.text || "Attachment", isMine ? "You" : d.senderName);
+                            }
+                        };
+                        msg.onmousedown = (e) => { startX = e.clientX; };
+                        msg.onmouseup = (e) => {
+                            let endX = e.clientX;
+                            if(endX - startX > 50) {
+                                setReplyMessage(d.id, d.text || "Attachment", isMine ? "You" : d.senderName);
+                            }
+                        };
 
                         msg.innerHTML = `
                             <div class="sender-row">
                                 <span class="sender">${isMine ? "You" : d.senderName}</span>
                                 <div class="action-btns-row">
+                                    <button class="action-icon-btn" onclick="openReactionsModal('${d.id}')" title="React">❤️</button>
                                     <button class="action-icon-btn" onclick="pinMessage('${d.id}', '${d.text||'Attachment'}')" title="Pin">📌</button>
                                     <button class="action-icon-btn" onclick="openForwardModal('${d.text||'Attachment'}')" title="Forward">📤</button>
                                     <button class="action-icon-btn" onclick="translateMessage('${d.id}', '${d.text||''}')" title="Translate">🌐</button>
@@ -1491,14 +1378,17 @@
                                 </div>
                             </div>
                             <div id="trans_${d.id}" style="font-size:10px; color:#38bdf8; display:none; background:rgba(0,0,0,0.3); padding:4px; border-radius:4px; margin-bottom:4px;"></div>
+                            ${replyBannerHTML}
                             <div>${d.text||''}</div>
                             ${mediaHTML}
+                            ${reactionsHTML}
                             <div class="msg-footer">
                                 <span>🕒 ${timeString}</span>
                                 ${isMine ? `<span class="tick ${d.status==='read'?'blue':''}">${d.status==='read'?'✓✓':'✓'}</span>` : ''}
                             </div>
                         `;
-                        box.appendChild(msg);
+                        wrap.appendChild(msg);
+                        box.appendChild(wrap);
                         if(!isMine && d.status !== 'read') await updateDoc(doc(db, "messages", d.id), { status: 'read' });
                     }
                 });
@@ -1506,7 +1396,7 @@
             });
         }
 
-        window.deleteMessage = async (id) => { if(confirm("Delete?")) await deleteDoc(doc(db, "messages", id)); };
+        window.deleteMessage = async (id) => { if(confirm("Delete message?")) await deleteDoc(doc(db, "messages", id)); };
         window.openAccountSettings = () => document.getElementById("accountSettingsModal").style.display = "flex";
         window.closeAccountSettings = () => document.getElementById("accountSettingsModal").style.display = "none";
         window.changeTheme = (theme) => document.body.className = theme;
