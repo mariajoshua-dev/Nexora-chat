@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>NEXORA - Chat, Stories & Notes Fix</title>
+    <title>NEXORA - Chat, 24h Expiring Stories & Notes</title>
     <style>
         :root { 
             --bg-main: #080b1d; 
@@ -245,7 +245,7 @@
                             <div id="activeStoriesList" style="display:flex; gap:8px;"></div>
                         </div>
 
-                        <!-- NOTES TRAY (FIXED: ONLY ONE "+ ADD NOTE" OR USER NOTE) -->
+                        <!-- NOTES TRAY -->
                         <div class="notes-tray" id="notesTrayContainer">
                             <div id="activeNotesList" style="display:flex; gap:8px; width:100%;"></div>
                         </div>
@@ -665,7 +665,7 @@
         window.toggleStickersPanel = () => { const p = document.getElementById("stickersPopup"); p.style.display = p.style.display === "flex" ? "none" : "flex"; };
         window.sendSticker = async (st) => { toggleStickersPanel(); await sendMessage(st, "sticker", "🌟 [STICKER]"); };
 
-        // ================= NOTES FEATURE (FIXED DUPLICATION) =================
+        // ================= NOTES FEATURE (24H EXPIRATION & ONE PER USER) =================
         window.triggerAddNote = () => { document.getElementById("addNoteModal").style.display = "flex"; };
         window.closeAddNoteModal = () => {
             document.getElementById("addNoteModal").style.display = "none";
@@ -692,7 +692,9 @@
         };
 
         async function saveNoteToDb(comment, privacy, songUrl) {
-            await addDoc(collection(db, "notes"), {
+            // Using setDoc with userId as doc ID enforces strictly ONE note per user
+            const userNoteRef = doc(db, "notes", auth.currentUser.uid);
+            await setDoc(userNoteRef, {
                 userId: auth.currentUser.uid,
                 userName: document.getElementById("displayName").innerText,
                 comment, privacy, songUrl: songUrl || "", likes: [], comments: [], createdAt: serverTimestamp()
@@ -717,29 +719,34 @@
                 const list = document.getElementById("activeNotesList");
                 let notesHtml = "";
                 let hasMyNote = false;
+                const now = Date.now();
+                const TWENTY_FOUR_HOURS = 24 * 60 * 60 * 1000;
 
-                // First check if current user has a note
-                snapshot.forEach(docSnap => {
-                    let n = docSnap.data();
+                for(let docSnap of snapshot.docs) {
+                    let n = docSnap.data(); let nId = docSnap.id;
+                    
+                    // 24 Hours Expiration Check
+                    let createdAtMillis = n.createdAt?.toMillis ? n.createdAt.toMillis() : now;
+                    if(now - createdAtMillis > TWENTY_FOUR_HOURS) {
+                        await deleteDoc(doc(db, "notes", nId)).catch(e => {});
+                        continue;
+                    }
+
                     if(n.userId === auth.currentUser.uid) {
                         hasMyNote = true;
                     }
-                });
 
-                // If current user hasn't posted a note, show ONE "+ Add Note" card
-                if(!hasMyNote) {
-                    notesHtml += `<div class="note-bubble-card" onclick="triggerAddNote()"><div class="note-bubble-text">＋ Add Note</div><div class="note-bubble-user">Your Note</div></div>`;
-                }
-
-                // Render all valid notes from friends/public
-                for(let docSnap of snapshot.docs) {
-                    let n = docSnap.data(); let nId = docSnap.id;
                     let canSee = await checkCanView(n.userId, n.privacy || "friends");
                     if(canSee) {
                         let noteUserLabel = (n.userId === auth.currentUser.uid) ? 'Your Note' : n.userName;
                         notesHtml += `<div class="note-bubble-card" onclick="openNoteViewer('${nId}', '${n.comment.replace(/'/g, "\\'")}', '${n.userName}', '${n.songUrl||''}', '${JSON.stringify(n.likes||[])}', '${n.userId}')"><div class="note-bubble-text">💬 ${n.comment}</div><div class="note-bubble-user">${noteUserLabel}</div></div>`;
                     }
                 }
+
+                if(!hasMyNote) {
+                    notesHtml = `<div class="note-bubble-card" onclick="triggerAddNote()"><div class="note-bubble-text">＋ Add Note</div><div class="note-bubble-user">Your Note</div></div>` + notesHtml;
+                }
+
                 list.innerHTML = notesHtml;
             });
         }
@@ -803,7 +810,7 @@
             }
         };
 
-        // ================= STORIES SYSTEM =================
+        // ================= STORIES SYSTEM (24H EXPIRATION) =================
         window.triggerAddStory = () => { document.getElementById("addStoryModal").style.display = "flex"; };
         window.closeAddStoryModal = () => { document.getElementById("addStoryModal").style.display = "none"; document.getElementById("storyIsaiifyUrlInput").value = ""; };
 
@@ -832,20 +839,32 @@
             unsubscribeStories = onSnapshot(collection(db, "stories"), async (snapshot) => {
                 const list = document.getElementById("activeStoriesList");
                 let storiesHtml = ""; let hasMyStory = false;
-                snapshot.forEach(docSnap => {
-                    let s = docSnap.data();
-                    if(s.userId === auth.currentUser.uid) { hasMyStory = true; document.getElementById("myStoryThumb").innerHTML = `<img src="${s.mediaUrl}">`; }
-                });
-                if(!hasMyStory) document.getElementById("myStoryThumb").innerHTML = "➕";
+                const now = Date.now();
+                const TWENTY_FOUR_HOURS = 24 * 60 * 60 * 1000;
 
                 for(let docSnap of snapshot.docs) {
                     let s = docSnap.data(); let sId = docSnap.id;
+
+                    // 24 Hours Expiration Check
+                    let createdAtMillis = s.createdAt?.toMillis ? s.createdAt.toMillis() : now;
+                    if(now - createdAtMillis > TWENTY_FOUR_HOURS) {
+                        await deleteDoc(doc(db, "stories", sId)).catch(e => {});
+                        continue;
+                    }
+
+                    if(s.userId === auth.currentUser.uid) { 
+                        hasMyStory = true; 
+                        document.getElementById("myStoryThumb").innerHTML = `<img src="${s.mediaUrl}">`; 
+                    }
+
                     let canSee = await checkCanView(s.userId, s.privacy || "friends");
                     if(canSee) {
                         let hasSeen = s.viewers && s.viewers.includes(auth.currentUser.uid);
                         storiesHtml += `<div class="story-ring ${hasSeen ? 'seen' : ''}" onclick="openStoryViewer('${sId}', '${s.mediaUrl}', '${s.userName}', '${s.userAvatar}', '${s.userId}', '${s.songUrl||''}', '${JSON.stringify(s.viewers||[])}', '${JSON.stringify(s.likes||[])}')"><div class="story-thumb">${s.userAvatar.startsWith('data:')?`<img src="${s.userAvatar}">`:s.userAvatar}</div></div>`;
                     }
                 }
+
+                if(!hasMyStory) document.getElementById("myStoryThumb").innerHTML = "➕";
                 list.innerHTML = storiesHtml;
             });
         }
@@ -1405,4 +1424,3 @@
     </script>
 </body>
 </html>
-
