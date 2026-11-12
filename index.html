@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>NEXORA - Chat, Stories & Notes with Privacy Controls</title>
+    <title>NEXORA - Chat, Stories & Notes Fix</title>
     <style>
         :root { 
             --bg-main: #080b1d; 
@@ -245,13 +245,9 @@
                             <div id="activeStoriesList" style="display:flex; gap:8px;"></div>
                         </div>
 
-                        <!-- NOTES TRAY -->
+                        <!-- NOTES TRAY (FIXED: ONLY ONE "+ ADD NOTE" OR USER NOTE) -->
                         <div class="notes-tray" id="notesTrayContainer">
-                            <div class="note-bubble-card" onclick="triggerAddNote()">
-                                <div class="note-bubble-text">＋ Add Note</div>
-                                <div class="note-bubble-user">Your Note</div>
-                            </div>
-                            <div id="activeNotesList" style="display:flex; gap:8px;"></div>
+                            <div id="activeNotesList" style="display:flex; gap:8px; width:100%;"></div>
                         </div>
                         
                         <div class="sidebar-tabs">
@@ -373,7 +369,7 @@
         </div>
     </div>
 
-    <!-- ADD NOTE MODAL WITH WHO CAN SEE PRIVACY CONTROL -->
+    <!-- ADD NOTE MODAL -->
     <div class="modal-overlay" id="addNoteModal">
         <div class="modal-content">
             <h3 style="margin-bottom:10px; color:#fff; font-size: 15px;">💬 Leave a Note</h3>
@@ -399,7 +395,7 @@
         </div>
     </div>
 
-    <!-- STORY VIEWER MODAL (WITH USER ID DISPLAYED UNDERNEATH) -->
+    <!-- STORY VIEWER MODAL -->
     <div class="story-viewer-overlay" id="storyViewerModal">
         <div class="story-container">
             <div class="story-header-bar">
@@ -425,7 +421,7 @@
         </div>
     </div>
 
-    <!-- ADD STORY MODAL WITH PRIVACY CONTROL -->
+    <!-- ADD STORY MODAL -->
     <div class="modal-overlay" id="addStoryModal">
         <div class="modal-content">
             <h3 style="margin-bottom:10px; color:#fff; font-size: 15px;">📸 Add New Story</h3>
@@ -669,7 +665,7 @@
         window.toggleStickersPanel = () => { const p = document.getElementById("stickersPopup"); p.style.display = p.style.display === "flex" ? "none" : "flex"; };
         window.sendSticker = async (st) => { toggleStickersPanel(); await sendMessage(st, "sticker", "🌟 [STICKER]"); };
 
-        // ================= NOTES FEATURE WITH PRIVACY CONTROL =================
+        // ================= NOTES FEATURE (FIXED DUPLICATION) =================
         window.triggerAddNote = () => { document.getElementById("addNoteModal").style.display = "flex"; };
         window.closeAddNoteModal = () => {
             document.getElementById("addNoteModal").style.display = "none";
@@ -719,14 +715,29 @@
             if(unsubscribeNotes) unsubscribeNotes();
             unsubscribeNotes = onSnapshot(collection(db, "notes"), async (snapshot) => {
                 const list = document.getElementById("activeNotesList");
-                let notesHtml = `<div class="note-bubble-card" onclick="triggerAddNote()"><div class="note-bubble-text">＋ Add Note</div><div class="note-bubble-user">Your Note</div></div>`;
-                document.getElementById("notesTrayContainer").style.display = "flex";
+                let notesHtml = "";
+                let hasMyNote = false;
 
+                // First check if current user has a note
+                snapshot.forEach(docSnap => {
+                    let n = docSnap.data();
+                    if(n.userId === auth.currentUser.uid) {
+                        hasMyNote = true;
+                    }
+                });
+
+                // If current user hasn't posted a note, show ONE "+ Add Note" card
+                if(!hasMyNote) {
+                    notesHtml += `<div class="note-bubble-card" onclick="triggerAddNote()"><div class="note-bubble-text">＋ Add Note</div><div class="note-bubble-user">Your Note</div></div>`;
+                }
+
+                // Render all valid notes from friends/public
                 for(let docSnap of snapshot.docs) {
                     let n = docSnap.data(); let nId = docSnap.id;
                     let canSee = await checkCanView(n.userId, n.privacy || "friends");
                     if(canSee) {
-                        notesHtml += `<div class="note-bubble-card" onclick="openNoteViewer('${nId}', '${n.comment.replace(/'/g, "\\'")}', '${n.userName}', '${n.songUrl||''}', '${JSON.stringify(n.likes||[])}', '${n.userId}')"><div class="note-bubble-text">💬 ${n.comment}</div><div class="note-bubble-user">${n.userId === auth.currentUser.uid ? 'Your Note' : n.userName}</div></div>`;
+                        let noteUserLabel = (n.userId === auth.currentUser.uid) ? 'Your Note' : n.userName;
+                        notesHtml += `<div class="note-bubble-card" onclick="openNoteViewer('${nId}', '${n.comment.replace(/'/g, "\\'")}', '${n.userName}', '${n.songUrl||''}', '${JSON.stringify(n.likes||[])}', '${n.userId}')"><div class="note-bubble-text">💬 ${n.comment}</div><div class="note-bubble-user">${noteUserLabel}</div></div>`;
                     }
                 }
                 list.innerHTML = notesHtml;
@@ -792,7 +803,7 @@
             }
         };
 
-        // ================= STORIES SYSTEM WITH PRIVACY CONTROL & USER ID TAG =================
+        // ================= STORIES SYSTEM =================
         window.triggerAddStory = () => { document.getElementById("addStoryModal").style.display = "flex"; };
         window.closeAddStoryModal = () => { document.getElementById("addStoryModal").style.display = "none"; document.getElementById("storyIsaiifyUrlInput").value = ""; };
 
@@ -842,7 +853,7 @@
         window.openStoryViewer = async (storyId, mediaUrl, uName, uAvatar, ownerId, songUrl, viewersJson, likesJson) => {
             currentViewingStoryId = storyId; currentStoryOwnerId = ownerId;
             document.getElementById("viewerUserName").innerText = uName;
-            document.getElementById("viewerUserIdTag").innerText = `ID: ${ownerId}`; // User ID displayed right under username
+            document.getElementById("viewerUserIdTag").innerText = `ID: ${ownerId}`;
             document.getElementById("viewerUserAvatar").innerHTML = uAvatar.startsWith('data:') ? `<img src="${uAvatar}">` : uAvatar;
             document.getElementById("viewerStoryImage").src = mediaUrl;
             let viewers = JSON.parse(viewersJson); let likes = JSON.parse(likesJson);
@@ -1029,7 +1040,7 @@
                 if (userId !== auth.currentUser.uid && ((userData.email||"").toLowerCase().includes(queryStr) || (userData.name||"").toLowerCase().includes(queryStr))) {
                     found = true;
                     const item = document.createElement("div"); item.className = "search-result-item";
-                    item.innerHTML = `<span>👤 ${userData.name || "User"}</span>`;
+                    item.innerHTML = `👤 ${userData.name || "User"}`;
                     const btn = document.createElement("button");
                     btn.style.cssText = "padding:3px 6px; background:var(--accent-color); border:none; border-radius:4px; color:white; cursor:pointer; font-size:10px;";
                     let roomId = [auth.currentUser.uid, userId].sort().join('_');
