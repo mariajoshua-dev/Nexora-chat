@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>NEXORA - Chat, Stories & Notes with Reactions & Swipe Reply</title>
+    <title>NEXORA - Chat, Stories & Notes with Privacy Controls</title>
     <style>
         :root { 
             --bg-main: #080b1d; 
@@ -114,7 +114,6 @@
 
         .messages { flex: 1; padding: 12px 14px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; background: rgba(0, 0, 0, 0.3); } 
         
-        /* MESSAGE & SWIPE REPLY & REACTIONS */
         .message-wrapper { position: relative; width: 100%; display: flex; flex-direction: column; transition: transform 0.2s ease; }
         .message-wrapper.sent-wrap { align-items: flex-end; }
         .message-wrapper.received-wrap { align-items: flex-start; }
@@ -133,11 +132,9 @@
         .delete-btn { color: #fca5a5; font-size: 10px; } 
         .download-btn { color: #38bdf8; font-size: 10px; font-weight: bold; text-decoration: underline; background:none; border:none; cursor:pointer; }
 
-        /* REACTION PILLS BADGE ON MESSAGE */
         .msg-reactions-badge { display: flex; gap: 3px; flex-wrap: wrap; margin-top: 4px; }
         .reaction-pill { background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.15); padding: 2px 6px; border-radius: 12px; font-size: 11px; display: inline-flex; align-items: center; gap: 2px; }
 
-        /* POPUP FOR 20 EMOJIS ON DOUBLE TAP */
         .reactions-popup-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center; z-index: 5000; backdrop-filter: blur(4px); }
         .reactions-grid-box { background: #13172e; border: 1px solid rgba(255,255,255,0.15); border-radius: 20px; padding: 16px; width: min(320px, 90%); text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
         .reactions-20-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin: 12px 0; }
@@ -376,13 +373,20 @@
         </div>
     </div>
 
-    <!-- ADD NOTE MODAL -->
+    <!-- ADD NOTE MODAL WITH WHO CAN SEE PRIVACY CONTROL -->
     <div class="modal-overlay" id="addNoteModal">
         <div class="modal-content">
             <h3 style="margin-bottom:10px; color:#fff; font-size: 15px;">💬 Leave a Note</h3>
             <div class="input-group">
                 <label>What's on your mind? (Comment)</label>
                 <textarea id="noteCommentText" rows="3" placeholder="Type your note comment..."></textarea>
+            </div>
+            <div class="input-group">
+                <label>🔒 Who can see this note?</label>
+                <select id="notePrivacySelect" style="background:#111; color:white; padding:8px; border-radius:8px; font-size:11px;">
+                    <option value="friends">Accepted Friends Only</option>
+                    <option value="public">All Nexora Users</option>
+                </select>
             </div>
             <div class="input-group">
                 <label>🎵 Isaiify Song URL / Local Audio</label>
@@ -395,13 +399,16 @@
         </div>
     </div>
 
-    <!-- STORY VIEWER MODAL -->
+    <!-- STORY VIEWER MODAL (WITH USER ID DISPLAYED UNDERNEATH) -->
     <div class="story-viewer-overlay" id="storyViewerModal">
         <div class="story-container">
             <div class="story-header-bar">
                 <div style="display:flex; align-items:center; gap:8px;">
                     <div id="viewerUserAvatar" class="avatar" style="width:28px; height:28px; font-size:12px;">👤</div>
-                    <span id="viewerUserName" style="font-size:12px; font-weight:bold; color:white;">User</span>
+                    <div>
+                        <span id="viewerUserName" style="font-size:12px; font-weight:bold; color:white; display:block;">User</span>
+                        <span id="viewerUserIdTag" style="font-size:9px; color:#aab0c5; display:block;">ID: ...</span>
+                    </div>
                 </div>
                 <button onclick="closeStoryViewer()" style="background:none; border:none; color:white; font-size:16px; cursor:pointer;">✕</button>
             </div>
@@ -418,13 +425,20 @@
         </div>
     </div>
 
-    <!-- ADD STORY MODAL -->
+    <!-- ADD STORY MODAL WITH PRIVACY CONTROL -->
     <div class="modal-overlay" id="addStoryModal">
         <div class="modal-content">
             <h3 style="margin-bottom:10px; color:#fff; font-size: 15px;">📸 Add New Story</h3>
             <div class="input-group">
                 <label>Select Image / Media</label>
                 <input type="file" id="storyMediaFileInput" accept="image/*" style="font-size:11px; padding:6px;">
+            </div>
+            <div class="input-group">
+                <label>🔒 Who can view this story?</label>
+                <select id="storyPrivacySelect" style="background:#111; color:white; padding:8px; border-radius:8px; font-size:11px;">
+                    <option value="friends">Accepted Friends Only</option>
+                    <option value="public">All Nexora Users</option>
+                </select>
             </div>
             <div class="input-group">
                 <label>🎵 Isaiify Song URL / Local Audio</label>
@@ -607,28 +621,17 @@
         let currentViewingNoteId = null;
         let currentNoteOwnerId = null;
 
-        // REACTIONS 20 EMOJIS STATE
         let activeReactingMessageId = null;
         const twentyEmojisList = ["❤️", "👍", "🔥", "😂", "😮", "😢", "👏", "🎉", "💩", "🚀", "⭐", "💯", "💀", "😍", "🙏", "💪", "🍀", "💎", "🦄", "⚡"];
 
         function renderReactions20Grid() {
             const grid = document.getElementById("reactions20Grid");
-            if(grid) {
-                grid.innerHTML = twentyEmojisList.map(em => `
-                    <div class="reaction-emoji-item" onclick="selectReactionEmoji('${em}')">${em}</div>
-                `).join("");
-            }
+            if(grid) grid.innerHTML = twentyEmojisList.map(em => `<div class="reaction-emoji-item" onclick="selectReactionEmoji('${em}')">${em}</div>`).join("");
         }
         renderReactions20Grid();
 
-        window.openReactionsModal = (msgId) => {
-            activeReactingMessageId = msgId;
-            document.getElementById("reactionsModal").style.display = "flex";
-        };
-        window.closeReactionsModal = () => {
-            document.getElementById("reactionsModal").style.display = "none";
-            activeReactingMessageId = null;
-        };
+        window.openReactionsModal = (msgId) => { activeReactingMessageId = msgId; document.getElementById("reactionsModal").style.display = "flex"; };
+        window.closeReactionsModal = () => { document.getElementById("reactionsModal").style.display = "none"; activeReactingMessageId = null; };
 
         window.selectReactionEmoji = async (emoji) => {
             if(!activeReactingMessageId) return;
@@ -636,10 +639,7 @@
             const snap = await getDoc(msgRef);
             if(snap.exists()) {
                 let reactions = snap.data().reactions || {};
-                let userKey = auth.currentUser.uid;
-                
-                // Toggle reaction or set emoji
-                reactions[userKey] = emoji;
+                reactions[auth.currentUser.uid] = emoji;
                 await updateDoc(msgRef, { reactions });
             }
             closeReactionsModal();
@@ -656,11 +656,7 @@
 
         function renderFilterChips() {
             const bar = document.getElementById("filterChipsContainer");
-            if(bar) {
-                bar.innerHTML = snapFiltersList.map((f, idx) => `
-                    <button class="filter-chip ${idx===0?'active':''}" onclick="setSnapFilter('${f.id}', this)">${f.name}</button>
-                `).join("");
-            }
+            if(bar) bar.innerHTML = snapFiltersList.map((f, idx) => `<button class="filter-chip ${idx===0?'active':''}" onclick="setSnapFilter('${f.id}', this)">${f.name}</button>`).join("");
         }
         renderFilterChips();
 
@@ -673,18 +669,18 @@
         window.toggleStickersPanel = () => { const p = document.getElementById("stickersPopup"); p.style.display = p.style.display === "flex" ? "none" : "flex"; };
         window.sendSticker = async (st) => { toggleStickersPanel(); await sendMessage(st, "sticker", "🌟 [STICKER]"); };
 
-        // NOTES FEATURE
+        // ================= NOTES FEATURE WITH PRIVACY CONTROL =================
         window.triggerAddNote = () => { document.getElementById("addNoteModal").style.display = "flex"; };
         window.closeAddNoteModal = () => {
             document.getElementById("addNoteModal").style.display = "none";
             document.getElementById("noteIsaiifyUrlInput").value = "";
             document.getElementById("noteCommentText").value = "";
-            const fileInput = document.getElementById("noteAudioFileInput");
-            if(fileInput) fileInput.value = "";
+            const fileInput = document.getElementById("noteAudioFileInput"); if(fileInput) fileInput.value = "";
         };
 
         window.publishNewNote = async () => {
             const comment = document.getElementById("noteCommentText").value.trim();
+            const privacy = document.getElementById("notePrivacySelect").value;
             const isaiifyUrl = document.getElementById("noteIsaiifyUrlInput").value.trim();
             const fileInput = document.getElementById("noteAudioFileInput");
             if(!comment) return alert("Please type a comment for your note!");
@@ -692,19 +688,31 @@
             let finalSongUrl = isaiifyUrl;
             if(!finalSongUrl && fileInput && fileInput.files[0]) {
                 const reader = new FileReader();
-                reader.onload = async function(evt) { await saveNoteToDb(comment, evt.target.result); };
+                reader.onload = async function(evt) { await saveNoteToDb(comment, privacy, evt.target.result); };
                 reader.readAsDataURL(fileInput.files[0]);
                 return;
             }
-            await saveNoteToDb(comment, finalSongUrl);
+            await saveNoteToDb(comment, privacy, finalSongUrl);
         };
 
-        async function saveNoteToDb(comment, songUrl) {
+        async function saveNoteToDb(comment, privacy, songUrl) {
             await addDoc(collection(db, "notes"), {
-                userId: auth.currentUser.uid, userName: document.getElementById("displayName").innerText,
-                comment, songUrl: songUrl || "", likes: [], comments: [], createdAt: serverTimestamp()
+                userId: auth.currentUser.uid,
+                userName: document.getElementById("displayName").innerText,
+                comment, privacy, songUrl: songUrl || "", likes: [], comments: [], createdAt: serverTimestamp()
             });
             closeAddNoteModal(); alert("Note published successfully!");
+        }
+
+        async function checkCanView(ownerId, privacySetting) {
+            if(ownerId === auth.currentUser.uid) return true;
+            if(privacySetting === "public") return true;
+            if(privacySetting === "friends") {
+                let roomId = [auth.currentUser.uid, ownerId].sort().join('_');
+                const reqSnap = await getDoc(doc(db, "chat_requests", roomId));
+                if(reqSnap.exists() && reqSnap.data().status === "accepted") return true;
+            }
+            return false;
         }
 
         function listenToNotes() {
@@ -716,14 +724,8 @@
 
                 for(let docSnap of snapshot.docs) {
                     let n = docSnap.data(); let nId = docSnap.id;
-                    let showNote = false;
-                    if(n.userId === auth.currentUser.uid) showNote = true;
-                    else {
-                        let roomId = [auth.currentUser.uid, n.userId].sort().join('_');
-                        const reqSnap = await getDoc(doc(db, "chat_requests", roomId));
-                        if(reqSnap.exists() && reqSnap.data().status === "accepted") showNote = true;
-                    }
-                    if(showNote) {
+                    let canSee = await checkCanView(n.userId, n.privacy || "friends");
+                    if(canSee) {
                         notesHtml += `<div class="note-bubble-card" onclick="openNoteViewer('${nId}', '${n.comment.replace(/'/g, "\\'")}', '${n.userName}', '${n.songUrl||''}', '${JSON.stringify(n.likes||[])}', '${n.userId}')"><div class="note-bubble-text">💬 ${n.comment}</div><div class="note-bubble-user">${n.userId === auth.currentUser.uid ? 'Your Note' : n.userName}</div></div>`;
                     }
                 }
@@ -742,21 +744,19 @@
             else { likeBtn.innerText = `🤍 Like (${likes.length})`; likeBtn.style.background = "rgba(255,255,255,0.15)"; }
             document.getElementById("deleteNoteBtn").style.display = ownerId === auth.currentUser.uid ? "inline-block" : "none";
             const audioEl = document.getElementById("viewerNoteAudio");
-            if(songUrl) { audioEl.src = songUrl; audioEl.play().catch(e => console.log(e)); }
-            else { audioEl.pause(); audioEl.src = ""; }
+            if(songUrl) { audioEl.src = songUrl; audioEl.play().catch(e => console.log(e)); } else { audioEl.pause(); audioEl.src = ""; }
             document.getElementById("noteViewerModal").style.display = "flex";
         };
 
         window.closeNoteViewer = () => {
             document.getElementById("noteViewerModal").style.display = "none";
-            const audioEl = document.getElementById("viewerNoteAudio");
-            audioEl.pause(); audioEl.src = "";
+            const audioEl = document.getElementById("viewerNoteAudio"); audioEl.pause(); audioEl.src = "";
             currentViewingNoteId = null; currentNoteOwnerId = null;
         };
 
         window.deleteCurrentNote = async () => {
             if(!currentViewingNoteId || currentNoteOwnerId !== auth.currentUser.uid) return;
-            if(confirm("Delete this note?")) { await deleteDoc(doc(db, "notes", currentViewingNoteId)); closeNoteViewer(); alert("Note deleted!"); }
+            if(confirm("Delete note?")) { await deleteDoc(doc(db, "notes", currentViewingNoteId)); closeNoteViewer(); alert("Note deleted!"); }
         };
 
         window.toggleNoteLike = async () => {
@@ -792,25 +792,28 @@
             }
         };
 
-        // STORIES SYSTEM
+        // ================= STORIES SYSTEM WITH PRIVACY CONTROL & USER ID TAG =================
         window.triggerAddStory = () => { document.getElementById("addStoryModal").style.display = "flex"; };
         window.closeAddStoryModal = () => { document.getElementById("addStoryModal").style.display = "none"; document.getElementById("storyIsaiifyUrlInput").value = ""; };
 
         window.publishNewStory = async () => {
             const fileInput = document.getElementById("storyMediaFileInput");
+            const privacy = document.getElementById("storyPrivacySelect").value;
             const isaiifyUrl = document.getElementById("storyIsaiifyUrlInput").value.trim();
             if(!fileInput.files[0]) return alert("Select an image for your story!");
             const reader = new FileReader();
-            reader.onload = async function(evt) { await saveStoryToDb(evt.target.result, isaiifyUrl); };
+            reader.onload = async function(evt) { await saveStoryToDb(evt.target.result, privacy, isaiifyUrl); };
             reader.readAsDataURL(fileInput.files[0]);
         };
 
-        async function saveStoryToDb(mediaUrl, songUrl) {
+        async function saveStoryToDb(mediaUrl, privacy, songUrl) {
             await addDoc(collection(db, "stories"), {
-                userId: auth.currentUser.uid, userName: document.getElementById("displayName").innerText,
-                userAvatar: selectedAvatarEmoji, mediaUrl, songUrl: songUrl || "", viewers: [], likes: [], createdAt: serverTimestamp()
+                userId: auth.currentUser.uid,
+                userName: document.getElementById("displayName").innerText,
+                userAvatar: selectedAvatarEmoji,
+                mediaUrl, privacy, songUrl: songUrl || "", viewers: [], likes: [], createdAt: serverTimestamp()
             });
-            closeAddStoryModal(); alert("Story published!");
+            closeAddStoryModal(); alert("Story published successfully!");
         }
 
         function listenToStories() {
@@ -826,24 +829,20 @@
 
                 for(let docSnap of snapshot.docs) {
                     let s = docSnap.data(); let sId = docSnap.id;
-                    let showStory = s.userId === auth.currentUser.uid;
-                    if(!showStory) {
-                        let roomId = [auth.currentUser.uid, s.userId].sort().join('_');
-                        const reqSnap = await getDoc(doc(db, "chat_requests", roomId));
-                        if(reqSnap.exists() && reqSnap.data().status === "accepted") showStory = true;
-                    }
-                    if(showStory) {
+                    let canSee = await checkCanView(s.userId, s.privacy || "friends");
+                    if(canSee) {
                         let hasSeen = s.viewers && s.viewers.includes(auth.currentUser.uid);
-                        storiesHtml += `<div class="story-ring ${hasSeen ? 'seen' : ''}" onclick="openStoryViewer('${sId}', '${s.mediaUrl}', '${s.userName}', '${s.userAvatar}', '${s.songUrl||''}', '${JSON.stringify(s.viewers||[])}', '${JSON.stringify(s.likes||[])}', '${s.userId}')"><div class="story-thumb">${s.userAvatar.startsWith('data:')?`<img src="${s.userAvatar}">`:s.userAvatar}</div></div>`;
+                        storiesHtml += `<div class="story-ring ${hasSeen ? 'seen' : ''}" onclick="openStoryViewer('${sId}', '${s.mediaUrl}', '${s.userName}', '${s.userAvatar}', '${s.userId}', '${s.songUrl||''}', '${JSON.stringify(s.viewers||[])}', '${JSON.stringify(s.likes||[])}')"><div class="story-thumb">${s.userAvatar.startsWith('data:')?`<img src="${s.userAvatar}">`:s.userAvatar}</div></div>`;
                     }
                 }
                 list.innerHTML = storiesHtml;
             });
         }
 
-        window.openStoryViewer = async (storyId, mediaUrl, uName, uAvatar, songUrl, viewersJson, likesJson, ownerId) => {
+        window.openStoryViewer = async (storyId, mediaUrl, uName, uAvatar, ownerId, songUrl, viewersJson, likesJson) => {
             currentViewingStoryId = storyId; currentStoryOwnerId = ownerId;
             document.getElementById("viewerUserName").innerText = uName;
+            document.getElementById("viewerUserIdTag").innerText = `ID: ${ownerId}`; // User ID displayed right under username
             document.getElementById("viewerUserAvatar").innerHTML = uAvatar.startsWith('data:') ? `<img src="${uAvatar}">` : uAvatar;
             document.getElementById("viewerStoryImage").src = mediaUrl;
             let viewers = JSON.parse(viewersJson); let likes = JSON.parse(likesJson);
@@ -1339,31 +1338,23 @@
                         const msg = document.createElement("div");
                         msg.className = isMine ? "message sent" : "message";
                         
-                        // DOUBLE TAP FOR 20 EMOJIS POPUP
                         let lastTap = 0;
                         msg.onclick = (e) => {
                             let now = new Date().getTime();
-                            if(now - lastTap < 300) {
-                                openReactionsModal(d.id);
-                            }
+                            if(now - lastTap < 300) openReactionsModal(d.id);
                             lastTap = now;
                         };
 
-                        // SWIPE RIGHT TO REPLY SETUP FOR MOBILE / MOUSE
                         let startX = 0;
                         msg.ontouchstart = (e) => { startX = e.touches[0].clientX; };
                         msg.ontouchend = (e) => {
                             let endX = e.changedTouches[0].clientX;
-                            if(endX - startX > 50) {
-                                setReplyMessage(d.id, d.text || "Attachment", isMine ? "You" : d.senderName);
-                            }
+                            if(endX - startX > 50) setReplyMessage(d.id, d.text || "Attachment", isMine ? "You" : d.senderName);
                         };
                         msg.onmousedown = (e) => { startX = e.clientX; };
                         msg.onmouseup = (e) => {
                             let endX = e.clientX;
-                            if(endX - startX > 50) {
-                                setReplyMessage(d.id, d.text || "Attachment", isMine ? "You" : d.senderName);
-                            }
+                            if(endX - startX > 50) setReplyMessage(d.id, d.text || "Attachment", isMine ? "You" : d.senderName);
                         };
 
                         msg.innerHTML = `
@@ -1387,8 +1378,7 @@
                                 ${isMine ? `<span class="tick ${d.status==='read'?'blue':''}">${d.status==='read'?'✓✓':'✓'}</span>` : ''}
                             </div>
                         `;
-                        wrap.appendChild(msg);
-                        box.appendChild(wrap);
+                        wrap.appendChild(msg); box.appendChild(wrap);
                         if(!isMine && d.status !== 'read') await updateDoc(doc(db, "messages", d.id), { status: 'read' });
                     }
                 });
