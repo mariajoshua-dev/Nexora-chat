@@ -3,192 +3,246 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>NEXORA - Chat, Snap, Stories & Notes</title>
+    <title>NEXORA - Chat, Snap, Stories, Reels & Notes</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root { 
-            --bg-main: #080b1d; 
-            --gradient-bg: linear-gradient(135deg, #080b1d, #111b3d, #190d32); 
-            --panel-bg: rgba(255,255,255,.06); 
-            --border-color: rgba(255,255,255,.1); 
-            --primary-gradient: linear-gradient(90deg, #8b5cf6, #06b6d4); 
-            --accent-color: #8b5cf6; 
-            --text-color: white; 
+            --bg-main: #0b0f19; 
+            --gradient-bg: linear-gradient(135deg, #0b0f19, #111827, #161e31); 
+            --panel-bg: rgba(17, 24, 39, 0.72); 
+            --border-color: rgba(148, 163, 184, 0.16); 
+            --primary-gradient: linear-gradient(90deg, #6366f1, #0ea5e9); 
+            --accent-color: #6366f1; 
+            --text-color: #f8fafc; 
+            --muted-text: #94a3b8;
         }
-        body.theme-purple { --bg-main: #13071e; --gradient-bg: linear-gradient(135deg, #13071e, #2a0845, #11021c); --primary-gradient: linear-gradient(90deg, #c084fc, #ec4899); --accent-color: #c084fc; }
-        body.theme-cyan { --bg-main: #02151a; --gradient-bg: linear-gradient(135deg, #02151a, #083344, #030712); --primary-gradient: linear-gradient(90deg, #22d3ee, #3b82f6); --accent-color: #22d3ee; }
-        body.theme-midnight { --bg-main: #09090b; --gradient-bg: linear-gradient(135deg, #09090b, #18181b, #27272a); --primary-gradient: linear-gradient(90deg, #f43f5e, #fb923c); --accent-color: #f43f5e; }
+        body.theme-slate { 
+            --bg-main: #0b0f19; 
+            --gradient-bg: linear-gradient(135deg, #0b0f19, #111827, #161e31); 
+            --primary-gradient: linear-gradient(90deg, #6366f1, #0ea5e9); 
+            --accent-color: #6366f1; 
+        }
+        body.theme-teal { 
+            --bg-main: #071318; 
+            --gradient-bg: linear-gradient(135deg, #071318, #0c222b, #0f172a); 
+            --primary-gradient: linear-gradient(90deg, #14b8a6, #3b82f6); 
+            --accent-color: #14b8a6; 
+        }
+        body.theme-rose { 
+            --bg-main: #120c14; 
+            --gradient-bg: linear-gradient(135deg, #120c14, #221324, #111827); 
+            --primary-gradient: linear-gradient(90deg, #ec4899, #8b5cf6); 
+            --accent-color: #ec4899; 
+        }
         
-        .chat-theme-purple { background: linear-gradient(135deg, #13071e, #2a0845) !important; }
-        .chat-theme-cyan { background: linear-gradient(135deg, #021a0f, #083344) !important; }
-        .chat-theme-crimson { background: linear-gradient(135deg, #1a0208, #450813) !important; }
-        .chat-theme-gold { background: linear-gradient(135deg, #1a1402, #453608) !important; }
-        .chat-theme-emerald { background: linear-gradient(135deg, #021a0f, #084529) !important; }
+        .chat-theme-purple { background: linear-gradient(135deg, #121026, #1e1b4b) !important; }
+        .chat-theme-cyan { background: linear-gradient(135deg, #081c24, #0c4a6e) !important; }
+        .chat-theme-crimson { background: linear-gradient(135deg, #1f0d16, #4c1d2e) !important; }
+        .chat-theme-gold { background: linear-gradient(135deg, #1c170b, #423512) !important; }
+        .chat-theme-emerald { background: linear-gradient(135deg, #081f1a, #064e3b) !important; }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; -webkit-tap-highlight-color: transparent; } 
-        body, html { width: 100%; height: 100%; overflow: hidden; background: var(--bg-main); color: var(--text-color); position: fixed; }
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+            -webkit-tap-highlight-color: transparent; 
+        } 
+        body, html { 
+            width: 100%; 
+            height: 100%; 
+            overflow: hidden; 
+            background: var(--bg-main); 
+            color: var(--text-color); 
+            position: fixed; 
+            font-weight: 500;
+        }
+        h1, h2, h3, h4, .logo, .splash-logo, .tab-btn, .login-btn, .secondary-btn, .create-group-btn {
+            font-weight: 700;
+        }
         
         .auth-page { width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; background: var(--gradient-bg); position: fixed; top: 0; left: 0; z-index: 100; }
-        .login-box { width: min(380px, 92%); padding: 32px 24px; border-radius: 24px; text-align: center; background: rgba(255,255,255,.08); backdrop-filter: blur(25px); border: 1px solid rgba(255,255,255,0.15); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .brand-icon { width: 56px; height: 56px; margin: 0 auto 12px; display: flex; align-items: center; justify-content: center; border-radius: 18px; font-size: 26px; background: var(--primary-gradient); animation: pulseGlow 2s infinite alternate; } 
-        @keyframes pulseGlow { 0% { transform: scale(1); box-shadow: 0 0 10px rgba(139,92,246,0.5); } 100% { transform: scale(1.06); box-shadow: 0 0 20px rgba(6,182,212,0.8); } }
-        .logo { font-size: 32px; font-weight: bold; margin-bottom: 6px; background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; } 
-        .subtitle { color: #aab0c5; margin-bottom: 18px; font-size: 13px; } 
+        .login-box { width: min(380px, 92%); padding: 32px 24px; border-radius: 24px; text-align: center; background: rgba(15, 23, 42, 0.82); backdrop-filter: blur(24px); border: 1px solid var(--border-color); box-shadow: 0 14px 36px rgba(0,0,0,0.55); }
+        .brand-icon { width: 56px; height: 56px; margin: 0 auto 12px; display: flex; align-items: center; justify-content: center; border-radius: 18px; font-size: 26px; background: var(--primary-gradient); animation: pulseGlow 2.2s infinite alternate; } 
+        @keyframes pulseGlow { 0% { transform: scale(1); box-shadow: 0 0 12px rgba(99,102,241,0.45); } 100% { transform: scale(1.05); box-shadow: 0 0 22px rgba(14,165,233,0.7); } }
+        .logo { font-size: 32px; font-weight: 800; margin-bottom: 6px; background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: 0.5px; } 
+        .subtitle { color: var(--muted-text); margin-bottom: 18px; font-size: 13px; font-weight: 600; } 
         .input-group { text-align: left; margin-top: 14px; } 
-        .input-group label { display: block; margin-bottom: 6px; font-size: 12px; color: #cbd5e1; } 
-        input, select, textarea { width: 100%; padding: 12px 14px; border: 1px solid rgba(255,255,255,.12); outline: none; border-radius: 12px; background: rgba(0,0,0,.2); color: white; font-size: 14px; } 
+        .input-group label { display: block; margin-bottom: 6px; font-size: 12px; color: #e2e8f0; font-weight: 700; } 
+        input, select, textarea { width: 100%; padding: 11px 13px; border: 1px solid var(--border-color); outline: none; border-radius: 12px; background: rgba(2, 6, 23, 0.55); color: #f8fafc; font-size: 13px; font-weight: 500; } 
+        input:focus, select:focus, textarea:focus { border-color: var(--accent-color); }
         
         .password-wrapper { position: relative; width: 100%; }
         .password-wrapper input { width: 100%; padding-right: 45px; }
-        .toggle-password { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); cursor: pointer; font-size: 13px; color: #cbd5e1; width: 30px; height: 30px; border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+        .toggle-password { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); background: rgba(255, 255, 255, 0.06); border: 1px solid var(--border-color); cursor: pointer; font-size: 13px; color: #e2e8f0; width: 30px; height: 30px; border-radius: 8px; display: flex; align-items: center; justify-content: center; }
 
-        .login-btn, .secondary-btn { border: none; cursor: pointer; font-weight: bold; border-radius: 12px; } 
+        .login-btn, .secondary-btn { border: none; cursor: pointer; font-weight: 700; border-radius: 12px; } 
         .login-btn { width: 100%; padding: 13px; margin-top: 18px; background: var(--primary-gradient); color: white; font-size: 14px; } 
-        .secondary-btn { width: 100%; padding: 11px; margin-top: 10px; background: transparent; color: #a78bfa; border: 1px solid var(--accent-color); font-size: 13px; } 
-        .error { color: #fca5a5; font-size: 12px; margin-top: 10px; }
+        .secondary-btn { width: 100%; padding: 11px; margin-top: 10px; background: rgba(99, 102, 241, 0.08); color: #a5b4fc; border: 1px solid var(--accent-color); font-size: 13px; } 
+        .error { color: #fca5a5; font-size: 12px; margin-top: 10px; font-weight: 600; }
 
         #splashScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-main); display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 9999; }
-        .splash-logo { font-size: 42px; font-weight: bold; background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: bounceIn 1s ease infinite alternate; }
+        .splash-logo { font-size: 42px; font-weight: 800; background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: bounceIn 1s ease infinite alternate; }
         @keyframes bounceIn { 0% { transform: translateY(0); } 100% { transform: translateY(-8px); } }
 
         #app { display: none; width: 100%; height: 100%; background: var(--gradient-bg); position: fixed; top: 0; left: 0; overflow: hidden; } 
         .app-container { width: 100%; height: 100%; display: flex; flex-direction: column; background: var(--panel-bg); position: relative; overflow: hidden; } 
         
-        .mobile-view-container { flex: 1; width: 100%; height: calc(100% - 60px); position: relative; overflow: hidden; display: flex; }
+        .mobile-view-container { flex: 1; width: 100%; height: 100%; position: relative; overflow: hidden; display: flex; }
         
-        .sidebar { width: 100%; height: 100%; padding: 12px; display: flex; flex-direction: column; justify-content: space-between; background: rgba(8, 11, 29, 0.92); position: absolute; top: 0; left: 0; transition: transform 0.25s ease; z-index: 2; } 
+        .sidebar { width: 100%; height: 100%; padding: 12px; display: flex; flex-direction: column; justify-content: space-between; background: rgba(11, 15, 25, 0.94); position: absolute; top: 0; left: 0; transition: transform 0.25s ease; z-index: 2; } 
         .sidebar.hidden-mobile { transform: translateX(-100%); }
 
         .profile-section { display: flex; flex-direction: column; height: 100%; gap: 8px; overflow: hidden; }
-        .profile { display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 8px 10px; border-radius: 12px; background: rgba(255,255,255,0.06); flex-shrink: 0; border: 1px solid rgba(255,255,255,0.08); } 
-        .avatar { width: 40px; height: 40px; border-radius: 50%; display: flex; justify-content: center; align-items: center; background: var(--primary-gradient); font-size: 18px; border: 2px solid rgba(255,255,255,0.2); flex-shrink: 0; position: relative; overflow: hidden; } 
+        .profile { display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 9px 11px; border-radius: 14px; background: rgba(30, 41, 59, 0.65); flex-shrink: 0; border: 1px solid var(--border-color); } 
+        .avatar { width: 42px; height: 42px; border-radius: 50%; display: flex; justify-content: center; align-items: center; background: var(--primary-gradient); font-size: 18px; border: 2px solid rgba(255,255,255,0.22); flex-shrink: 0; position: relative; overflow: hidden; } 
         .avatar img { width: 100%; height: 100%; object-fit: cover; }
-        .online-dot { width: 8px; height: 8px; background: #22c55e; border-radius: 50%; position: absolute; bottom: 1px; right: 1px; border: 2px solid #111; }
+        .online-dot { width: 9px; height: 9px; background: #22c55e; border-radius: 50%; position: absolute; bottom: 1px; right: 1px; border: 2px solid #0f172a; }
         .profile-info { flex: 1; min-width: 0; }
-        .profile-info h3 { font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } 
-        .profile-info p { font-size: 10px; color: #aab0c5; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .nexora-points-tag { font-size: 10px; color: #fbbf24; font-weight: bold; display: block; cursor: pointer; text-decoration: underline; }
+        .profile-info h3 { font-size: 14px; font-weight: 800; color: #f8fafc; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } 
+        .profile-info p { font-size: 11px; color: var(--muted-text); font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .nexora-points-tag { font-size: 11px; color: #fbbf24; font-weight: 700; display: block; cursor: pointer; text-decoration: underline; margin-top: 2px; }
 
-        .stories-tray { display: flex; gap: 8px; padding: 6px 4px; overflow-x: auto; background: rgba(0,0,0,0.25); border-radius: 12px; flex-shrink: 0; border: 1px solid var(--border-color); }
-        .story-ring { width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(45deg, #f58529, #dd2a7b, #8134af, #515bd4); padding: 2px; cursor: pointer; flex-shrink: 0; display: flex; align-items: center; justify-content: center; position: relative; }
-        .story-ring.seen { background: #64748b; }
-        .story-thumb { width: 100%; height: 100%; border-radius: 50%; background: #111; display: flex; align-items: center; justify-content: center; font-size: 18px; overflow: hidden; border: 2px solid #080b1d; }
+        .stories-tray { display: flex; gap: 8px; padding: 7px 6px; overflow-x: auto; background: rgba(2, 6, 23, 0.45); border-radius: 12px; flex-shrink: 0; border: 1px solid var(--border-color); align-items: center; }
+        .story-ring { width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(45deg, #6366f1, #ec4899, #0ea5e9); padding: 2px; cursor: pointer; flex-shrink: 0; display: flex; align-items: center; justify-content: center; position: relative; }
+        .story-ring.seen { background: #475569; }
+        .story-thumb { width: 100%; height: 100%; border-radius: 50%; background: #0f172a; display: flex; align-items: center; justify-content: center; font-size: 18px; overflow: hidden; border: 2px solid #0b0f19; font-weight: 700; }
         .story-thumb img { width: 100%; height: 100%; object-fit: cover; }
-        .add-story-btn-mini { position: absolute; bottom: 0; right: 0; background: var(--accent-color); color: white; width: 16px; height: 16px; border-radius: 50%; font-size: 10px; display: flex; align-items: center; justify-content: center; border: 1px solid #080b1d; font-weight: bold; }
+        .add-story-btn-mini { position: absolute; bottom: 0; right: 0; background: var(--accent-color); color: white; width: 17px; height: 17px; border-radius: 50%; font-size: 11px; display: flex; align-items: center; justify-content: center; border: 1.5px solid #0b0f19; font-weight: 800; }
 
-        .notes-tray { display: flex; gap: 8px; padding: 6px 4px; overflow-x: auto; background: rgba(0,0,0,0.2); border-radius: 12px; flex-shrink: 0; border: 1px solid var(--border-color); }
-        .note-bubble-card { min-width: 90px; max-width: 110px; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12); border-radius: 14px; padding: 6px 8px; cursor: pointer; text-align: center; position: relative; flex-shrink: 0; }
-        .note-bubble-text { font-size: 10px; color: #f3e8ff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 2px; }
-        .note-bubble-user { font-size: 9px; color: #aab0c5; }
+        .notes-tray { display: flex; gap: 8px; padding: 6px; overflow-x: auto; background: rgba(2, 6, 23, 0.35); border-radius: 12px; flex-shrink: 0; border: 1px solid var(--border-color); }
+        .note-bubble-card { min-width: 96px; max-width: 120px; background: rgba(30, 41, 59, 0.65); border: 1px solid var(--border-color); border-radius: 12px; padding: 6px 8px; cursor: pointer; text-align: center; position: relative; flex-shrink: 0; }
+        .note-bubble-text { font-size: 11px; font-weight: 700; color: #f1f5f9; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 2px; }
+        .note-bubble-user { font-size: 10px; font-weight: 600; color: var(--muted-text); }
 
         .sidebar-tabs { display: flex; gap: 4px; flex-shrink: 0; }
-        .tab-btn { flex: 1; padding: 7px 4px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); color: #aab0c5; border-radius: 8px; cursor: pointer; font-size: 10px; font-weight: bold; text-align: center; }
-        .tab-btn.active { background: var(--accent-color); color: white; border-color: transparent; }
+        .tab-btn { flex: 1; padding: 8px 4px; background: rgba(30, 41, 59, 0.55); border: 1px solid var(--border-color); color: #cbd5e1; border-radius: 9px; cursor: pointer; font-size: 11px; font-weight: 700; text-align: center; }
+        .tab-btn.active { background: var(--primary-gradient); color: #ffffff; border-color: transparent; font-weight: 800; }
         
-        .users-list-container { flex: 1; overflow-y: auto; background: rgba(0,0,0,0.2); border-radius: 12px; padding: 10px; border: 1px solid var(--border-color); } 
-        .users-list-container h4 { font-size: 11px; color: #aab0c5; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; text-transform: uppercase; letter-spacing: 0.5px; } 
+        .users-list-container { flex: 1; overflow-y: auto; background: rgba(2, 6, 23, 0.4); border-radius: 12px; padding: 10px; border: 1px solid var(--border-color); } 
+        .users-list-container h4 { font-size: 12px; font-weight: 800; color: #e2e8f0; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; text-transform: uppercase; letter-spacing: 0.6px; } 
         
-        .create-group-btn { background: var(--accent-color); border: none; color: white; padding: 3px 8px; border-radius: 6px; cursor: pointer; font-size: 10px; font-weight: bold; }
+        .create-group-btn { background: var(--accent-color); border: none; color: white; padding: 4px 9px; border-radius: 7px; cursor: pointer; font-size: 11px; font-weight: 700; }
         
-        .user-item { padding: 10px 12px; border-radius: 10px; cursor: pointer; font-size: 13px; margin-bottom: 6px; display: flex; align-items: center; justify-content: space-between; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.04); } 
-        .user-status-indicator { width: 7px; height: 7px; border-radius: 50%; display: inline-block; margin-right: 8px; flex-shrink: 0; }
+        .user-item { padding: 10px 12px; border-radius: 10px; cursor: pointer; font-size: 13px; font-weight: 600; margin-bottom: 6px; display: flex; align-items: center; justify-content: space-between; background: rgba(30, 41, 59, 0.45); border: 1px solid var(--border-color); } 
+        .user-item:hover { background: rgba(51, 65, 85, 0.6); }
+        .user-status-indicator { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 8px; flex-shrink: 0; }
         .is-online { background: #22c55e; }
         .is-offline { background: #64748b; }
 
-        .chat-area { width: 100%; height: 100%; display: flex; flex-direction: column; position: absolute; top: 0; left: 0; background: rgba(0,0,0,0.1); background-size: cover; background-position: center; transition: transform 0.25s ease; z-index: 1; transform: translateX(100%); } 
+        /* REELS FEED STYLING */
+        .reel-card { background: rgba(15, 23, 42, 0.85); border: 1px solid var(--border-color); border-radius: 14px; padding: 10px; margin-bottom: 12px; }
+        .reel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: 12px; font-weight: 700; }
+        .reel-media { width: 100%; max-height: 240px; object-fit: cover; border-radius: 10px; background: #000; margin-bottom: 8px; }
+        .reel-caption { font-size: 12px; font-weight: 600; color: #f1f5f9; margin-bottom: 8px; }
+        .reel-actions { display: flex; justify-content: space-between; align-items: center; gap: 6px; padding-top: 6px; border-top: 1px solid var(--border-color); }
+        .reel-action-btn { background: rgba(255,255,255,0.06); border: 1px solid var(--border-color); color: #f8fafc; padding: 5px 10px; border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer; }
+        .reel-comments-box { margin-top: 8px; background: rgba(2, 6, 23, 0.5); border-radius: 8px; padding: 6px 8px; max-height: 90px; overflow-y: auto; font-size: 11px; }
+        .reel-comment-item { padding: 3px 0; border-bottom: 1px solid rgba(148, 163, 184, 0.08); }
+
+        .chat-area { width: 100%; height: 100%; display: flex; flex-direction: column; position: absolute; top: 0; left: 0; background: rgba(11, 15, 25, 0.9); background-size: cover; background-position: center; transition: transform 0.25s ease; z-index: 1; transform: translateX(100%); } 
         .chat-area.active-mobile { transform: translateX(0); z-index: 3; }
 
-        .chat-header { padding: 10px 14px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; background: rgba(8, 11, 29, 0.85); backdrop-filter: blur(12px); z-index: 5; } 
+        .chat-header { padding: 10px 14px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; background: rgba(11, 15, 25, 0.9); backdrop-filter: blur(12px); z-index: 5; } 
         .chat-header-profile { display: flex; align-items: center; gap: 10px; cursor: pointer; min-width: 0; }
         
-        .back-btn-mobile { background: none; border: none; color: white; font-size: 18px; cursor: pointer; padding-right: 4px; display: none; }
+        .back-btn-mobile { background: none; border: none; color: white; font-size: 18px; font-weight: 700; cursor: pointer; padding-right: 4px; display: none; }
         @media (max-width: 1024px) { .back-btn-mobile { display: inline-block; } }
 
-        .header-avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--primary-gradient); display: flex; align-items: center; justify-content: center; font-size: 16px; overflow: hidden; border: 1.5px solid rgba(255,255,255,0.3); flex-shrink: 0; }
+        .header-avatar { width: 38px; height: 38px; border-radius: 50%; background: var(--primary-gradient); display: flex; align-items: center; justify-content: center; font-size: 16px; overflow: hidden; border: 1.5px solid rgba(255,255,255,0.25); flex-shrink: 0; }
         .header-avatar img { width: 100%; height: 100%; object-fit: cover; }
 
         .header-actions { display: flex; align-items: center; gap: 8px; }
-        .call-btn { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: #38bdf8; width: 36px; height: 36px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 16px; cursor: pointer; }
+        .call-btn { background: rgba(30, 41, 59, 0.75); border: 1px solid var(--border-color); color: #38bdf8; width: 36px; height: 36px; border-radius: 11px; display: flex; align-items: center; justify-content: center; font-size: 15px; cursor: pointer; }
 
-        .pinned-msg-banner { background: rgba(139, 92, 246, 0.2); border-bottom: 1px solid rgba(139, 92, 246, 0.4); padding: 6px 12px; font-size: 11px; display: none; justify-content: space-between; align-items: center; color: #f3e8ff; z-index: 4; }
-        .typing-floating-banner { position: absolute; top: 60px; left: 50%; transform: translateX(-50%); background: rgba(139, 92, 246, 0.3); backdrop-filter: blur(10px); border: 1px solid rgba(139, 92, 246, 0.5); color: #f3e8ff; padding: 4px 14px; border-radius: 20px; font-size: 11px; font-style: italic; z-index: 15; display: none; }
+        .pinned-msg-banner { background: rgba(99, 102, 241, 0.2); border-bottom: 1px solid rgba(99, 102, 241, 0.45); padding: 7px 12px; font-size: 12px; font-weight: 600; display: none; justify-content: space-between; align-items: center; color: #e0e7ff; z-index: 4; }
+        .typing-floating-banner { position: absolute; top: 62px; left: 50%; transform: translateX(-50%); background: rgba(99, 102, 241, 0.3); backdrop-filter: blur(10px); border: 1px solid rgba(99, 102, 241, 0.5); color: #f8fafc; padding: 4px 14px; border-radius: 20px; font-size: 11px; font-weight: 700; font-style: italic; z-index: 15; display: none; }
 
-        .messages { flex: 1; padding: 12px 14px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; background: rgba(0, 0, 0, 0.3); } 
+        .messages { flex: 1; padding: 12px 14px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; background: rgba(2, 6, 23, 0.35); } 
         
         .message-wrapper { position: relative; width: 100%; display: flex; flex-direction: column; transition: transform 0.2s ease; }
         .message-wrapper.sent-wrap { align-items: flex-end; }
         .message-wrapper.received-wrap { align-items: flex-start; }
 
-        .message { max-width: 80%; padding: 10px 12px; border-radius: 14px; background: rgba(255,255,255,.12); backdrop-filter: blur(5px); word-break: break-word; font-size: 13px; position: relative; border: 1px solid rgba(255,255,255,0.06); cursor: pointer; user-select: none; } 
-        .sent { background: var(--primary-gradient); border: none; } 
+        .message { max-width: 82%; padding: 10px 12px; border-radius: 14px; background: rgba(30, 41, 59, 0.85); backdrop-filter: blur(6px); word-break: break-word; font-size: 13px; font-weight: 500; position: relative; border: 1px solid var(--border-color); cursor: pointer; user-select: none; } 
+        .sent { background: var(--primary-gradient); border: none; color: #ffffff; } 
         
-        .sender-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px; gap: 8px; } 
-        .sender { font-size: 10px; color: #aab0c5; } 
-        .msg-footer { display: flex; justify-content: flex-end; align-items: center; gap: 6px; margin-top: 3px; font-size: 9px; color: rgba(255,255,255,0.7); } 
-        .tick { font-size: 11px; opacity: 0.8; } 
-        .tick.blue { color: #38bdf8; font-weight: bold; }
+        .sender-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; gap: 8px; } 
+        .sender { font-size: 11px; font-weight: 700; color: #cbd5e1; } 
+        .sent .sender { color: rgba(255,255,255,0.92); }
+        .msg-footer { display: flex; justify-content: flex-end; align-items: center; gap: 6px; margin-top: 4px; font-size: 10px; font-weight: 600; color: rgba(255,255,255,0.75); } 
+        .tick { font-size: 11px; opacity: 0.85; } 
+        .tick.blue { color: #38bdf8; font-weight: 800; }
         
-        .action-btns-row { display: flex; gap: 6px; align-items: center; }
-        .action-icon-btn { background: none; border: none; cursor: pointer; font-size: 12px; opacity: 0.8; }
-        .delete-btn { color: #fca5a5; font-size: 10px; } 
-        .download-btn { color: #38bdf8; font-size: 10px; font-weight: bold; text-decoration: underline; background:none; border:none; cursor:pointer; }
+        .action-btns-row { display: flex; gap: 5px; align-items: center; }
+        .action-icon-btn { background: none; border: none; cursor: pointer; font-size: 12px; opacity: 0.85; }
+        .delete-btn { color: #fecaca; font-size: 10px; font-weight: 700; } 
+        .download-btn { color: #38bdf8; font-size: 11px; font-weight: 700; text-decoration: underline; background:none; border:none; cursor:pointer; }
 
-        .msg-reactions-badge { display: flex; gap: 3px; flex-wrap: wrap; margin-top: 4px; }
-        .reaction-pill { background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.15); padding: 2px 6px; border-radius: 12px; font-size: 11px; display: inline-flex; align-items: center; gap: 2px; }
+        .story-mention-card { background: rgba(15, 23, 42, 0.72); border: 1px solid rgba(255,255,255,0.22); border-radius: 10px; padding: 8px; margin-top: 6px; }
+        .story-mention-card img { width: 100%; max-height: 150px; object-fit: cover; border-radius: 8px; margin: 6px 0; }
+        .add-to-story-btn { width: 100%; padding: 6px 10px; border: none; border-radius: 8px; background: #22c55e; color: #052e16; font-weight: 800; font-size: 11px; cursor: pointer; }
 
-        .reactions-popup-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center; z-index: 5000; backdrop-filter: blur(4px); }
-        .reactions-grid-box { background: #13172e; border: 1px solid rgba(255,255,255,0.15); border-radius: 20px; padding: 16px; width: min(320px, 90%); text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
-        .reactions-20-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin: 12px 0; }
-        .reaction-emoji-item { font-size: 24px; cursor: pointer; padding: 6px; background: rgba(255,255,255,0.06); border-radius: 12px; transition: transform 0.1s; }
-        .reaction-emoji-item:active { transform: scale(1.2); background: rgba(255,255,255,0.2); }
+        .msg-reactions-badge { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 5px; }
+        .reaction-pill { background: rgba(2, 6, 23, 0.65); border: 1px solid rgba(255,255,255,0.2); padding: 2px 7px; border-radius: 12px; font-size: 11px; font-weight: 700; display: inline-flex; align-items: center; gap: 3px; cursor: pointer; color: #f8fafc; }
+        .reaction-pill:hover { border-color: #f87171; }
 
-        .active-reply-container { display: none; background: rgba(15, 23, 42, 0.95); padding: 6px 12px; border-top: 1px solid var(--border-color); justify-content: space-between; align-items: center; font-size: 11px; }
+        .reactions-popup-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.65); display: none; justify-content: center; align-items: center; z-index: 5000; backdrop-filter: blur(4px); }
+        .reactions-grid-box { background: #0f172a; border: 1px solid var(--border-color); border-radius: 20px; padding: 16px; width: min(330px, 92%); text-align: center; box-shadow: 0 12px 32px rgba(0,0,0,0.8); }
+        .reactions-20-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin: 12px 0; }
+        .reaction-emoji-item { font-size: 22px; cursor: pointer; padding: 6px; background: rgba(30, 41, 59, 0.7); border-radius: 11px; transition: transform 0.1s; }
+        .reaction-emoji-item:active { transform: scale(1.18); background: rgba(99, 102, 241, 0.35); }
+        .remove-reaction-btn { width: 100%; padding: 7px; background: rgba(239, 68, 68, 0.18); border: 1px solid rgba(239, 68, 68, 0.45); color: #fca5a5; border-radius: 10px; cursor: pointer; font-size: 11px; font-weight: 700; margin-top: 4px; }
+
+        .active-reply-container { display: none; background: rgba(15, 23, 42, 0.96); padding: 7px 12px; border-top: 1px solid var(--border-color); justify-content: space-between; align-items: center; font-size: 11px; }
         
-        .message-input { display: flex; gap: 6px; padding: 10px 12px; border-top: 1px solid var(--border-color); background: rgba(8, 11, 29, 0.9); backdrop-filter: blur(12px); align-items: center; flex-shrink: 0; z-index: 5; } 
+        .message-input { display: flex; gap: 6px; padding: 10px 12px; border-top: 1px solid var(--border-color); background: rgba(11, 15, 25, 0.92); backdrop-filter: blur(12px); align-items: center; flex-shrink: 0; z-index: 5; } 
         .message-input input { flex: 1; min-width: 0; padding: 11px 12px; font-size: 13px; border-radius: 20px; } 
         .attach-btn, .snap-btn-icon, .sticker-btn-icon, .mic-btn { background: transparent; border: none; color: #cbd5e1; font-size: 18px; cursor: pointer; padding: 4px; }
         .mic-btn.recording { color: #ef4444; animation: pulseGlow 1s infinite; }
         
         .voice-record-ui { display: none; align-items: center; gap: 8px; flex: 1; background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.4); padding: 6px 12px; border-radius: 20px; }
-        .voice-msg-player { display: flex; align-items: center; gap: 8px; min-width: 160px; margin-top: 4px; }
+        .voice-msg-player { display: flex; align-items: center; gap: 8px; min-width: 160px; margin-top: 4px; font-weight: 600; }
         .voice-play-btn { width: 30px; height: 30px; border-radius: 50%; background: rgba(255,255,255,0.2); border: none; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 12px; }
 
-        .send-btn { width: 40px; height: 40px; background: var(--accent-color); font-size: 14px; color: white; display: flex; align-items: center; justify-content: center; border: none; border-radius: 50%; cursor: pointer; flex-shrink: 0; } 
-        .media-preview { max-width: 200px; border-radius: 8px; margin-top: 5px; display: block; }
+        .send-btn { width: 40px; height: 40px; background: var(--primary-gradient); font-size: 14px; font-weight: 700; color: white; display: flex; align-items: center; justify-content: center; border: none; border-radius: 50%; cursor: pointer; flex-shrink: 0; } 
+        .media-preview { max-width: 210px; border-radius: 10px; margin-top: 5px; display: block; }
         
-        .stickers-popup { position: absolute; bottom: 65px; left: 10px; width: min(320px, 94%); background: rgba(15, 23, 42, 0.96); backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.15); border-radius: 16px; padding: 12px; display: none; flex-direction: column; z-index: 100; }
+        .stickers-popup { position: absolute; bottom: 65px; left: 10px; width: min(320px, 94%); background: rgba(15, 23, 42, 0.97); backdrop-filter: blur(15px); border: 1px solid var(--border-color); border-radius: 16px; padding: 12px; display: none; flex-direction: column; z-index: 100; }
         .stickers-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; max-height: 180px; overflow-y: auto; margin-top: 8px; }
-        .sticker-item { width: 100%; aspect-ratio: 1; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 26px; cursor: pointer; }
+        .sticker-item { width: 100%; aspect-ratio: 1; background: rgba(30, 41, 59, 0.6); border: 1px solid var(--border-color); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 24px; cursor: pointer; }
 
         /* MODALS */
         .story-viewer-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.92); display: none; flex-direction: column; justify-content: space-between; align-items: center; z-index: 4000; padding: 20px; }
-        .story-container { width: min(340px, 94%); height: 75vh; background: #111; border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; position: relative; border: 1px solid rgba(255,255,255,0.2); }
+        .story-container { width: min(350px, 94%); height: 76vh; background: #0f172a; border-radius: 18px; overflow: hidden; display: flex; flex-direction: column; position: relative; border: 1px solid var(--border-color); }
         .story-media { width: 100%; flex: 1; object-fit: cover; background: #000; }
-        .story-header-bar { position: absolute; top: 0; left: 0; width: 100%; padding: 12px; background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent); display: flex; justify-content: space-between; align-items: center; z-index: 5; }
-        .story-footer-bar { position: absolute; bottom: 0; left: 0; width: 100%; padding: 14px; background: linear-gradient(to top, rgba(0,0,0,0.85), transparent); display: flex; justify-content: space-between; align-items: center; z-index: 5; }
+        .story-header-bar { position: absolute; top: 0; left: 0; width: 100%; padding: 12px; background: linear-gradient(to bottom, rgba(0,0,0,0.85), transparent); display: flex; justify-content: space-between; align-items: center; z-index: 5; }
+        .story-footer-bar { position: absolute; bottom: 0; left: 0; width: 100%; padding: 14px; background: linear-gradient(to top, rgba(0,0,0,0.9), transparent); display: flex; justify-content: space-between; align-items: center; z-index: 5; }
 
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.75); display: none; justify-content: center; align-items: center; z-index: 1000; padding: 10px; backdrop-filter: blur(5px); }
-        .modal-content { background: #13172e; padding: 18px; border-radius: 20px; width: min(360px, 94%); text-align: center; border: 1px solid rgba(255,255,255,0.12); max-height: 88vh; overflow-y: auto; }
-        .avatar-preview-box { width: 68px; height: 68px; margin: 0 auto 8px; border-radius: 50%; background: var(--primary-gradient); display: flex; align-items: center; justify-content: center; font-size: 30px; border: 2px solid rgba(255,255,255,0.3); overflow: hidden; }
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(2, 6, 23, 0.78); display: none; justify-content: center; align-items: center; z-index: 1000; padding: 10px; backdrop-filter: blur(6px); }
+        .modal-content { background: #0f172a; padding: 18px; border-radius: 20px; width: min(370px, 94%); text-align: center; border: 1px solid var(--border-color); max-height: 88vh; overflow-y: auto; }
+        .avatar-preview-box { width: 68px; height: 68px; margin: 0 auto 8px; border-radius: 50%; background: var(--primary-gradient); display: flex; align-items: center; justify-content: center; font-size: 30px; border: 2px solid rgba(255,255,255,0.25); overflow: hidden; }
         .avatar-preview-box img { width: 100%; height: 100%; object-fit: cover; }
         .outfit-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 6px; }
-        .outfit-card { padding: 8px 4px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; cursor: pointer; font-size: 10px; text-align: center; color: #fff; }
-        .group-member-checkbox-item { display: flex; align-items: center; justify-content: space-between; padding: 5px 8px; background: rgba(255,255,255,0.03); border-radius: 6px; margin-bottom: 4px; font-size: 11px; }
+        .outfit-card { padding: 8px 4px; background: rgba(30, 41, 59, 0.65); border: 1px solid var(--border-color); border-radius: 8px; cursor: pointer; font-size: 10px; font-weight: 700; text-align: center; color: #f8fafc; }
+        .group-member-checkbox-item { display: flex; align-items: center; justify-content: space-between; padding: 6px 8px; background: rgba(30, 41, 59, 0.5); border-radius: 6px; margin-bottom: 4px; font-size: 11px; font-weight: 600; }
 
         .search-container { display: flex; gap: 6px; margin-bottom: 8px; }
-        .search-results-box { max-height: 110px; overflow-y: auto; background: rgba(0,0,0,0.2); border-radius: 8px; padding: 6px; margin-top: 4px; text-align: left; }
-        .search-result-item { padding: 6px 8px; font-size: 11px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center; }
+        .search-results-box { max-height: 115px; overflow-y: auto; background: rgba(2, 6, 23, 0.5); border-radius: 8px; padding: 6px; margin-top: 4px; text-align: left; }
+        .search-result-item { padding: 6px 8px; font-size: 11px; font-weight: 600; border-bottom: 1px solid rgba(148, 163, 184, 0.08); display: flex; justify-content: space-between; align-items: center; }
 
         .camera-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.96); display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 2000; padding: 10px; }
         .camera-view { width: min(350px, 94%); height: 42vh; border-radius: 16px; object-fit: cover; background: #000; border: 2px solid var(--accent-color); cursor: pointer; }
-        .filter-options-bar { display: flex; gap: 6px; margin: 10px 0; overflow-x: auto; max-width: 94%; padding: 4px; scrollbar-width: thin; }
-        .filter-chip { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: #cbd5e1; padding: 6px 12px; border-radius: 20px; font-size: 11px; cursor: pointer; white-space: nowrap; flex-shrink: 0; }
-        .filter-chip.active { background: var(--accent-color); border-color: white; color: white; font-weight: bold; }
+        .filter-options-bar { display: flex; gap: 6px; margin: 10px 0; overflow-x: auto; max-width: 94%; padding: 4px; }
+        .filter-chip { background: rgba(30, 41, 59, 0.7); border: 1px solid var(--border-color); color: #cbd5e1; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; cursor: pointer; white-space: nowrap; flex-shrink: 0; }
+        .filter-chip.active { background: var(--accent-color); border-color: white; color: white; font-weight: 800; }
         .camera-controls { display: flex; gap: 12px; margin-top: 6px; }
-        .cam-btn { padding: 9px 20px; border-radius: 30px; border: none; font-weight: bold; cursor: pointer; color: white; font-size: 12px; }
-        .capture-btn { background: #22c55e; }
+        .cam-btn { padding: 9px 20px; border-radius: 30px; border: none; font-weight: 700; cursor: pointer; color: white; font-size: 12px; }
+        .capture-btn { background: #22c55e; color: #052e16; font-weight: 800; }
         .close-cam-btn { background: #ef4444; }
 
-        /* Working Snap Filters */
         .f-normal { filter: none; }
         .f-cyberpunk { filter: contrast(150%) saturate(200%) hue-rotate(310deg); }
         .f-neon { filter: brightness(120%) drop-shadow(0 0 10px #06b6d4) contrast(140%); }
@@ -196,11 +250,11 @@
         .f-sepia { filter: sepia(90%); }
     </style>
 </head>
-<body class="theme-purple">
+<body class="theme-slate">
 
     <div id="splashScreen">
         <div class="splash-logo">💬 NEXORA</div>
-        <p style="color: #aab0c5; margin-top: 8px; font-size: 13px;">Connecting to Secure Chat...</p>
+        <p style="color: var(--muted-text); margin-top: 8px; font-size: 13px; font-weight: 700;">Connecting to Secure Chat...</p>
     </div>
 
     <div class="auth-page" id="loginPage">
@@ -238,14 +292,14 @@
                             <div class="profile-info">
                                 <h3 id="displayName">NEXORA User</h3>
                                 <p id="displayEmailId">user@email.com</p>
-                                <span class="nexora-points-tag" id="displayNexoraPoints" onclick="openStoreModal()">⭐ Points: 0 (Open Store)</span>
+                                <span class="nexora-points-tag" id="displayNexoraPoints" onclick="event.stopPropagation(); openStoreModal()">⭐ Points: 0 (Open Store)</span>
                             </div>
-                            <span class="status">⚙️</span>
+                            <span style="font-size:16px;">⚙️</span>
                         </div>
 
                         <!-- STORIES TRAY -->
                         <div class="stories-tray" id="storiesTrayContainer">
-                            <div class="story-ring" onclick="triggerAddStory()">
+                            <div class="story-ring" onclick="triggerAddStory()" title="Add Story">
                                 <div class="story-thumb" id="myStoryThumb">➕</div>
                                 <div class="add-story-btn-mini">+</div>
                             </div>
@@ -260,13 +314,17 @@
                         <div class="sidebar-tabs">
                             <button class="tab-btn active" id="chatsTabBtn" onclick="switchSidebarTab('chats')">💬 Chats</button>
                             <button class="tab-btn" id="groupsTabBtn" onclick="switchSidebarTab('groups')">👥 Groups</button>
-                            <button class="tab-btn" id="notifsTabBtn" onclick="switchSidebarTab('notifs')">🔔 Notifs <span id="notifBadge" style="background:#ef4444; color:white; padding:1px 4px; border-radius:10px; font-size:8px; display:none;">0</span></button>
+                            <button class="tab-btn" id="reelsTabBtn" onclick="switchSidebarTab('reels')">🎬 Reels</button>
+                            <button class="tab-btn" id="notifsTabBtn" onclick="switchSidebarTab('notifs')">🔔 Notifs <span id="notifBadge" style="background:#ef4444; color:white; padding:1px 5px; border-radius:10px; font-size:9px; font-weight:800; display:none;">0</span></button>
                         </div>
 
                         <div class="users-list-container">
                             <h4 id="sidebarListHeader">
                                 <span id="sidebarTitleText">💬 Accepted Chats</span>
-                                <button class="create-group-btn" id="addGroupHeaderBtn" onclick="openCreateGroupModal()" style="display:none;">+ Group</button>
+                                <div style="display:flex; gap:5px;">
+                                    <button class="create-group-btn" id="addGroupHeaderBtn" onclick="openCreateGroupModal()" style="display:none;">+ Group</button>
+                                    <button class="create-group-btn" id="addReelHeaderBtn" onclick="openAddReelModal()" style="display:none;">+ Reel</button>
+                                </div>
                             </h4>
                             <div id="chatList"></div>
                         </div>
@@ -275,8 +333,8 @@
 
                 <div class="chat-area" id="chatAreaBackground">
                     <div class="pinned-msg-banner" id="pinnedMsgBanner">
-                        <span>📌 Pinned: <b id="pinnedMsgText">None</b></span>
-                        <button onclick="unpinMessage()" style="background:none; border:none; color:#fca5a5; cursor:pointer; font-size:11px;">Unpin</button>
+                        <span>📌 <strong>Pinned:</strong> <b id="pinnedMsgText">None</b></span>
+                        <button onclick="unpinMessage()" style="background:none; border:none; color:#fca5a5; cursor:pointer; font-size:11px; font-weight:700;">Unpin</button>
                     </div>
 
                     <div class="typing-floating-banner" id="typingIndicator">✍️ Typing.....</div>
@@ -286,16 +344,16 @@
                             <button class="back-btn-mobile" onclick="backToSidebar(event)">←</button>
                             <div class="header-avatar" id="headerUserAvatar">👤</div>
                             <div style="min-width: 0;">
-                                <h3 id="chatTitle" style="font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Select a Chat</h3>
-                                <small id="chatSub" style="font-size: 9px; color:#aab0c5; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block;">● Tap for profile</small>
+                                <h3 id="chatTitle" style="font-size: 14px; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Select a Chat</h3>
+                                <small id="chatSub" style="font-size: 10px; font-weight: 600; color: var(--muted-text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block;">● Tap for profile</small>
                             </div>
                         </div>
                         <div class="header-actions">
-                            <button class="call-btn" onclick="startVoiceCall()" title="Start Voice Call">📞</button>
-                            <select id="themeSelector" onchange="changeTheme(this.value)" style="padding: 4px 6px; font-size: 10px;">
-                                <option value="theme-purple">Purple</option>
-                                <option value="theme-cyan">Cyan</option>
-                                <option value="theme-midnight">Midnight</option>
+                            <button class="call-btn" onclick="alert('📞 Voice call feature starting...')" title="Start Voice Call">📞</button>
+                            <select id="themeSelector" onchange="changeTheme(this.value)" style="padding: 5px 8px; font-size: 11px; font-weight: 700;">
+                                <option value="theme-slate">Slate Indigo</option>
+                                <option value="theme-teal">Ocean Teal</option>
+                                <option value="theme-rose">Obsidian Rose</option>
                             </select>
                         </div>
                     </div>
@@ -304,16 +362,16 @@
 
                     <div class="active-reply-container" id="activeReplyContainer">
                         <div>
-                            <div style="font-size:9px; color:#a78bfa; font-weight:bold;">Replying to <span id="replyTargetName">User</span></div>
-                            <div id="replyTargetText" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:260px;">Message content...</div>
+                            <div style="font-size:10px; color:#a5b4fc; font-weight:800;">Replying to <span id="replyTargetName">User</span></div>
+                            <div id="replyTargetText" style="font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:260px;">Message content...</div>
                         </div>
-                        <button onclick="cancelReply()" style="background:none; border:none; color:#fca5a5; font-size:14px; cursor:pointer;">✕</button>
+                        <button onclick="cancelReply()" style="background:none; border:none; color:#fca5a5; font-size:14px; font-weight:700; cursor:pointer;">✕</button>
                     </div>
 
                     <div class="stickers-popup" id="stickersPopup">
-                        <div style="display:flex; justify-content:space-between; align-items:center; font-size:11px; font-weight:bold; color:#a78bfa;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; font-size:12px; font-weight:800; color:#a5b4fc;">
                             <span>🌟 Nexora Stickers</span>
-                            <button onclick="toggleStickersPanel()" style="background:none; border:none; color:#aaa; cursor:pointer;">✕</button>
+                            <button onclick="toggleStickersPanel()" style="background:none; border:none; color:#94a3b8; font-weight:700; cursor:pointer;">✕</button>
                         </div>
                         <div class="stickers-grid" id="stickersGrid"></div>
                     </div>
@@ -329,8 +387,8 @@
                         
                         <div class="voice-record-ui" id="voiceRecordUI">
                             <span style="font-size:14px;">🔴</span>
-                            <div style="font-size:11px; color:#fca5a5; font-weight:bold; flex:1;" id="recordingTimerText">Recording 00:00</div>
-                            <button onclick="cancelAudioRecording()" style="background:none; border:none; color:#fca5a5; font-size:14px; cursor:pointer;">✕</button>
+                            <div style="font-size:11px; color:#fca5a5; font-weight:700; flex:1;" id="recordingTimerText">Recording 00:00</div>
+                            <button onclick="cancelAudioRecording()" style="background:none; border:none; color:#fca5a5; font-size:14px; font-weight:700; cursor:pointer;">✕</button>
                         </div>
 
                         <button class="mic-btn" id="micToggleBtn" onclick="toggleVoiceRecording()" title="Record Voice Note">🎤</button>
@@ -344,33 +402,51 @@
     <!-- 20 EMOJIS REACTION POPUP MODAL -->
     <div class="reactions-popup-overlay" id="reactionsModal">
         <div class="reactions-grid-box">
-            <h3 style="font-size:14px; color:#a78bfa; margin-bottom:4px;">React with Emoji</h3>
-            <p style="font-size:10px; color:#aaa;">Tap any emoji to react</p>
+            <h3 style="font-size:15px; font-weight:800; color:#a5b4fc; margin-bottom:4px;">React with Emoji</h3>
+            <p style="font-size:11px; font-weight:600; color:var(--muted-text);">Tap any emoji to react, or tap a reaction pill to remove</p>
             <div class="reactions-20-grid" id="reactions20Grid"></div>
-            <button onclick="closeReactionsModal()" style="width:100%; padding:6px; background:transparent; border:none; color:#aaa; cursor:pointer; font-size:11px; margin-top:8px;">Cancel</button>
+            <button class="remove-reaction-btn" onclick="removeMyReaction()">🗑️ Remove My Reaction</button>
+            <button onclick="closeReactionsModal()" style="width:100%; padding:6px; background:transparent; border:none; color:#94a3b8; font-weight:700; cursor:pointer; font-size:11px; margin-top:6px;">Cancel</button>
+        </div>
+    </div>
+
+    <!-- ADD REEL MODAL -->
+    <div class="modal-overlay" id="addReelModal">
+        <div class="modal-content">
+            <h3 style="margin-bottom:10px; color:#f8fafc; font-size: 16px; font-weight: 800;">🎬 Upload a Reel</h3>
+            <div class="input-group">
+                <label>Select Video or Photo</label>
+                <input type="file" id="reelMediaInput" accept="video/*,image/*" style="font-size:11px; padding:6px;">
+            </div>
+            <div class="input-group">
+                <label>Caption</label>
+                <textarea id="reelCaptionInput" rows="2" placeholder="Write a caption for your reel..."></textarea>
+            </div>
+            <button onclick="publishNewReel()" style="width:100%; padding:10px; background:var(--primary-gradient); color:white; border:none; border-radius:10px; font-weight:800; cursor:pointer; margin-top:12px; font-size:12px;">Publish Reel</button>
+            <button onclick="closeAddReelModal()" style="width:100%; padding:6px; background:transparent; color:#94a3b8; font-weight:700; border:none; cursor:pointer; font-size:11px; margin-top:6px;">Cancel</button>
         </div>
     </div>
 
     <!-- NOTE VIEWER MODAL -->
     <div class="story-viewer-overlay" id="noteViewerModal">
-        <div class="story-container" style="background:#13172e; padding:16px; justify-content: space-between;">
+        <div class="story-container" style="background:#0f172a; padding:16px; justify-content: space-between;">
             <div style="display:flex; justify-content:space-between; align-items:center;">
-                <span id="noteViewerUser" style="font-weight:bold; color:#a78bfa; font-size:13px;">User's Note</span>
-                <button onclick="closeNoteViewer()" style="background:none; border:none; color:white; font-size:16px; cursor:pointer;">✕</button>
+                <span id="noteViewerUser" style="font-weight:800; color:#a5b4fc; font-size:14px;">User's Note</span>
+                <button onclick="closeNoteViewer()" style="background:none; border:none; color:white; font-size:16px; font-weight:700; cursor:pointer;">✕</button>
             </div>
-            <div style="background:rgba(255,255,255,0.05); padding:16px; border-radius:12px; font-size:14px; color:#fff; text-align:center; word-break:break-word;" id="noteViewerText">
+            <div style="background:rgba(30, 41, 59, 0.65); padding:16px; border-radius:12px; font-size:14px; font-weight:600; color:#f8fafc; text-align:center; word-break:break-word;" id="noteViewerText">
                 Note comment here...
             </div>
             <audio id="viewerNoteAudio" loop style="display:none;"></audio>
             
             <div style="display:flex; flex-direction:column; gap:6px;">
                 <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <button id="noteLikeBtn" onclick="toggleNoteLike()" style="background:rgba(255,255,255,0.15); border:none; padding:6px 14px; border-radius:20px; color:white; font-size:12px; cursor:pointer;">🤍 Like (<span id="noteLikesCount">0</span>)</button>
-                    <button id="deleteNoteBtn" onclick="deleteCurrentNote()" style="display:none; background:#ef4444; border:none; padding:5px 12px; border-radius:8px; color:white; font-size:11px; font-weight:bold; cursor:pointer;">🗑️ Delete Note</button>
+                    <button id="noteLikeBtn" onclick="toggleNoteLike()" style="background:rgba(255,255,255,0.14); border:none; padding:6px 14px; border-radius:20px; color:white; font-size:12px; font-weight:700; cursor:pointer;">🤍 Like (<span id="noteLikesCount">0</span>)</button>
+                    <button id="deleteNoteBtn" onclick="deleteCurrentNote()" style="display:none; background:#ef4444; border:none; padding:6px 12px; border-radius:8px; color:white; font-size:11px; font-weight:800; cursor:pointer;">🗑️ Delete Note</button>
                 </div>
                 <div style="display:flex; gap:6px; margin-top:4px;">
-                    <input type="text" id="noteCommentInput" placeholder="Reply to note..." style="padding:6px 10px; font-size:11px;">
-                    <button onclick="sendNoteComment()" style="padding:6px 12px; background:var(--accent-color); border:none; border-radius:8px; color:white; font-size:11px; font-weight:bold; cursor:pointer;">Send</button>
+                    <input type="text" id="noteCommentInput" placeholder="Reply to note..." style="padding:7px 10px; font-size:11px;">
+                    <button onclick="sendNoteComment()" style="padding:7px 12px; background:var(--accent-color); border:none; border-radius:8px; color:white; font-size:11px; font-weight:800; cursor:pointer;">Send</button>
                 </div>
             </div>
         </div>
@@ -379,26 +455,25 @@
     <!-- ADD NOTE MODAL -->
     <div class="modal-overlay" id="addNoteModal">
         <div class="modal-content">
-            <h3 style="margin-bottom:10px; color:#fff; font-size: 15px;">💬 Leave a Note</h3>
+            <h3 style="margin-bottom:10px; color:#f8fafc; font-size: 16px; font-weight: 800;">💬 Leave a Note</h3>
             <div class="input-group">
                 <label>What's on your mind? (Comment)</label>
                 <textarea id="noteCommentText" rows="3" placeholder="Type your note comment..."></textarea>
             </div>
             <div class="input-group">
                 <label>🔒 Who can see this note?</label>
-                <select id="notePrivacySelect" style="background:#111; color:white; padding:8px; border-radius:8px; font-size:11px;">
+                <select id="notePrivacySelect" style="background:#020617; color:white; padding:8px; border-radius:8px; font-size:11px; font-weight:600;">
                     <option value="friends">Accepted Friends Only</option>
                     <option value="public">All Nexora Users</option>
                 </select>
             </div>
             <div class="input-group">
-                <label>🎵 Isaiify Song URL / Local Audio</label>
-                <input type="text" id="noteIsaiifyUrlInput" placeholder="Paste Isaiify song URL or choose file below..." style="margin-bottom:6px; font-size:11px;">
+                <label>🎵 Song URL / Local Audio</label>
+                <input type="text" id="noteIsaiifyUrlInput" placeholder="Paste song URL or choose file below..." style="margin-bottom:6px; font-size:11px;">
                 <input type="file" id="noteAudioFileInput" accept="audio/*" style="font-size:11px; padding:4px;">
-                <small style="color:#38bdf8; font-size:9px; display:block; margin-top:3px;"><a href="https://music-ten-orcin.vercel.app/" target="_blank" style="color:#38bdf8;">Browse Isaiify App (https://music-ten-orcin.vercel.app/)</a></small>
             </div>
-            <button onclick="publishNewNote()" style="width:100%; padding:9px; background:var(--accent-color); color:white; border:none; border-radius:8px; font-weight:bold; cursor:pointer; margin-top:12px; font-size:12px;">Share Note</button>
-            <button onclick="closeAddNoteModal()" style="width:100%; padding:5px; background:transparent; color:#aaa; border:none; cursor:pointer; font-size:11px; margin-top:6px;">Cancel</button>
+            <button onclick="publishNewNote()" style="width:100%; padding:10px; background:var(--primary-gradient); color:white; border:none; border-radius:10px; font-weight:800; cursor:pointer; margin-top:12px; font-size:12px;">Share Note</button>
+            <button onclick="closeAddNoteModal()" style="width:100%; padding:6px; background:transparent; color:#94a3b8; font-weight:700; border:none; cursor:pointer; font-size:11px; margin-top:6px;">Cancel</button>
         </div>
     </div>
 
@@ -409,18 +484,18 @@
                 <div style="display:flex; align-items:center; gap:8px;">
                     <div id="viewerUserAvatar" class="avatar" style="width:28px; height:28px; font-size:12px;">👤</div>
                     <div>
-                        <span id="viewerUserName" style="font-size:12px; font-weight:bold; color:white; display:block;">User</span>
-                        <span id="viewerUserIdTag" style="font-size:9px; color:#aab0c5; display:block;">ID: ...</span>
+                        <span id="viewerUserName" style="font-size:12px; font-weight:800; color:white; display:block;">User</span>
+                        <span id="viewerUserMentionTag" style="font-size:10px; font-weight:600; color:#cbd5e1; display:block;"></span>
                     </div>
                 </div>
-                <button onclick="closeStoryViewer()" style="background:none; border:none; color:white; font-size:16px; cursor:pointer;">✕</button>
+                <button onclick="closeStoryViewer()" style="background:none; border:none; color:white; font-size:16px; font-weight:700; cursor:pointer;">✕</button>
             </div>
             <img id="viewerStoryImage" class="story-media" src="" alt="Story">
             <audio id="viewerStoryAudio" loop style="display:none;"></audio>
             <div class="story-footer-bar">
-                <button id="storyLikeBtn" onclick="toggleStoryLike()" style="background:rgba(255,255,255,0.2); border:none; padding:6px 12px; border-radius:20px; color:white; font-size:12px; cursor:pointer;">🤍 Like</button>
-                <button id="deleteStoryBtn" onclick="deleteCurrentStory()" style="display:none; background:#ef4444; border:none; padding:5px 12px; border-radius:8px; color:white; font-size:11px; font-weight:bold; cursor:pointer;">🗑️ Delete Story</button>
-                <div id="storySeenAndLikesInfo" style="font-size:10px; color:#cbd5e1; text-align:right;">
+                <button id="storyLikeBtn" onclick="toggleStoryLike()" style="background:rgba(255,255,255,0.2); border:none; padding:6px 12px; border-radius:20px; color:white; font-size:12px; font-weight:700; cursor:pointer;">🤍 Like</button>
+                <button id="deleteStoryBtn" onclick="deleteCurrentStory()" style="display:none; background:#ef4444; border:none; padding:6px 12px; border-radius:8px; color:white; font-size:11px; font-weight:800; cursor:pointer;">🗑️ Delete Story</button>
+                <div id="storySeenAndLikesInfo" style="font-size:10px; font-weight:700; color:#e2e8f0; text-align:right;">
                     <div>👁️ Seen by: <span id="storyViewersCount">0</span></div>
                     <div>❤️ Likes: <span id="storyLikesCount">0</span></div>
                 </div>
@@ -428,78 +503,83 @@
         </div>
     </div>
 
-    <!-- ADD STORY MODAL -->
+    <!-- ADD STORY MODAL (WITH @MENTION) -->
     <div class="modal-overlay" id="addStoryModal">
         <div class="modal-content">
-            <h3 style="margin-bottom:10px; color:#fff; font-size: 15px;">📸 Add New Story</h3>
+            <h3 style="margin-bottom:10px; color:#f8fafc; font-size: 16px; font-weight: 800;">📸 Add New Story</h3>
             <div class="input-group">
                 <label>Select Image / Media</label>
                 <input type="file" id="storyMediaFileInput" accept="image/*" style="font-size:11px; padding:6px;">
             </div>
             <div class="input-group">
+                <label>📣 Mention a User in Story (Optional)</label>
+                <select id="storyMentionUserSelect" style="background:#020617; color:white; padding:8px; border-radius:8px; font-size:11px; font-weight:600;">
+                    <option value="">-- No Mention --</option>
+                </select>
+            </div>
+            <div class="input-group">
                 <label>🔒 Who can view this story?</label>
-                <select id="storyPrivacySelect" style="background:#111; color:white; padding:8px; border-radius:8px; font-size:11px;">
+                <select id="storyPrivacySelect" style="background:#020617; color:white; padding:8px; border-radius:8px; font-size:11px; font-weight:600;">
                     <option value="friends">Accepted Friends Only</option>
                     <option value="public">All Nexora Users</option>
                 </select>
             </div>
             <div class="input-group">
-                <label>🎵 Isaiify Song URL / Local Audio</label>
-                <input type="text" id="storyIsaiifyUrlInput" placeholder="Paste Isaiify song URL or choose file below..." style="margin-bottom:6px; font-size:11px;">
+                <label>🎵 Song URL / Local Audio</label>
+                <input type="text" id="storyIsaiifyUrlInput" placeholder="Paste song URL or choose file below..." style="margin-bottom:6px; font-size:11px;">
                 <input type="file" id="storyAudioFileInput" accept="audio/*" style="font-size:11px; padding:4px;">
-                <small style="color:#38bdf8; font-size:9px; display:block; margin-top:3px;"><a href="https://music-ten-orcin.vercel.app/" target="_blank" style="color:#38bdf8;">Browse Isaiify App (https://music-ten-orcin.vercel.app/)</a></small>
             </div>
-            <button onclick="publishNewStory()" style="width:100%; padding:9px; background:var(--accent-color); color:white; border:none; border-radius:8px; font-weight:bold; cursor:pointer; margin-top:12px; font-size:12px;">Publish Story</button>
-            <button onclick="closeAddStoryModal()" style="width:100%; padding:5px; background:transparent; color:#aaa; border:none; cursor:pointer; font-size:11px; margin-top:6px;">Cancel</button>
+            <button onclick="publishNewStory()" style="width:100%; padding:10px; background:var(--primary-gradient); color:white; border:none; border-radius:10px; font-weight:800; cursor:pointer; margin-top:12px; font-size:12px;">Publish Story</button>
+            <button onclick="closeAddStoryModal()" style="width:100%; padding:6px; background:transparent; color:#94a3b8; font-weight:700; border:none; cursor:pointer; font-size:11px; margin-top:6px;">Cancel</button>
         </div>
     </div>
 
     <!-- NEXORA REWARDS STORE MODAL -->
     <div class="modal-overlay" id="nexoraStoreModal">
         <div class="modal-content">
-            <h3 style="margin-bottom:8px; color:#fff; font-size: 16px;">🏪 Nexora Rewards Store</h3>
-            <p style="font-size:11px; color:#fbbf24; margin-bottom:12px;" id="storePointsDisplay">⭐ Available Points: 0</p>
+            <h3 style="margin-bottom:8px; color:#f8fafc; font-size: 16px; font-weight: 800;">🏪 Nexora Rewards Store</h3>
+            <p style="font-size:12px; font-weight:700; color:#fbbf24; margin-bottom:12px;" id="storePointsDisplay">⭐ Available Points: 0</p>
             <div style="display:flex; flex-direction:column; gap:8px; text-align:left; font-size:12px;">
-                <div style="background:rgba(255,255,255,0.05); padding:10px; border-radius:8px; display:flex; justify-content:space-between; align-items:center;">
-                    <div><b>👑 VIP Golden Badge</b><br><small style="color:#aaa;">Unlock exclusive profile status</small></div>
-                    <button onclick="buyStoreItem('badge', 50)" style="padding:5px 10px; background:var(--accent-color); border:none; border-radius:6px; color:white; cursor:pointer;">50 ⭐</button>
+                <div style="background:rgba(30, 41, 59, 0.6); padding:10px; border-radius:10px; border:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
+                    <div><strong>👑 VIP Golden Badge</strong><br><small style="color:var(--muted-text); font-weight:600;">Unlock exclusive profile status</small></div>
+                    <button onclick="buyStoreItem('badge', 50)" style="padding:6px 10px; background:var(--accent-color); border:none; border-radius:7px; color:white; font-weight:700; cursor:pointer;">50 ⭐</button>
                 </div>
-                <div style="background:rgba(255,255,255,0.05); padding:10px; border-radius:8px; display:flex; justify-content:space-between; align-items:center;">
-                    <div><b>🎁 Special Sticker Pack</b><br><small style="color:#aaa;">Exclusive animated emojis</small></div>
-                    <button onclick="buyStoreItem('stickers', 100)" style="padding:5px 10px; background:var(--accent-color); border:none; border-radius:6px; color:white; cursor:pointer;">100 ⭐</button>
+                <div style="background:rgba(30, 41, 59, 0.6); padding:10px; border-radius:10px; border:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
+                    <div><strong>🎁 Special Sticker Pack</strong><br><small style="color:var(--muted-text); font-weight:600;">Exclusive animated emojis</small></div>
+                    <button onclick="buyStoreItem('stickers', 100)" style="padding:6px 10px; background:var(--accent-color); border:none; border-radius:7px; color:white; font-weight:700; cursor:pointer;">100 ⭐</button>
                 </div>
             </div>
-            <button onclick="closeStoreModal()" style="width:100%; padding:6px; background:transparent; color:#aaa; border:none; cursor:pointer; margin-top:14px; font-size:11px;">Close</button>
+            <button onclick="closeStoreModal()" style="width:100%; padding:6px; background:transparent; color:#94a3b8; font-weight:700; border:none; cursor:pointer; margin-top:14px; font-size:11px;">Close</button>
         </div>
     </div>
 
     <!-- FORWARD MESSAGE MODAL -->
     <div class="modal-overlay" id="forwardModal">
         <div class="modal-content">
-            <h3 style="margin-bottom:10px; color:#fff; font-size: 15px;">📤 Forward Message To:</h3>
+            <h3 style="margin-bottom:10px; color:#f8fafc; font-size: 16px; font-weight: 800;">📤 Forward Message To:</h3>
             <div id="forwardChatsList" style="max-height:150px; overflow-y:auto; text-align:left; margin-bottom:10px;"></div>
-            <button onclick="closeForwardModal()" style="width:100%; padding:5px; background:transparent; color:#aaa; border:none; cursor:pointer; font-size:11px;">Cancel</button>
+            <button onclick="closeForwardModal()" style="width:100%; padding:6px; background:transparent; color:#94a3b8; font-weight:700; border:none; cursor:pointer; font-size:11px;">Cancel</button>
         </div>
     </div>
 
     <!-- CREATE GROUP MODAL -->
     <div class="modal-overlay" id="createGroupModal">
         <div class="modal-content">
-            <h3 style="margin-bottom:10px; color:#fff; font-size: 15px;">👥 Create Private Group</h3>
+            <h3 style="margin-bottom:10px; color:#f8fafc; font-size: 16px; font-weight: 800;">👥 Create Private Group</h3>
             <div class="input-group" style="margin-bottom: 10px;">
                 <label>Group Name</label>
                 <input type="text" id="newGroupNameInput" placeholder="Enter group name...">
             </div>
-            <label style="color:#cbd5e1; font-size:11px; display:block; margin-bottom:4px; text-align:left; font-weight:bold;">Select Members:</label>
+            <label style="color:#e2e8f0; font-size:11px; display:block; margin-bottom:4px; text-align:left; font-weight:700;">Select Members:</label>
             <div id="groupMembersCheckboxList" style="max-height: 130px; overflow-y: auto; margin-bottom: 12px; text-align: left;"></div>
-            <button onclick="createNewPrivateGroup()" style="width:100%; padding:8px; background:var(--accent-color); color:white; border:none; border-radius:8px; font-weight:bold; cursor:pointer; margin-bottom:4px; font-size:12px;">Create Group</button>
-            <button onclick="closeCreateGroupModal()" style="width:100%; padding:5px; background:transparent; color:#aaa; border:none; cursor:pointer; font-size:11px;">Cancel</button>
+            <button onclick="createNewPrivateGroup()" style="width:100%; padding:9px; background:var(--primary-gradient); color:white; border:none; border-radius:10px; font-weight:800; cursor:pointer; margin-bottom:4px; font-size:12px;">Create Group</button>
+            <button onclick="closeCreateGroupModal()" style="width:100%; padding:6px; background:transparent; color:#94a3b8; font-weight:700; border:none; cursor:pointer; font-size:11px;">Cancel</button>
         </div>
     </div>
 
     <!-- CAMERA OVERLAY -->
     <div class="camera-overlay" id="cameraOverlay">
-        <h3 style="color:white; margin-bottom:4px; font-size:14px;">📸 Snap Studio (Double Tap screen to flip camera)</h3>
+        <h3 style="color:white; margin-bottom:4px; font-size:14px; font-weight:800;">📸 Snap Studio (Double Tap screen to flip camera)</h3>
         <video id="cameraVideo" class="camera-view f-normal" autoplay playsinline ondblclick="toggleCameraFacing()"></video>
         <canvas id="cameraCanvas" style="display:none;"></canvas>
         <div class="filter-options-bar" id="filterChipsContainer"></div>
@@ -512,16 +592,16 @@
     <!-- ACCOUNT SETTINGS MODAL -->
     <div class="modal-overlay" id="accountSettingsModal">
         <div class="modal-content">
-            <h3 style="margin-bottom:8px; color:#fff; font-size: 15px;">⚙️ Account Settings</h3>
-            <div style="background: rgba(255,255,255,0.05); padding: 8px; border-radius: 8px; margin-bottom: 6px; text-align: left;">
-                <label style="color:#cbd5e1; font-size:10px; display:block; margin-bottom:2px; font-weight:bold;">✏️ Customize Name</label>
-                <input type="text" id="customNameInput" placeholder="Display name..." style="padding: 5px 8px; font-size: 11px; margin-bottom: 4px;">
-                <button onclick="saveCustomName()" style="width:100%; padding:4px; background:var(--accent-color); border:none; border-radius:6px; color:white; cursor:pointer; font-size:10px;">Save Name</button>
+            <h3 style="margin-bottom:10px; color:#f8fafc; font-size: 16px; font-weight: 800;">⚙️ Account Settings</h3>
+            <div style="background: rgba(30, 41, 59, 0.55); padding: 9px; border-radius: 10px; border:1px solid var(--border-color); margin-bottom: 7px; text-align: left;">
+                <label style="color:#e2e8f0; font-size:11px; display:block; margin-bottom:4px; font-weight:700;">✏️ Customize Name</label>
+                <input type="text" id="customNameInput" placeholder="Display name..." style="padding: 6px 8px; font-size: 11px; margin-bottom: 5px;">
+                <button onclick="saveCustomName()" style="width:100%; padding:5px; background:var(--accent-color); border:none; border-radius:7px; color:white; cursor:pointer; font-size:11px; font-weight:700;">Save Name</button>
             </div>
 
-            <div style="background: rgba(255,255,255,0.05); padding: 8px; border-radius: 8px; margin-bottom: 6px; text-align: left;">
-                <label style="color:#cbd5e1; font-size:10px; display:block; margin-bottom:2px; font-weight:bold;">🟢 Custom Status</label>
-                <select id="customStatusSelect" style="width:100%; padding:5px; font-size:11px; background:#111; color:#fff; border-radius:6px; border:1px solid #444;" onchange="updateCustomStatus(this.value)">
+            <div style="background: rgba(30, 41, 59, 0.55); padding: 9px; border-radius: 10px; border:1px solid var(--border-color); margin-bottom: 7px; text-align: left;">
+                <label style="color:#e2e8f0; font-size:11px; display:block; margin-bottom:4px; font-weight:700;">🟢 Custom Status</label>
+                <select id="customStatusSelect" style="width:100%; padding:6px; font-size:11px; font-weight:600; background:#020617; color:#fff; border-radius:7px;" onchange="updateCustomStatus(this.value)">
                     <option value="Available">🟢 Available</option>
                     <option value="Busy">🔴 Busy</option>
                     <option value="At Work">💼 At Work</option>
@@ -529,36 +609,36 @@
                 </select>
             </div>
 
-            <div style="background: rgba(255,255,255,0.05); padding: 8px; border-radius: 8px; margin-bottom: 6px; text-align: left;">
-                <label style="color:#cbd5e1; font-size:10px; display:block; margin-bottom:2px; font-weight:bold;">🔒 Privacy Mode</label>
-                <select id="accountPrivacySelect" style="width:100%; padding:5px; font-size:11px; background:#111; color:#fff; border-radius:6px; border:1px solid #444;" onchange="updateAccountPrivacy(this.value)">
+            <div style="background: rgba(30, 41, 59, 0.55); padding: 9px; border-radius: 10px; border:1px solid var(--border-color); margin-bottom: 7px; text-align: left;">
+                <label style="color:#e2e8f0; font-size:11px; display:block; margin-bottom:4px; font-weight:700;">🔒 Privacy Mode</label>
+                <select id="accountPrivacySelect" style="width:100%; padding:6px; font-size:11px; font-weight:600; background:#020617; color:#fff; border-radius:7px;" onchange="updateAccountPrivacy(this.value)">
                     <option value="private">Private (Requires Approval)</option>
                     <option value="public">Public (Direct Chat)</option>
                 </select>
             </div>
 
-            <div style="background: rgba(255,255,255,0.05); padding: 8px; border-radius: 8px; margin-bottom: 6px; text-align: left;">
-                <label style="color:#cbd5e1; font-size:10px; display:block; margin-bottom:2px; font-weight:bold;">🎭 Avatar Style</label>
+            <div style="background: rgba(30, 41, 59, 0.55); padding: 9px; border-radius: 10px; border:1px solid var(--border-color); margin-bottom: 7px; text-align: left;">
+                <label style="color:#e2e8f0; font-size:11px; display:block; margin-bottom:4px; font-weight:700;">🎭 Avatar Style</label>
                 <div class="avatar-preview-box" id="modalAvatarPreview" style="width:50px; height:50px; font-size:24px;">👨‍💻</div>
-                <select id="avatarGenderSelect" style="width:100%; padding:5px; font-size:10px; background:#111; color:#fff; border-radius:6px; border:1px solid #444; margin-top:3px;" onchange="renderAvatarOptions(this.value)">
+                <select id="avatarGenderSelect" style="width:100%; padding:6px; font-size:11px; font-weight:600; background:#020617; color:#fff; border-radius:7px; margin-top:4px;" onchange="renderAvatarOptions(this.value)">
                     <option value="male">Male Avatars</option>
                     <option value="female">Female Avatars</option>
                 </select>
                 <div class="outfit-grid" id="outfitChoicesContainer"></div>
-                <button onclick="saveAvatarSettings()" style="width:100%; padding:5px; background:var(--primary-gradient); color:white; border:none; border-radius:6px; font-weight:bold; cursor:pointer; font-size: 10px; margin-top:6px;">Save Avatar</button>
+                <button onclick="saveAvatarSettings()" style="width:100%; padding:6px; background:var(--primary-gradient); color:white; border:none; border-radius:7px; font-weight:800; cursor:pointer; font-size: 11px; margin-top:7px;">Save Avatar</button>
             </div>
 
-            <div style="background: rgba(255,255,255,0.05); padding: 8px; border-radius: 8px; margin-bottom: 6px; text-align: left;">
-                <label style="color:#cbd5e1; font-size:10px; display:block; margin-bottom:2px; font-weight:bold;">🔍 Search Users & Connect</label>
+            <div style="background: rgba(30, 41, 59, 0.55); padding: 9px; border-radius: 10px; border:1px solid var(--border-color); margin-bottom: 7px; text-align: left;">
+                <label style="color:#e2e8f0; font-size:11px; display:block; margin-bottom:4px; font-weight:700;">🔍 Search Users & Connect</label>
                 <div class="search-container">
-                    <input type="text" id="userSearchInput" placeholder="Search name/email..." style="padding: 5px 8px; font-size: 11px;">
-                    <button onclick="searchUsers()" style="padding: 5px 8px; background:var(--accent-color); border:none; border-radius:6px; color:white; cursor:pointer; font-size:11px;">🔍</button>
+                    <input type="text" id="userSearchInput" placeholder="Search name/email..." style="padding: 6px 8px; font-size: 11px;">
+                    <button onclick="searchUsers()" style="padding: 6px 10px; background:var(--accent-color); border:none; border-radius:7px; color:white; cursor:pointer; font-size:11px; font-weight:700;">🔍</button>
                 </div>
-                <div class="search-results-box" id="searchResultsBox" style="font-size:10px;">Type to search...</div>
+                <div class="search-results-box" id="searchResultsBox" style="font-size:11px;">Type to search...</div>
             </div>
 
-            <button onclick="logout()" style="width:100%; padding:6px; background:#ef4444; color:white; border:none; border-radius:8px; font-weight:bold; cursor:pointer; margin-top:2px; font-size:11px;">Logout</button>
-            <button onclick="closeAccountSettings()" style="width:100%; padding:4px; background:transparent; color:#aaa; border:none; cursor:pointer; margin-top:2px; font-size:10px;">Close</button>
+            <button onclick="logout()" style="width:100%; padding:8px; background:#ef4444; color:white; border:none; border-radius:9px; font-weight:800; cursor:pointer; margin-top:4px; font-size:11px;">Logout</button>
+            <button onclick="closeAccountSettings()" style="width:100%; padding:5px; background:transparent; color:#94a3b8; font-weight:700; border:none; cursor:pointer; margin-top:4px; font-size:11px;">Close</button>
         </div>
     </div>
 
@@ -566,21 +646,21 @@
     <div class="modal-overlay" id="selectedUserProfileModal">
         <div class="modal-content">
             <div class="avatar-preview-box" id="modalTargetAvatar" style="width:54px; height:54px; font-size:26px; margin: 0 auto 6px;">👤</div>
-            <h3 id="modalProfileName" style="margin-bottom:2px; color:#fff; font-size: 15px;">Profile</h3>
-            <p id="modalProfileEmail" style="font-size: 10px; color: #aab0c5; margin-bottom: 10px;">user@email.com</p>
-            <div style="background: rgba(255,255,255,0.05); padding: 8px; border-radius: 8px; margin-bottom: 6px; text-align: left;">
-                <label style="color:#cbd5e1; font-size:10px; display:block; margin-bottom:3px; font-weight:bold;">🎨 Synced Chat Theme</label>
-                <select id="chatThemeSelect" style="width:100%; padding:5px; font-size:10px; background:#111; color:#fff; border-radius:6px; border:1px solid #444;" onchange="updateChatTheme(this.value)">
-                    <option value="chat-theme-purple">🌌 Deep Purple</option>
+            <h3 id="modalProfileName" style="margin-bottom:2px; color:#f8fafc; font-size: 16px; font-weight: 800;">Profile</h3>
+            <p id="modalProfileEmail" style="font-size: 11px; font-weight: 600; color: var(--muted-text); margin-bottom: 10px;">user@email.com</p>
+            <div style="background: rgba(30, 41, 59, 0.55); padding: 9px; border-radius: 10px; border:1px solid var(--border-color); margin-bottom: 8px; text-align: left;">
+                <label style="color:#e2e8f0; font-size:11px; display:block; margin-bottom:4px; font-weight:700;">🎨 Synced Chat Theme</label>
+                <select id="chatThemeSelect" style="width:100%; padding:6px; font-size:11px; font-weight:600; background:#020617; color:#fff; border-radius:7px;" onchange="updateChatTheme(this.value)">
+                    <option value="chat-theme-purple">🌌 Deep Indigo</option>
                     <option value="chat-theme-cyan">🌊 Ocean Cyan</option>
                     <option value="chat-theme-crimson">🔥 Crimson Dark</option>
                     <option value="chat-theme-gold">⭐ Luxury Gold</option>
                     <option value="chat-theme-emerald">💎 Emerald Neon</option>
                 </select>
             </div>
-            <button onclick="removeOrDisconnectUser()" style="width:100%; padding:7px; background:#f97316; color:white; border:none; border-radius:8px; font-weight:bold; cursor:pointer; margin-bottom:6px; font-size:11px;">🗑️ Remove / Disconnect User</button>
-            <button id="modalBlockBtn" onclick="toggleBlockUser()" style="width:100%; padding:7px; background:#ef4444; color:white; border:none; border-radius:8px; font-weight:bold; cursor:pointer; margin-bottom:6px; font-size:11px;">🚫 Block User</button>
-            <button onclick="closeSelectedUserProfile()" style="width:100%; padding:5px; background:transparent; color:#aaa; border:none; cursor:pointer; font-size:11px;">Close</button>
+            <button onclick="removeOrDisconnectUser()" style="width:100%; padding:8px; background:#f97316; color:white; border:none; border-radius:9px; font-weight:800; cursor:pointer; margin-bottom:6px; font-size:11px;">🗑️ Remove / Disconnect User</button>
+            <button id="modalBlockBtn" onclick="toggleBlockUser()" style="width:100%; padding:8px; background:#ef4444; color:white; border:none; border-radius:9px; font-weight:800; cursor:pointer; margin-bottom:6px; font-size:11px;">🚫 Block User</button>
+            <button onclick="closeSelectedUserProfile()" style="width:100%; padding:5px; background:transparent; color:#94a3b8; font-weight:700; border:none; cursor:pointer; font-size:11px;">Close</button>
         </div>
     </div>
 
@@ -588,7 +668,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
         import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
-        import { getFirestore, collection, addDoc, query, onSnapshot, serverTimestamp, doc, setDoc, getDoc, deleteDoc, updateDoc, getDocs, arrayUnion, arrayRemove, increment } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, query, onSnapshot, serverTimestamp, doc, setDoc, getDoc, deleteDoc, updateDoc, getDocs } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyD_SWsXIgcBUkWRmL8wYQzQZFwv0WmQe3Y",
@@ -609,7 +689,7 @@
         let currentChatEmail = "";
         let isCurrentChatGroup = false;
         let activeSidebarTab = "chats"; 
-        let unsubscribeMessages = null, unsubscribeUsers = null, unsubscribeGroups = null, unsubscribeTyping = null, unsubscribeChatMeta = null, unsubscribeRequests = null, unsubscribeStories = null, unsubscribeNotes = null;
+        let unsubscribeMessages = null, unsubscribeUsers = null, unsubscribeGroups = null, unsubscribeChatMeta = null, unsubscribeRequests = null, unsubscribeStories = null, unsubscribeNotes = null, unsubscribeReels = null, unsubscribeStoryMentions = null;
         let typingTimeout = null;
         let selectedAvatarEmoji = "👨‍💻";
         let myBlockedUsers = [];
@@ -639,15 +719,45 @@
         window.closeReactionsModal = () => { document.getElementById("reactionsModal").style.display = "none"; activeReactingMessageId = null; };
 
         window.selectReactionEmoji = async (emoji) => {
-            if(!activeReactingMessageId) return;
+            if(!activeReactingMessageId || !auth.currentUser) return;
             const msgRef = doc(db, "messages", activeReactingMessageId);
             const snap = await getDoc(msgRef);
             if(snap.exists()) {
-                let reactions = snap.data().reactions || {};
-                reactions[auth.currentUser.uid] = emoji;
+                let reactions = { ...(snap.data().reactions || {}) };
+                if (reactions[auth.currentUser.uid] === emoji) {
+                    delete reactions[auth.currentUser.uid];
+                } else {
+                    reactions[auth.currentUser.uid] = emoji;
+                }
                 await updateDoc(msgRef, { reactions });
             }
             closeReactionsModal();
+        };
+
+        window.removeMyReaction = async () => {
+            if(!activeReactingMessageId || !auth.currentUser) return;
+            const msgRef = doc(db, "messages", activeReactingMessageId);
+            const snap = await getDoc(msgRef);
+            if(snap.exists()) {
+                let reactions = { ...(snap.data().reactions || {}) };
+                delete reactions[auth.currentUser.uid];
+                await updateDoc(msgRef, { reactions });
+            }
+            closeReactionsModal();
+        };
+
+        window.deleteReactionOnMessage = async (event, msgId) => {
+            event.stopPropagation();
+            if(!auth.currentUser) return;
+            const msgRef = doc(db, "messages", msgId);
+            const snap = await getDoc(msgRef);
+            if(snap.exists()) {
+                let reactions = { ...(snap.data().reactions || {}) };
+                if (reactions[auth.currentUser.uid]) {
+                    delete reactions[auth.currentUser.uid];
+                    await updateDoc(msgRef, { reactions });
+                }
+            }
         };
 
         const nexoraStickers = ["🔥", "🚀", "💎", "⭐", "🎉", "😎", "🦄", "⚡", "🍀", "💖", "👑", "🐱", "🐶", "🐼", "🍕", "🍔", "🍿", "🍩", "☕", "🍺", "🏆", "🎯", "💻", "📱", "⌚", "💡"];
@@ -673,6 +783,127 @@
 
         window.toggleStickersPanel = () => { const p = document.getElementById("stickersPopup"); p.style.display = p.style.display === "flex" ? "none" : "flex"; };
         window.sendSticker = async (st) => { toggleStickersPanel(); await sendMessage(st, "sticker", "🌟 [STICKER]"); };
+
+        // ================= REELS FEATURE (LIKE, COMMENT, DELETE) =================
+        window.openAddReelModal = () => { document.getElementById("addReelModal").style.display = "flex"; };
+        window.closeAddReelModal = () => {
+            document.getElementById("addReelModal").style.display = "none";
+            document.getElementById("reelMediaInput").value = "";
+            document.getElementById("reelCaptionInput").value = "";
+        };
+
+        window.publishNewReel = async () => {
+            const fileInput = document.getElementById("reelMediaInput");
+            const caption = document.getElementById("reelCaptionInput").value.trim();
+            if(!fileInput.files[0]) return alert("Please select a video or image for your reel!");
+            const file = fileInput.files[0];
+            const mediaType = file.type.startsWith("video/") ? "video" : "image";
+            const reader = new FileReader();
+            reader.onload = async (evt) => {
+                await addDoc(collection(db, "reels"), {
+                    userId: auth.currentUser.uid,
+                    userName: document.getElementById("displayName").innerText,
+                    mediaUrl: evt.target.result,
+                    mediaType,
+                    caption: caption || "Nexora Reel ✨",
+                    likes: [],
+                    comments: [],
+                    createdAt: serverTimestamp()
+                });
+                closeAddReelModal();
+                alert("🎬 Reel published!");
+            };
+            reader.readAsDataURL(file);
+        };
+
+        function listenToReels() {
+            if(unsubscribeReels) unsubscribeReels();
+            unsubscribeReels = onSnapshot(collection(db, "reels"), (snapshot) => {
+                if(activeSidebarTab === "reels") renderReelsFeed(snapshot);
+            });
+        }
+
+        async function renderReelsFeed(existingSnap = null) {
+            const chatList = document.getElementById("chatList");
+            const snapshot = existingSnap || await getDocs(collection(db, "reels"));
+            let reels = [];
+            snapshot.forEach(d => reels.push({ id: d.id, ...d.data() }));
+            reels.sort((a,b) => (b.createdAt?.toMillis() || 0) - (a.createdAt?.toMillis() || 0));
+
+            if(!reels.length) {
+                chatList.innerHTML = `<div style="font-size:11px; font-weight:600; color:var(--muted-text); padding:10px;">No reels yet. Tap <strong>+ Reel</strong> to share one!</div>`;
+                return;
+            }
+
+            chatList.innerHTML = reels.map(r => {
+                const likes = r.likes || [];
+                const isLiked = auth.currentUser && likes.includes(auth.currentUser.uid);
+                const comments = r.comments || [];
+                const isOwner = auth.currentUser && r.userId === auth.currentUser.uid;
+                const mediaEl = r.mediaType === "video"
+                    ? `<video class="reel-media" src="${r.mediaUrl}" controls playsinline></video>`
+                    : `<img class="reel-media" src="${r.mediaUrl}" alt="Reel">`;
+
+                const commentsHtml = comments.length
+                    ? comments.map(c => `<div class="reel-comment-item"><strong>${c.userName}:</strong> ${c.text}</div>`).join("")
+                    : `<div style="color:var(--muted-text);">No comments yet.</div>`;
+
+                return `
+                    <div class="reel-card">
+                        <div class="reel-header">
+                            <span>🎬 <strong>${r.userName || "User"}</strong></span>
+                            ${isOwner ? `<button onclick="deleteReel('${r.id}')" style="background:#ef4444; color:white; border:none; border-radius:6px; padding:3px 8px; font-size:10px; font-weight:700; cursor:pointer;">🗑️ Delete</button>` : ''}
+                        </div>
+                        ${mediaEl}
+                        <div class="reel-caption">${r.caption}</div>
+                        <div class="reel-actions">
+                            <button class="reel-action-btn" onclick="toggleReelLike('${r.id}')">${isLiked ? '❤️' : '🤍'} <strong>Like</strong> (${likes.length})</button>
+                            <span style="font-size:11px; font-weight:700; color:var(--muted-text);">💬 ${comments.length} Comments</span>
+                        </div>
+                        <div class="reel-comments-box">${commentsHtml}</div>
+                        <div style="display:flex; gap:5px; margin-top:6px;">
+                            <input type="text" id="reelCommentInput_${r.id}" placeholder="Add a comment..." style="padding:5px 8px; font-size:11px;" onkeydown="if(event.key==='Enter') addReelComment('${r.id}')">
+                            <button onclick="addReelComment('${r.id}')" style="padding:5px 10px; background:var(--accent-color); color:white; border:none; border-radius:8px; font-size:11px; font-weight:700; cursor:pointer;">Post</button>
+                        </div>
+                    </div>
+                `;
+            }).join("");
+        }
+
+        window.toggleReelLike = async (reelId) => {
+            if(!auth.currentUser) return;
+            const ref = doc(db, "reels", reelId);
+            const snap = await getDoc(ref);
+            if(snap.exists()) {
+                let likes = [...(snap.data().likes || [])];
+                if(likes.includes(auth.currentUser.uid)) likes = likes.filter(id => id !== auth.currentUser.uid);
+                else likes.push(auth.currentUser.uid);
+                await updateDoc(ref, { likes });
+            }
+        };
+
+        window.addReelComment = async (reelId) => {
+            const input = document.getElementById(`reelCommentInput_${reelId}`);
+            const text = input ? input.value.trim() : "";
+            if(!text || !auth.currentUser) return;
+            const ref = doc(db, "reels", reelId);
+            const snap = await getDoc(ref);
+            if(snap.exists()) {
+                const comments = [...(snap.data().comments || []), {
+                    userId: auth.currentUser.uid,
+                    userName: document.getElementById("displayName").innerText,
+                    text
+                }];
+                await updateDoc(ref, { comments });
+                input.value = "";
+            }
+        };
+
+        window.deleteReel = async (reelId) => {
+            if(confirm("Delete this reel?")) {
+                await deleteDoc(doc(db, "reels", reelId));
+            }
+        };
 
         // ================= NOTES FEATURE =================
         window.triggerAddNote = () => { document.getElementById("addNoteModal").style.display = "flex"; };
@@ -743,7 +974,7 @@
                     let canSee = await checkCanView(n.userId, n.privacy || "friends");
                     if(canSee) {
                         let noteUserLabel = (n.userId === auth.currentUser.uid) ? 'Your Note' : n.userName;
-                        notesHtml += `<div class="note-bubble-card" onclick="openNoteViewer('${nId}', '${n.comment.replace(/'/g, "\\'")}', '${n.userName}', '${n.songUrl||''}', '${JSON.stringify(n.likes||[])}', '${n.userId}')"><div class="note-bubble-text">💬 ${n.comment}</div><div class="note-bubble-user">${noteUserLabel}</div></div>`;
+                        notesHtml += `<div class="note-bubble-card" onclick="openNoteViewer('${nId}', '${(n.comment||'').replace(/'/g, "\\'")}', '${n.userName}', '${n.songUrl||''}', '${JSON.stringify(n.likes||[])}', '${n.userId}')"><div class="note-bubble-text">💬 ${n.comment}</div><div class="note-bubble-user">${noteUserLabel}</div></div>`;
                     }
                 }
 
@@ -765,7 +996,7 @@
             else { likeBtn.innerText = `🤍 Like (${likes.length})`; likeBtn.style.background = "rgba(255,255,255,0.15)"; }
             document.getElementById("deleteNoteBtn").style.display = ownerId === auth.currentUser.uid ? "inline-block" : "none";
             const audioEl = document.getElementById("viewerNoteAudio");
-            if(songUrl) { audioEl.src = songUrl; audioEl.play().catch(e => console.log(e)); } else { audioEl.pause(); audioEl.src = ""; }
+            if(songUrl) { audioEl.src = songUrl; audioEl.play().catch(e => {}); } else { audioEl.pause(); audioEl.src = ""; }
             document.getElementById("noteViewerModal").style.display = "flex";
         };
 
@@ -813,29 +1044,103 @@
             }
         };
 
-        // ================= STORIES SYSTEM =================
-        window.triggerAddStory = () => { document.getElementById("addStoryModal").style.display = "flex"; };
-        window.closeAddStoryModal = () => { document.getElementById("addStoryModal").style.display = "none"; document.getElementById("storyIsaiifyUrlInput").value = ""; };
+        // ================= STORIES SYSTEM + STORY MENTIONS =================
+        function populateStoryMentionDropdown() {
+            const sel = document.getElementById("storyMentionUserSelect");
+            if(!sel) return;
+            sel.innerHTML = `<option value="">-- No Mention --</option>` + availableUsersList.map(u => `<option value="${u.id}" data-name="${u.name}">📣 @${u.name}</option>`).join("");
+        }
+
+        window.triggerAddStory = () => {
+            populateStoryMentionDropdown();
+            document.getElementById("addStoryModal").style.display = "flex";
+        };
+        window.closeAddStoryModal = () => {
+            document.getElementById("addStoryModal").style.display = "none";
+            document.getElementById("storyIsaiifyUrlInput").value = "";
+            document.getElementById("storyMentionUserSelect").value = "";
+        };
 
         window.publishNewStory = async () => {
             const fileInput = document.getElementById("storyMediaFileInput");
             const privacy = document.getElementById("storyPrivacySelect").value;
             const isaiifyUrl = document.getElementById("storyIsaiifyUrlInput").value.trim();
+            const mentionSel = document.getElementById("storyMentionUserSelect");
+            const mentionedUserId = mentionSel ? mentionSel.value : "";
+            const mentionedUserName = mentionedUserId ? mentionSel.options[mentionSel.selectedIndex].getAttribute("data-name") : "";
+
             if(!fileInput.files[0]) return alert("Select an image for your story!");
             const reader = new FileReader();
-            reader.onload = async function(evt) { await saveStoryToDb(evt.target.result, privacy, isaiifyUrl); };
+            reader.onload = async function(evt) {
+                await saveStoryToDb(evt.target.result, privacy, isaiifyUrl, mentionedUserId, mentionedUserName);
+            };
             reader.readAsDataURL(fileInput.files[0]);
         };
 
-        async function saveStoryToDb(mediaUrl, privacy, songUrl) {
+        async function saveStoryToDb(mediaUrl, privacy, songUrl, mentionedUserId, mentionedUserName) {
+            const myName = document.getElementById("displayName").innerText;
+            const storyDoc = await addDoc(collection(db, "stories"), {
+                userId: auth.currentUser.uid,
+                userName: myName,
+                userAvatar: selectedAvatarEmoji,
+                mediaUrl,
+                privacy,
+                songUrl: songUrl || "",
+                mentionedUserId: mentionedUserId || "",
+                mentionedUserName: mentionedUserName || "",
+                viewers: [],
+                likes: [],
+                createdAt: serverTimestamp()
+            });
+
+            if (mentionedUserId && mentionedUserId !== auth.currentUser.uid) {
+                // 1. Add notification for mentioned user
+                await addDoc(collection(db, "story_mentions"), {
+                    toUserId: mentionedUserId,
+                    fromUserId: auth.currentUser.uid,
+                    fromUserName: myName,
+                    storyId: storyDoc.id,
+                    storyMediaUrl: mediaUrl,
+                    read: false,
+                    createdAt: serverTimestamp()
+                });
+
+                // 2. Send mention card in direct chat so they can Add to Story
+                const roomId = [auth.currentUser.uid, mentionedUserId].sort().join('_');
+                await addDoc(collection(db, "messages"), {
+                    text: `📣 ${myName} mentioned you in their story!`,
+                    mediaUrl: mediaUrl,
+                    mediaType: "story_mention",
+                    storyFromName: myName,
+                    senderId: auth.currentUser.uid,
+                    senderName: myName,
+                    chatRoom: roomId,
+                    status: 'sent',
+                    reactions: {},
+                    createdAt: serverTimestamp()
+                });
+            }
+
+            closeAddStoryModal();
+            alert(mentionedUserId ? `Story published & @${mentionedUserName} notified in Notifs & Chat!` : "Story published successfully!");
+        }
+
+        window.addMentionedStoryToMyStory = async (storyMediaUrl, fromName) => {
+            if(!auth.currentUser || !storyMediaUrl) return;
             await addDoc(collection(db, "stories"), {
                 userId: auth.currentUser.uid,
                 userName: document.getElementById("displayName").innerText,
                 userAvatar: selectedAvatarEmoji,
-                mediaUrl, privacy, songUrl: songUrl || "", viewers: [], likes: [], createdAt: serverTimestamp()
+                mediaUrl: storyMediaUrl,
+                privacy: "friends",
+                songUrl: "",
+                repostedFrom: fromName || "",
+                viewers: [],
+                likes: [],
+                createdAt: serverTimestamp()
             });
-            closeAddStoryModal(); alert("Story published successfully!");
-        }
+            alert("🎉 Added to your Story!");
+        };
 
         function listenToStories() {
             if(unsubscribeStories) unsubscribeStories();
@@ -861,7 +1166,7 @@
                     let canSee = await checkCanView(s.userId, s.privacy || "friends");
                     if(canSee) {
                         let hasSeen = s.viewers && s.viewers.includes(auth.currentUser.uid);
-                        storiesHtml += `<div class="story-ring ${hasSeen ? 'seen' : ''}" onclick="openStoryViewer('${sId}', '${s.mediaUrl}', '${s.userName}', '${s.userAvatar}', '${s.userId}', '${s.songUrl||''}', '${JSON.stringify(s.viewers||[])}', '${JSON.stringify(s.likes||[])}')"><div class="story-thumb">${s.userAvatar.startsWith('data:')?`<img src="${s.userAvatar}">`:s.userAvatar}</div></div>`;
+                        storiesHtml += `<div class="story-ring ${hasSeen ? 'seen' : ''}" onclick="openStoryViewer('${sId}', '${s.mediaUrl}', '${s.userName}', '${s.userAvatar}', '${s.userId}', '${s.songUrl||''}', '${JSON.stringify(s.viewers||[])}', '${JSON.stringify(s.likes||[])}', '${s.mentionedUserName||''}')"><div class="story-thumb">${s.userAvatar.startsWith('data:')?`<img src="${s.userAvatar}">`:s.userAvatar}</div></div>`;
                     }
                 }
 
@@ -870,10 +1175,10 @@
             });
         }
 
-        window.openStoryViewer = async (storyId, mediaUrl, uName, uAvatar, ownerId, songUrl, viewersJson, likesJson) => {
+        window.openStoryViewer = async (storyId, mediaUrl, uName, uAvatar, ownerId, songUrl, viewersJson, likesJson, mentionedName = "") => {
             currentViewingStoryId = storyId; currentStoryOwnerId = ownerId;
             document.getElementById("viewerUserName").innerText = uName;
-            document.getElementById("viewerUserIdTag").innerText = `ID: ${ownerId}`;
+            document.getElementById("viewerUserMentionTag").innerText = mentionedName ? `📣 Mentioned @${mentionedName}` : "";
             document.getElementById("viewerUserAvatar").innerHTML = uAvatar.startsWith('data:') ? `<img src="${uAvatar}">` : uAvatar;
             document.getElementById("viewerStoryImage").src = mediaUrl;
             let viewers = JSON.parse(viewersJson); let likes = JSON.parse(likesJson);
@@ -884,7 +1189,7 @@
             else { likeBtn.innerText = "🤍 Like"; likeBtn.style.background = "rgba(255,255,255,0.2)"; }
             document.getElementById("deleteStoryBtn").style.display = ownerId === auth.currentUser.uid ? "inline-block" : "none";
             const audioEl = document.getElementById("viewerStoryAudio");
-            if(songUrl) { audioEl.src = songUrl; audioEl.play().catch(e => console.log(e)); } else { audioEl.pause(); audioEl.src = ""; }
+            if(songUrl) { audioEl.src = songUrl; audioEl.play().catch(e => {}); } else { audioEl.pause(); audioEl.src = ""; }
             document.getElementById("storyViewerModal").style.display = "flex";
             if(ownerId !== auth.currentUser.uid && !viewers.includes(auth.currentUser.uid)) {
                 viewers.push(auth.currentUser.uid); await updateDoc(doc(db, "stories", storyId), { viewers });
@@ -960,7 +1265,6 @@
 
         window.playVoiceNote = (id, src) => { let audio = document.getElementById(id) || new Audio(src); audio.id = id; audio.paused ? audio.play() : audio.pause(); };
         
-        // ================= LOCAL FILE DOWNLOAD FEATURE =================
         window.handleMediaUpload = (e) => {
             const file = e.target.files[0]; if (!file || !currentChatId) return;
             const reader = new FileReader();
@@ -993,7 +1297,7 @@
         window.openForwardModal = (msgText) => {
             messageToForward = msgText;
             const list = document.getElementById("forwardChatsList");
-            list.innerHTML = availableUsersList.map(u => `<div class="user-item" onclick="forwardMessageToUser('${u.id}')">👤 ${u.name}</div>`).join("");
+            list.innerHTML = availableUsersList.map(u => `<div class="user-item" onclick="forwardMessageToUser('${u.id}')">👤 <strong>${u.name}</strong></div>`).join("");
             document.getElementById("forwardModal").style.display = "flex";
         };
         window.closeForwardModal = () => document.getElementById("forwardModal").style.display = "none";
@@ -1012,7 +1316,7 @@
             const el = document.getElementById(`trans_${msgId}`);
             if(el.style.display === "block") { el.style.display = "none"; return; }
             el.innerText = "Translating..."; el.style.display = "block";
-            setTimeout(() => { el.innerText = `🌐 (Translated): ${text} [Verified]`; }, 600);
+            setTimeout(() => { el.innerText = `🌐 (Translated): ${text} [Verified]`; }, 500);
         };
 
         window.openStoreModal = () => {
@@ -1037,7 +1341,7 @@
             });
         }
 
-        // ================= CAMERA, WORKING FILTERS & REAL-TIME TIMESTAMP SNAP =================
+        // ================= CAMERA & TIMESTAMP SNAP =================
         window.openCameraModal = async () => {
             if(!currentChatId) return alert("Select chat first!");
             document.getElementById("cameraOverlay").style.display = "flex";
@@ -1073,7 +1377,6 @@
             c.width = v.videoWidth || 360; c.height = v.videoHeight || 360;
             const ctx = c.getContext("2d"); 
             
-            // Apply filter style manually on canvas export
             ctx.save();
             if(activeSnapFilterClass === "f-cyberpunk") ctx.filter = "contrast(150%) saturate(200%) hue-rotate(310deg)";
             else if(activeSnapFilterClass === "f-neon") ctx.filter = "brightness(120%) contrast(140%)";
@@ -1083,14 +1386,12 @@
             ctx.drawImage(v, 0, 0, c.width, c.height);
             ctx.restore();
 
-            // Draw Real-time Timestamp on Image
             const now = new Date();
-            const timeStr = now.toLocaleString();
             ctx.font = "bold 16px sans-serif";
-            ctx.fillStyle = "#00ffff";
+            ctx.fillStyle = "#38bdf8";
             ctx.shadowColor = "#000";
             ctx.shadowBlur = 6;
-            ctx.fillText(`📍 NEXORA SNAP | ${timeStr}`, 20, c.height - 25);
+            ctx.fillText(`📍 NEXORA SNAP | ${now.toLocaleString()}`, 20, c.height - 25);
 
             closeCameraModal();
             await sendMessage(c.toDataURL("image/jpeg", 0.85), "image", "📸 [SNAP with Timestamp]");
@@ -1100,6 +1401,10 @@
             document.getElementById("displayNexoraPoints").innerText = `⭐ Points: ${currentNexoraPoints} (Open Store)`;
         };
 
+        // ================= REQUESTS & STORY MENTIONS IN NOTIFICATIONS =================
+        let cachedPendingRequests = [];
+        let cachedStoryMentions = [];
+
         window.searchUsers = async function() {
             const queryStr = document.getElementById("userSearchInput").value.trim().toLowerCase();
             const resultsBox = document.getElementById("searchResultsBox");
@@ -1107,14 +1412,14 @@
             resultsBox.innerHTML = "Searching...";
             const usersSnapshot = await getDocs(collection(db, "users"));
             resultsBox.innerHTML = ""; let found = false;
-            usersSnapshot.forEach(async (docSnap) => {
+            for (const docSnap of usersSnapshot.docs) {
                 const userData = docSnap.data(); const userId = docSnap.id;
                 if (userId !== auth.currentUser.uid && ((userData.email||"").toLowerCase().includes(queryStr) || (userData.name||"").toLowerCase().includes(queryStr))) {
                     found = true;
                     const item = document.createElement("div"); item.className = "search-result-item";
-                    item.innerHTML = `👤 ${userData.name || "User"}`;
+                    item.innerHTML = `<span>👤 <strong>${userData.name || "User"}</strong></span>`;
                     const btn = document.createElement("button");
-                    btn.style.cssText = "padding:3px 6px; background:var(--accent-color); border:none; border-radius:4px; color:white; cursor:pointer; font-size:10px;";
+                    btn.style.cssText = "padding:4px 8px; background:var(--accent-color); border:none; border-radius:5px; color:white; cursor:pointer; font-size:10px; font-weight:700;";
                     let roomId = [auth.currentUser.uid, userId].sort().join('_');
                     const reqSnap = await getDoc(doc(db, "chat_requests", roomId));
                     if (reqSnap.exists() && reqSnap.data().status === "accepted") {
@@ -1122,45 +1427,113 @@
                     } else if (reqSnap.exists() && reqSnap.data().status === "pending") {
                         btn.innerText = "Requested"; btn.disabled = true;
                     } else {
-                        btn.innerText = "Request"; btn.onclick = () => { sendChatRequest(userId); searchUsers(); };
+                        btn.innerText = "Request"; btn.onclick = async () => { await sendChatRequest(userId); searchUsers(); };
                     }
                     item.appendChild(btn); resultsBox.appendChild(item);
                 }
-            });
+            }
             if (!found) resultsBox.innerHTML = "No users found.";
         };
 
         window.sendChatRequest = async function(targetUid) {
             let roomId = [auth.currentUser.uid, targetUid].sort().join('_');
-            await setDoc(doc(db, "chat_requests", roomId), { from: auth.currentUser.uid, to: targetUid, status: "pending", createdAt: serverTimestamp() });
+            await setDoc(doc(db, "chat_requests", roomId), {
+                from: auth.currentUser.uid,
+                fromName: document.getElementById("displayName").innerText,
+                to: targetUid,
+                status: "pending",
+                createdAt: serverTimestamp()
+            });
             alert("Chat request sent!");
         };
+
+        function updateNotifBadge() {
+            const badge = document.getElementById("notifBadge");
+            const unreadMentions = cachedStoryMentions.filter(m => !m.read).length;
+            const totalCount = cachedPendingRequests.length + unreadMentions;
+            if (totalCount > 0) {
+                badge.innerText = totalCount;
+                badge.style.display = "inline-block";
+            } else {
+                badge.style.display = "none";
+            }
+        }
 
         function listenToIncomingRequests() {
             if (unsubscribeRequests) unsubscribeRequests();
             unsubscribeRequests = onSnapshot(collection(db, "chat_requests"), (snapshot) => {
-                let pendingCount = 0; if (!auth.currentUser) return;
-                snapshot.forEach(docSnap => { let data = docSnap.data(); if (data.to === auth.currentUser.uid && data.status === "pending") pendingCount++; });
-                const badge = document.getElementById("notifBadge");
-                if (pendingCount > 0) { badge.innerText = pendingCount; badge.style.display = "inline-block"; } else badge.style.display = "none";
+                if (!auth.currentUser) return;
+                const reqs = [];
+                snapshot.forEach(docSnap => {
+                    let data = docSnap.data();
+                    if (data.to === auth.currentUser.uid && data.status === "pending") {
+                        reqs.push({ id: docSnap.id, ...data });
+                    }
+                });
+                cachedPendingRequests = reqs;
+                updateNotifBadge();
+                if (activeSidebarTab === 'notifs') renderNotificationsList();
+                if (activeSidebarTab === 'chats') renderChatListAndGroups();
+            });
+
+            if (unsubscribeStoryMentions) unsubscribeStoryMentions();
+            unsubscribeStoryMentions = onSnapshot(collection(db, "story_mentions"), (snapshot) => {
+                if (!auth.currentUser) return;
+                const mentions = [];
+                snapshot.forEach(docSnap => {
+                    const data = docSnap.data();
+                    if (data.toUserId === auth.currentUser.uid) {
+                        mentions.push({ id: docSnap.id, ...data });
+                    }
+                });
+                mentions.sort((a,b) => (b.createdAt?.toMillis() || 0) - (a.createdAt?.toMillis() || 0));
+                cachedStoryMentions = mentions;
+                updateNotifBadge();
                 if (activeSidebarTab === 'notifs') renderNotificationsList();
             });
         }
 
         async function renderNotificationsList() {
             const chatList = document.getElementById("chatList");
-            chatList.innerHTML = "<div style='font-size:11px; color:#aaa; padding:10px;'>Loading requests...</div>";
-            const snapshot = await getDocs(collection(db, "chat_requests")); let reqHtml = "";
-            for (let docSnap of snapshot.docs) {
-                let data = docSnap.data();
-                if (data.to === auth.currentUser.uid && data.status === "pending") {
-                    let senderSnap = await getDoc(doc(db, "users", data.from));
-                    let sName = senderSnap.exists() ? (senderSnap.data().name || "User") : "User";
-                    reqHtml += `<div class="user-item" style="flex-direction:column; align-items:flex-start; gap:6px; padding:10px;"><span>🔔 <b>${sName}</b> sent a chat request.</span><div style="display:flex; gap:6px; width:100%;"><button onclick="acceptChatRequest('${docSnap.id}')" style="flex:1; padding:5px; background:#22c55e; color:white; border:none; border-radius:6px; font-size:11px; font-weight:bold; cursor:pointer;">Accept</button><button onclick="rejectChatRequest('${docSnap.id}')" style="flex:1; padding:5px; background:#ef4444; color:white; border:none; border-radius:6px; font-size:11px; font-weight:bold; cursor:pointer;">Reject</button></div></div>`;
+            let html = "";
+
+            for (const req of cachedPendingRequests) {
+                let sName = req.fromName;
+                if (!sName) {
+                    const senderSnap = await getDoc(doc(db, "users", req.from));
+                    sName = senderSnap.exists() ? (senderSnap.data().name || "User") : "User";
                 }
+                html += `
+                    <div class="user-item" style="flex-direction:column; align-items:flex-start; gap:7px; padding:10px;">
+                        <span>🔔 <strong>${sName}</strong> sent you a chat request.</span>
+                        <div style="display:flex; gap:6px; width:100%;">
+                            <button onclick="acceptChatRequest('${req.id}')" style="flex:1; padding:6px; background:#22c55e; color:#052e16; border:none; border-radius:7px; font-size:11px; font-weight:800; cursor:pointer;">Accept</button>
+                            <button onclick="rejectChatRequest('${req.id}')" style="flex:1; padding:6px; background:#ef4444; color:white; border:none; border-radius:7px; font-size:11px; font-weight:800; cursor:pointer;">Reject</button>
+                        </div>
+                    </div>
+                `;
             }
-            chatList.innerHTML = reqHtml || `<div style="font-size:11px; color:#aaa; padding:10px;">No pending notifications.</div>`;
+
+            for (const m of cachedStoryMentions) {
+                html += `
+                    <div class="user-item" style="flex-direction:column; align-items:flex-start; gap:6px; padding:10px; border-color:rgba(99,102,241,0.45);" onclick="openChatWithUser('${m.fromUserId}', '${m.id}')">
+                        <span>📣 <strong>${m.fromUserName}</strong> mentioned you in a <strong>Story</strong>!</span>
+                        <small style="color:#38bdf8; font-weight:700; font-size:10px;">Tap to open chat & Add to Story →</small>
+                    </div>
+                `;
+            }
+
+            chatList.innerHTML = html || `<div style="font-size:11px; font-weight:600; color:var(--muted-text); padding:10px;">No pending notifications.</div>`;
         }
+
+        window.openChatWithUser = async (targetUserId, mentionId = "") => {
+            if (mentionId) {
+                await updateDoc(doc(db, "story_mentions", mentionId), { read: true }).catch(() => {});
+            }
+            const uSnap = await getDoc(doc(db, "users", targetUserId));
+            const uData = uSnap.exists() ? uSnap.data() : {};
+            selectChat(targetUserId, uData.name || "User", uData.avatar || "", uData.email || "", false, uData.online, uData.statusMsg || "Available");
+        };
 
         window.acceptChatRequest = async function(roomId) { await updateDoc(doc(db, "chat_requests", roomId), { status: "accepted" }); switchSidebarTab('chats'); };
         window.rejectChatRequest = async function(roomId) { await deleteDoc(doc(db, "chat_requests", roomId)); renderNotificationsList(); };
@@ -1196,7 +1569,7 @@
                     document.getElementById("splashScreen").style.display = "none";
                     document.getElementById("loginPage").style.display = "none";
                     document.getElementById("app").style.display = "flex";
-                }, 800);
+                }, 700);
                 const snap = await getDoc(doc(db, "users", user.uid));
                 let data = snap.exists() ? snap.data() : {};
                 document.getElementById("displayName").innerText = data.name || "NEXORA User";
@@ -1206,7 +1579,7 @@
                 myBlockedUsers = data.blocked || [];
                 updateAvatarDisplay(data.avatar || "👨‍💻"); renderAvatarOptions("male");
                 await setDoc(doc(db, "users", user.uid), { online: true }, { merge: true });
-                listenToActiveUsersAndGroups(); listenToIncomingRequests(); listenToStories(); listenToNotes();
+                listenToActiveUsersAndGroups(); listenToIncomingRequests(); listenToStories(); listenToNotes(); listenToReels();
             } else {
                 if(auth.currentUser) await setDoc(doc(db, "users", auth.currentUser.uid), { online: false }, { merge: true });
                 document.getElementById("app").style.display = "none"; document.getElementById("loginPage").style.display = "flex";
@@ -1235,13 +1608,19 @@
             activeSidebarTab = tab;
             document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
             document.getElementById(tab + "TabBtn").classList.add("active");
-            document.getElementById("sidebarTitleText").innerText = tab === 'chats' ? "💬 Accepted Chats" : (tab === 'groups' ? "👥 Groups" : "🔔 Requests");
+            document.getElementById("sidebarTitleText").innerText =
+                tab === 'chats' ? "💬 Accepted Chats" :
+                tab === 'groups' ? "👥 Groups" :
+                tab === 'reels' ? "🎬 Reels Feed" : "🔔 Notifications";
             document.getElementById("addGroupHeaderBtn").style.display = tab === 'groups' ? "inline-block" : "none";
-            renderChatListAndGroups();
+            document.getElementById("addReelHeaderBtn").style.display = tab === 'reels' ? "inline-block" : "none";
+            if (tab === 'notifs') renderNotificationsList();
+            else if (tab === 'reels') renderReelsFeed();
+            else renderChatListAndGroups();
         };
 
         window.openCreateGroupModal = () => {
-            document.getElementById("groupMembersCheckboxList").innerHTML = availableUsersList.map(u => `<div class="group-member-checkbox-item"><span>👤 ${u.name}</span><input type="checkbox" value="${u.id}" data-name="${u.name}" class="group-member-checkbox"></div>`).join("");
+            document.getElementById("groupMembersCheckboxList").innerHTML = availableUsersList.map(u => `<div class="group-member-checkbox-item"><span>👤 <strong>${u.name}</strong></span><input type="checkbox" value="${u.id}" data-name="${u.name}" class="group-member-checkbox"></div>`).join("");
             document.getElementById("createGroupModal").style.display = "flex";
         };
         window.closeCreateGroupModal = () => document.getElementById("createGroupModal").style.display = "none";
@@ -1259,23 +1638,24 @@
         function listenToActiveUsersAndGroups() {
             unsubscribeUsers = onSnapshot(collection(db, "users"), snap => {
                 availableUsersList = [];
-                snap.forEach(d => { if(d.id !== auth.currentUser.uid) availableUsersList.push({ id: d.id, name: d.data().name }); });
-                renderChatListAndGroups();
+                snap.forEach(d => { if(d.id !== auth.currentUser.uid) availableUsersList.push({ id: d.id, name: d.data().name || "User" }); });
+                if(activeSidebarTab === 'chats' || activeSidebarTab === 'groups') renderChatListAndGroups();
             });
         }
 
         function renderChatListAndGroups() {
             const chatList = document.getElementById("chatList"); chatList.innerHTML = "";
             if (activeSidebarTab === 'groups') {
+                if(unsubscribeGroups) unsubscribeGroups();
                 unsubscribeGroups = onSnapshot(collection(db, "groups"), (groupSnapshot) => {
                     let listHtml = "";
                     groupSnapshot.forEach((docSnap) => {
                         let gData = docSnap.data();
                         if (gData.members && gData.members.includes(auth.currentUser.uid)) {
-                            listHtml += `<div class="user-item" onclick="selectChat('${docSnap.id}', '${gData.groupName}', '', '', true)"><div>👥 ${gData.groupName}</div></div>`;
+                            listHtml += `<div class="user-item" onclick="selectChat('${docSnap.id}', '${gData.groupName}', '', '', true)"><div>👥 <strong>${gData.groupName}</strong></div></div>`;
                         }
                     });
-                    chatList.innerHTML = listHtml || `<div style="font-size:11px; color:#aaa; padding:10px;">No groups joined.</div>`;
+                    chatList.innerHTML = listHtml || `<div style="font-size:11px; font-weight:600; color:var(--muted-text); padding:10px;">No groups joined.</div>`;
                 });
             } else if (activeSidebarTab === 'chats') {
                 getDocs(collection(db, "users")).then(async (usersSnapshot) => {
@@ -1288,11 +1668,11 @@
                             if (reqSnap.exists() && reqSnap.data().status === "accepted") {
                                 let indicator = `<span class="user-status-indicator ${userData.online ? 'is-online' : 'is-offline'}"></span>`;
                                 let name = userData.name || "User";
-                                listHtml += `<div class="user-item" onclick="selectChat('${userId}', '${name}', '${userData.avatar||''}', '${userData.email||''}', false, ${userData.online}, '${userData.statusMsg||'Available'}')"><div>${indicator}${name} <small style="color:#aaa; font-size:9px;">(${userData.statusMsg||'Available'})</small></div></div>`;
+                                listHtml += `<div class="user-item" onclick="selectChat('${userId}', '${name}', '${userData.avatar||''}', '${userData.email||''}', false, ${userData.online}, '${userData.statusMsg||'Available'}')"><div>${indicator}<strong>${name}</strong> <small style="color:var(--muted-text); font-size:10px; font-weight:600;">(${userData.statusMsg||'Available'})</small></div></div>`;
                             }
                         }
                     }
-                    chatList.innerHTML = listHtml || `<div style="font-size:11px; color:#aaa; padding:10px;">No active chats. Search users to connect & request.</div>`;
+                    chatList.innerHTML = listHtml || `<div style="font-size:11px; font-weight:600; color:var(--muted-text); padding:10px;">No active chats. Search users in Settings to connect & request.</div>`;
                 });
             }
         }
@@ -1383,7 +1763,6 @@
             document.getElementById("activeReplyContainer").style.display = "none";
         };
 
-        // ================= DOUBLE TAP TO SAVE MESSAGE FEATURE =================
         window.saveMessageLocally = (text) => {
             let savedMsgs = JSON.parse(localStorage.getItem("nexora_saved_messages") || "[]");
             savedMsgs.push({ text, savedAt: new Date().toLocaleString() });
@@ -1406,11 +1785,18 @@
 
                         let replyBannerHTML = "";
                         if(d.replyTo && d.replyTo.text) {
-                            replyBannerHTML = `<div style="background:rgba(0,0,0,0.25); border-left:3px solid #a78bfa; padding:4px 8px; border-radius:4px; font-size:10px; margin-bottom:4px;"><b>${d.replyTo.senderName}</b>: ${d.replyTo.text}</div>`;
+                            replyBannerHTML = `<div style="background:rgba(0,0,0,0.25); border-left:3px solid #a5b4fc; padding:4px 8px; border-radius:4px; font-size:10px; margin-bottom:4px;"><strong>${d.replyTo.senderName}</strong>: ${d.replyTo.text}</div>`;
                         }
 
                         let mediaHTML = "";
-                        if(d.mediaUrl) {
+                        if(d.mediaType === "story_mention" && d.mediaUrl) {
+                            mediaHTML = `
+                                <div class="story-mention-card">
+                                    <img src="${d.mediaUrl}" alt="Mentioned Story">
+                                    <button class="add-to-story-btn" onclick="event.stopPropagation(); addMentionedStoryToMyStory('${d.mediaUrl}', '${d.storyFromName || d.senderName}')">➕ Add to Story</button>
+                                </div>
+                            `;
+                        } else if(d.mediaUrl) {
                             if(d.mediaType === "sticker") mediaHTML = `<div style="font-size:36px;">${d.mediaUrl}</div>`;
                             else if(d.mediaType === "audio") mediaHTML = `<div class="voice-msg-player"><button class="voice-play-btn" onclick="playVoiceNote('aud_${d.id}','${d.mediaUrl}')">▶</button><span>Voice Note</span></div>`;
                             else if(d.mediaType === "file") mediaHTML = `<button class="download-btn" onclick="downloadMedia('${d.mediaUrl}', 'nexora_file')">📥 Download File</button>`;
@@ -1423,7 +1809,7 @@
                             Object.values(d.reactions).forEach(emoji => { rCounts[emoji] = (rCounts[emoji]||0) + 1; });
                             let pills = "";
                             for(let [emoji, count] of Object.entries(rCounts)) {
-                                pills += `<span class="reaction-pill">${emoji} ${count > 1 ? count : ''}</span>`;
+                                pills += `<span class="reaction-pill" title="Click to remove your reaction" onclick="deleteReactionOnMessage(event, '${d.id}')">${emoji} ${count > 1 ? count : ''} ✕</span>`;
                             }
                             if(pills) reactionsHTML = `<div class="msg-reactions-badge">${pills}</div>`;
                         }
@@ -1437,7 +1823,6 @@
                         msg.onclick = (e) => {
                             let now = new Date().getTime();
                             if(now - lastTap < 300) {
-                                // Double tap detected: Save message locally & open reactions
                                 saveMessageLocally(d.text || "Media Attachment");
                                 openReactionsModal(d.id);
                             }
@@ -1460,16 +1845,16 @@
                             <div class="sender-row">
                                 <span class="sender">${isMine ? "You" : d.senderName}</span>
                                 <div class="action-btns-row">
-                                    <button class="action-icon-btn" onclick="openReactionsModal('${d.id}')" title="React">❤️</button>
-                                    <button class="action-icon-btn" onclick="pinMessage('${d.id}', '${d.text||'Attachment'}')" title="Pin">📌</button>
-                                    <button class="action-icon-btn" onclick="openForwardModal('${d.text||'Attachment'}')" title="Forward">📤</button>
-                                    <button class="action-icon-btn" onclick="translateMessage('${d.id}', '${d.text||''}')" title="Translate">🌐</button>
-                                    ${isMine ? `<button class="action-icon-btn delete-btn" onclick="deleteMessage('${d.id}')">Delete</button>` : ''}
+                                    <button class="action-icon-btn" onclick="event.stopPropagation(); openReactionsModal('${d.id}')" title="React">❤️</button>
+                                    <button class="action-icon-btn" onclick="event.stopPropagation(); pinMessage('${d.id}', '${(d.text||'Attachment').replace(/'/g, "\\'")}')" title="Pin">📌</button>
+                                    <button class="action-icon-btn" onclick="event.stopPropagation(); openForwardModal('${(d.text||'Attachment').replace(/'/g, "\\'")}')" title="Forward">📤</button>
+                                    <button class="action-icon-btn" onclick="event.stopPropagation(); translateMessage('${d.id}', '${(d.text||'').replace(/'/g, "\\'")}')" title="Translate">🌐</button>
+                                    ${isMine ? `<button class="action-icon-btn delete-btn" onclick="event.stopPropagation(); deleteMessage('${d.id}')">Delete</button>` : ''}
                                 </div>
                             </div>
                             <div id="trans_${d.id}" style="font-size:10px; color:#38bdf8; display:none; background:rgba(0,0,0,0.3); padding:4px; border-radius:4px; margin-bottom:4px;"></div>
                             ${replyBannerHTML}
-                            <div>${d.text||''}</div>
+                            <div><strong>${d.text||''}</strong></div>
                             ${mediaHTML}
                             ${reactionsHTML}
                             <div class="msg-footer">
