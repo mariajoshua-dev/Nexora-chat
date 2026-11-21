@@ -1523,7 +1523,7 @@
                 await saveNoteToDb(comment, privacy, finalSongUrl);
             } catch (err) {
                 console.error("Publish note error:", err);
-                alert("❌ Note error: " + (err && err.message ? err.message : err));
+                alert("❌ Note error: " + (err && err.message ? err.message : "Unable to publish note right now."));
             }
         };
 
@@ -1620,15 +1620,19 @@
         window.openNoteViewer = async (noteId) => {
             try {
                 let n = noteCacheMap.get(noteId);
-                if (!n) {
+                if (!n && noteId) {
                     const snap = await getDoc(doc(db, "notes", noteId));
-                    if (!snap.exists()) return alert("Note not found.");
-                    n = snap.data();
-                    noteCacheMap.set(noteId, n);
+                    if (snap.exists()) {
+                        n = snap.data();
+                        noteCacheMap.set(noteId, n);
+                    }
+                }
+                if (!n) {
+                    return alert("This note has expired or is no longer available.");
                 }
 
                 currentViewingNoteId = noteId;
-                currentNoteOwnerId = n.userId;
+                currentNoteOwnerId = n.userId || "";
 
                 const uName = n.userName || "NEXORA User";
                 const likes = Array.isArray(n.likes) ? n.likes : [];
@@ -1671,7 +1675,7 @@
                 }
             } catch (err) {
                 console.error("Open note error:", err);
-                alert("Could not open note: " + (err && err.message ? err.message : err));
+                alert("Unable to open note right now. Please refresh once.");
             }
         };
 
