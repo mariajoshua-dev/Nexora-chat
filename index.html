@@ -103,7 +103,6 @@
         .secondary-btn { width: 100%; padding: 11px; margin-top: 10px; background: rgba(99, 102, 241, 0.08); color: #a5b4fc; border: 1px solid var(--accent-color); font-size: 13px; } 
         .error { color: #fca5a5; font-size: 12px; margin-top: 10px; font-weight: 600; }
 
-        /* PROFESSIONAL NEXORA LOADING SPLASH SCREEN */
         #splashScreen { 
             position: fixed; 
             top: 0; left: 0; 
@@ -297,14 +296,34 @@
             flex-shrink: 0;
         }
 
-        .reel-card { background: rgba(15, 23, 42, 0.85); border: 1px solid var(--border-color); border-radius: 14px; padding: 10px; margin-bottom: 12px; }
+        /* VERTICAL SCROLL SNAP REELS FEED */
+        #chatList.reels-scroll-mode {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            scroll-snap-type: y mandatory;
+            scroll-behavior: smooth;
+            padding: 6px;
+        }
+
+        .reel-card {
+            background: linear-gradient(160deg, rgba(15, 23, 42, 0.96), rgba(30, 41, 59, 0.88));
+            border: 1px solid rgba(148, 163, 184, 0.22);
+            border-radius: 18px;
+            padding: 12px;
+            margin-bottom: 4px;
+            scroll-snap-align: start;
+            scroll-snap-stop: always;
+            box-shadow: 0 10px 26px rgba(0, 0, 0, 0.45);
+            flex-shrink: 0;
+        }
         .reel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: 12.5px; font-weight: 700; }
-        .reel-media { width: 100%; max-height: 240px; object-fit: cover; border-radius: 10px; background: #000; margin-bottom: 8px; }
-        .reel-caption { font-size: 13px; font-weight: 500; color: #f1f5f9; margin-bottom: 8px; }
-        .reel-actions { display: flex; justify-content: space-between; align-items: center; gap: 6px; padding-top: 6px; border-top: 1px solid var(--border-color); }
-        .reel-action-btn { background: rgba(255,255,255,0.06); border: 1px solid var(--border-color); color: #f8fafc; padding: 5px 10px; border-radius: 8px; font-size: 11.5px; font-weight: 700; cursor: pointer; }
-        .reel-comments-box { margin-top: 8px; background: rgba(2, 6, 23, 0.5); border-radius: 8px; padding: 6px 8px; max-height: 90px; overflow-y: auto; font-size: 11.5px; }
-        .reel-comment-item { padding: 3px 0; border-bottom: 1px solid rgba(148, 163, 184, 0.08); }
+        .reel-media { width: 100%; height: 280px; object-fit: cover; border-radius: 14px; background: #020617; margin-bottom: 10px; }
+        .reel-caption { font-size: 13px; font-weight: 500; color: #f8fafc; margin-bottom: 8px; }
+        .reel-actions { display: flex; justify-content: space-between; align-items: center; gap: 6px; padding-top: 8px; border-top: 1px solid var(--border-color); }
+        .reel-action-btn { background: rgba(255,255,255,0.08); border: 1px solid var(--border-color); color: #f8fafc; padding: 6px 12px; border-radius: 10px; font-size: 11.5px; font-weight: 700; cursor: pointer; }
+        .reel-comments-box { margin-top: 8px; background: rgba(2, 6, 23, 0.55); border-radius: 10px; padding: 7px 9px; max-height: 95px; overflow-y: auto; font-size: 11.5px; }
+        .reel-comment-item { padding: 4px 0; border-bottom: 1px solid rgba(148, 163, 184, 0.08); }
 
         .chat-area { width: 100%; height: 100%; display: flex; flex-direction: column; position: absolute; top: 0; left: 0; background: rgba(11, 15, 25, 0.9); background-size: cover; background-position: center; transition: transform 0.25s ease; z-index: 1; transform: translateX(100%); } 
         .chat-area.active-mobile { transform: translateX(0); z-index: 3; }
@@ -608,7 +627,7 @@
                             <span style="font-size:16px;">⚙️</span>
                         </div>
 
-                        <!-- STORIES TRAY (24 HOURS) -->
+                        <!-- STORIES TRAY (24 HOURS • UNLIMITED RE-OPEN) -->
                         <div class="stories-tray" id="storiesTrayContainer">
                             <div class="story-ring" onclick="triggerAddStory()" title="Add Story (24h)">
                                 <div class="story-thumb" id="myStoryThumb">➕</div>
@@ -617,7 +636,7 @@
                             <div id="activeStoriesList" style="display:flex; gap:8px;"></div>
                         </div>
 
-                        <!-- NOTES TRAY (24 HOURS) -->
+                        <!-- NOTES TRAY (24 HOURS • UNLIMITED OPEN) -->
                         <div class="notes-tray" id="notesTrayContainer">
                             <div id="activeNotesList" style="display:flex; gap:8px; width:100%;">
                                 <div class="note-bubble-card" onclick="triggerAddNote()">
@@ -1095,6 +1114,10 @@
         let currentViewingNoteId = null;
         let currentNoteOwnerId = null;
 
+        // Safe cache maps so stories & notes open unlimited times without string escaping bugs
+        const storyCacheMap = new Map();
+        const noteCacheMap = new Map();
+
         // ================= CUSTOM FACE PHOTO + CROPPING =================
         let cropState = { panX: 0, panY: 0, scale: 1.2, dragging: false, startX: 0, startY: 0 };
 
@@ -1390,7 +1413,7 @@
         window.toggleStickersPanel = () => { const p = document.getElementById("stickersPopup"); p.style.display = p.style.display === "flex" ? "none" : "flex"; };
         window.sendSticker = async (st) => { toggleStickersPanel(); await sendMessage(st, "sticker", "🌟 [STICKER]"); };
 
-        // ================= REELS FEATURE (PERMANENT DISPLAY + SAFE UPLOAD) =================
+        // ================= REELS FEATURE (PERMANENT DISPLAY + DELETE + SCROLL SNAP) =================
         window.openAddReelModal = () => { document.getElementById("addReelModal").style.display = "flex"; };
         window.closeAddReelModal = () => {
             document.getElementById("addReelModal").style.display = "none";
@@ -1543,7 +1566,7 @@
             }
         };
 
-        // ================= NOTES FEATURE (24 HOURS) =================
+        // ================= NOTES FEATURE (24 HOURS • UNLIMITED OPEN) =================
         window.triggerAddNote = () => {
             if (!auth.currentUser) return alert("Please login first!");
             document.getElementById("addNoteModal").style.display = "flex";
@@ -1630,10 +1653,13 @@
                     let notesHtml = "";
                     let hasMyNote = false;
                     const now = Date.now();
+                    noteCacheMap.clear();
 
                     for (const docSnap of snapshot.docs) {
                         const n = docSnap.data();
                         const nId = docSnap.id;
+                        noteCacheMap.set(nId, n);
+
                         const createdAtMillis = n.createdAt?.toMillis ? n.createdAt.toMillis() : now;
                         if (now - createdAtMillis > TWENTY_FOUR_HOURS_MS) {
                             continue;
@@ -1646,14 +1672,10 @@
                         const canSee = await checkCanView(n.userId, n.privacy || "friends");
                         if (canSee) {
                             const noteUserLabel = (n.userId === auth.currentUser.uid) ? "Your Note (24h)" : (n.userName || "User");
-                            const safeComment = (n.comment || "").replace(/\\/g, "\\\\").replace(/'/g, "\\'");
-                            const safeUser = (n.userName || "User").replace(/\\/g, "\\\\").replace(/'/g, "\\'");
-                            const safeSong = (n.songUrl || "").replace(/\\/g, "\\\\").replace(/'/g, "\\'");
-                            const likesStr = JSON.stringify(n.likes || []).replace(/'/g, "\\'");
-
+                            const safeCommentText = (n.comment || "").replace(/</g, "&lt;").replace(/>/g, "&gt;");
                             notesHtml += `
-                                <div class="note-bubble-card" onclick="openNoteViewer('${nId}', '${safeComment}', '${safeUser}', '${safeSong}', '${likesStr}', '${n.userId}')">
-                                    <div class="note-bubble-text">💬 ${n.comment || ""}</div>
+                                <div class="note-bubble-card" onclick="openNoteViewer('${nId}')">
+                                    <div class="note-bubble-text">💬 ${safeCommentText}</div>
                                     <div class="note-bubble-user">${noteUserLabel}</div>
                                 </div>`;
                         }
@@ -1672,19 +1694,48 @@
             );
         }
 
-        window.openNoteViewer = async (noteId, comment, uName, songUrl, likesJson, ownerId) => {
-            currentViewingNoteId = noteId; currentNoteOwnerId = ownerId;
-            document.getElementById("noteViewerUser").innerText = `${uName}'s Note`;
-            document.getElementById("noteViewerText").innerText = comment;
-            let likes = JSON.parse(likesJson);
-            document.getElementById("noteLikesCount").innerText = likes.length;
-            const likeBtn = document.getElementById("noteLikeBtn");
-            if(likes.includes(auth.currentUser.uid)) { likeBtn.innerText = `❤️ Liked (${likes.length})`; likeBtn.style.background = "#ef4444"; }
-            else { likeBtn.innerText = `🤍 Like (${likes.length})`; likeBtn.style.background = "rgba(255,255,255,0.15)"; }
-            document.getElementById("deleteNoteBtn").style.display = ownerId === auth.currentUser.uid ? "inline-block" : "none";
-            const audioEl = document.getElementById("viewerNoteAudio");
-            if(songUrl) { audioEl.src = songUrl; audioEl.play().catch(e => {}); } else { audioEl.pause(); audioEl.src = ""; }
-            document.getElementById("noteViewerModal").style.display = "flex";
+        window.openNoteViewer = async (noteId) => {
+            try {
+                let n = noteCacheMap.get(noteId);
+                if (!n) {
+                    const snap = await getDoc(doc(db, "notes", noteId));
+                    if (!snap.exists()) return alert("Note not found.");
+                    n = snap.data();
+                    noteCacheMap.set(noteId, n);
+                }
+
+                currentViewingNoteId = noteId;
+                currentNoteOwnerId = n.userId;
+
+                const uName = n.userName || "NEXORA User";
+                const likes = Array.isArray(n.likes) ? n.likes : [];
+
+                document.getElementById("noteViewerUser").innerText = `${uName}'s Note`;
+                document.getElementById("noteViewerText").innerText = n.comment || "";
+                document.getElementById("noteLikesCount").innerText = likes.length;
+
+                const likeBtn = document.getElementById("noteLikeBtn");
+                const isLiked = auth.currentUser && likes.includes(auth.currentUser.uid);
+                likeBtn.innerText = isLiked ? `❤️ Liked (${likes.length})` : `🤍 Like (${likes.length})`;
+                likeBtn.style.background = isLiked ? "#ef4444" : "rgba(255,255,255,0.15)";
+
+                document.getElementById("deleteNoteBtn").style.display =
+                    auth.currentUser && n.userId === auth.currentUser.uid ? "inline-block" : "none";
+
+                const audioEl = document.getElementById("viewerNoteAudio");
+                if (n.songUrl) {
+                    audioEl.src = n.songUrl;
+                    audioEl.play().catch(() => {});
+                } else {
+                    audioEl.pause();
+                    audioEl.src = "";
+                }
+
+                document.getElementById("noteViewerModal").style.display = "flex";
+            } catch (err) {
+                console.error("Open note error:", err);
+                alert("Could not open note: " + err.message);
+            }
         };
 
         window.closeNoteViewer = () => {
@@ -1703,10 +1754,12 @@
             const noteRef = doc(db, "notes", currentViewingNoteId);
             const snap = await getDoc(noteRef);
             if(snap.exists()) {
-                let data = snap.data(); let likes = data.likes || [];
+                let data = snap.data(); let likes = [...(data.likes || [])];
                 if(likes.includes(auth.currentUser.uid)) likes = likes.filter(id => id !== auth.currentUser.uid);
                 else likes.push(auth.currentUser.uid);
                 await updateDoc(noteRef, { likes });
+                data.likes = likes;
+                noteCacheMap.set(currentViewingNoteId, data);
                 document.getElementById("noteLikesCount").innerText = likes.length;
                 const likeBtn = document.getElementById("noteLikeBtn");
                 if(likes.includes(auth.currentUser.uid)) { likeBtn.innerText = `❤️ Liked (${likes.length})`; likeBtn.style.background = "#ef4444"; }
@@ -1731,7 +1784,7 @@
             }
         };
 
-        // ================= STORIES SYSTEM (24 HOURS + STORY MENTIONS) =================
+        // ================= STORIES SYSTEM (24 HOURS • UNLIMITED RE-OPEN + MENTIONS) =================
         function populateStoryMentionDropdown() {
             const sel = document.getElementById("storyMentionUserSelect");
             if(!sel) return;
@@ -1846,25 +1899,31 @@
             if(unsubscribeStories) unsubscribeStories();
             unsubscribeStories = onSnapshot(collection(db, "stories"), async (snapshot) => {
                 const list = document.getElementById("activeStoriesList");
+                if (!list) return;
                 let storiesHtml = ""; let hasMyStory = false;
                 const now = Date.now();
+                storyCacheMap.clear();
 
                 for(let docSnap of snapshot.docs) {
                     let s = docSnap.data(); let sId = docSnap.id;
+                    storyCacheMap.set(sId, s);
+
                     let createdAtMillis = s.createdAt?.toMillis ? s.createdAt.toMillis() : now;
                     if(now - createdAtMillis > TWENTY_FOUR_HOURS_MS) {
                         continue;
                     }
 
-                    if(s.userId === auth.currentUser.uid) { 
+                    if(auth.currentUser && s.userId === auth.currentUser.uid) { 
                         hasMyStory = true; 
-                        document.getElementById("myStoryThumb").innerHTML = `<img src="${s.mediaUrl}">`; 
+                        document.getElementById("myStoryThumb").innerHTML = `<img src="${s.mediaUrl}" alt="My Story">`; 
                     }
 
                     let canSee = await checkCanView(s.userId, s.privacy || "friends");
-                    if(canSee) {
-                        let hasSeen = s.viewers && s.viewers.includes(auth.currentUser.uid);
-                        storiesHtml += `<div class="story-ring ${hasSeen ? 'seen' : ''}" onclick="openStoryViewer('${sId}', '${s.mediaUrl}', '${s.userName}', '${s.userAvatar}', '${s.userId}', '${s.songUrl||''}', '${JSON.stringify(s.viewers||[])}', '${JSON.stringify(s.likes||[])}', '${s.mentionedUserName||''}')"><div class="story-thumb">${s.userAvatar.startsWith('data:')?`<img src="${s.userAvatar}">`:s.userAvatar}</div></div>`;
+                    if(canSee && auth.currentUser) {
+                        let hasSeen = Array.isArray(s.viewers) && s.viewers.includes(auth.currentUser.uid);
+                        const av = s.userAvatar || "👤";
+                        const avHtml = av.startsWith('data:') ? `<img src="${av}" alt="Avatar">` : av;
+                        storiesHtml += `<div class="story-ring ${hasSeen ? 'seen' : ''}" onclick="openStoryViewer('${sId}')"><div class="story-thumb">${avHtml}</div></div>`;
                     }
                 }
 
@@ -1873,24 +1932,54 @@
             });
         }
 
-        window.openStoryViewer = async (storyId, mediaUrl, uName, uAvatar, ownerId, songUrl, viewersJson, likesJson, mentionedName = "") => {
-            currentViewingStoryId = storyId; currentStoryOwnerId = ownerId;
-            document.getElementById("viewerUserName").innerText = uName;
-            document.getElementById("viewerUserMentionTag").innerText = mentionedName ? `📣 Mentioned @${mentionedName}` : "";
-            document.getElementById("viewerUserAvatar").innerHTML = uAvatar.startsWith('data:') ? `<img src="${uAvatar}">` : uAvatar;
-            document.getElementById("viewerStoryImage").src = mediaUrl;
-            let viewers = JSON.parse(viewersJson); let likes = JSON.parse(likesJson);
-            document.getElementById("storyViewersCount").innerText = viewers.length;
-            document.getElementById("storyLikesCount").innerText = likes.length;
-            const likeBtn = document.getElementById("storyLikeBtn");
-            if(likes.includes(auth.currentUser.uid)) { likeBtn.innerText = "❤️ Liked"; likeBtn.style.background = "#ef4444"; }
-            else { likeBtn.innerText = "🤍 Like"; likeBtn.style.background = "rgba(255,255,255,0.2)"; }
-            document.getElementById("deleteStoryBtn").style.display = ownerId === auth.currentUser.uid ? "inline-block" : "none";
-            const audioEl = document.getElementById("viewerStoryAudio");
-            if(songUrl) { audioEl.src = songUrl; audioEl.play().catch(e => {}); } else { audioEl.pause(); audioEl.src = ""; }
-            document.getElementById("storyViewerModal").style.display = "flex";
-            if(ownerId !== auth.currentUser.uid && !viewers.includes(auth.currentUser.uid)) {
-                viewers.push(auth.currentUser.uid); await updateDoc(doc(db, "stories", storyId), { viewers });
+        window.openStoryViewer = async (storyId) => {
+            try {
+                let s = storyCacheMap.get(storyId);
+                if (!s) {
+                    const snap = await getDoc(doc(db, "stories", storyId));
+                    if (!snap.exists()) return alert("Story not found.");
+                    s = snap.data();
+                    storyCacheMap.set(storyId, s);
+                }
+
+                currentViewingStoryId = storyId;
+                currentStoryOwnerId = s.userId;
+
+                const uName = s.userName || "NEXORA User";
+                const uAvatar = s.userAvatar || "👤";
+                const viewers = Array.isArray(s.viewers) ? [...s.viewers] : [];
+                const likes = Array.isArray(s.likes) ? [...s.likes] : [];
+
+                document.getElementById("viewerUserName").innerText = uName;
+                document.getElementById("viewerUserMentionTag").innerText = s.mentionedUserName ? `📣 Mentioned @${s.mentionedUserName}` : "";
+                document.getElementById("viewerUserAvatar").innerHTML = uAvatar.startsWith('data:') ? `<img src="${uAvatar}" alt="Avatar">` : uAvatar;
+                document.getElementById("viewerStoryImage").src = s.mediaUrl || "";
+                document.getElementById("storyViewersCount").innerText = viewers.length;
+                document.getElementById("storyLikesCount").innerText = likes.length;
+
+                const likeBtn = document.getElementById("storyLikeBtn");
+                const isLiked = auth.currentUser && likes.includes(auth.currentUser.uid);
+                likeBtn.innerText = isLiked ? "❤️ Liked" : "🤍 Like";
+                likeBtn.style.background = isLiked ? "#ef4444" : "rgba(255,255,255,0.2)";
+
+                document.getElementById("deleteStoryBtn").style.display =
+                    auth.currentUser && s.userId === auth.currentUser.uid ? "inline-block" : "none";
+
+                const audioEl = document.getElementById("viewerStoryAudio");
+                if(s.songUrl) { audioEl.src = s.songUrl; audioEl.play().catch(e => {}); } else { audioEl.pause(); audioEl.src = ""; }
+
+                document.getElementById("storyViewerModal").style.display = "flex";
+
+                if(auth.currentUser && s.userId !== auth.currentUser.uid && !viewers.includes(auth.currentUser.uid)) {
+                    viewers.push(auth.currentUser.uid);
+                    s.viewers = viewers;
+                    storyCacheMap.set(storyId, s);
+                    document.getElementById("storyViewersCount").innerText = viewers.length;
+                    await updateDoc(doc(db, "stories", storyId), { viewers }).catch(() => {});
+                }
+            } catch (err) {
+                console.error("Open story error:", err);
+                alert("Could not open story: " + err.message);
             }
         };
 
@@ -1910,11 +1999,14 @@
             const storyRef = doc(db, "stories", currentViewingStoryId);
             const snap = await getDoc(storyRef);
             if(snap.exists()) {
-                let data = snap.data(); let likes = data.likes || [];
+                let data = snap.data(); let likes = [...(data.likes || [])];
                 const likeBtn = document.getElementById("storyLikeBtn");
                 if(likes.includes(auth.currentUser.uid)) { likes = likes.filter(id => id !== auth.currentUser.uid); likeBtn.innerText = "🤍 Like"; likeBtn.style.background = "rgba(255,255,255,0.2)"; }
                 else { likes.push(auth.currentUser.uid); likeBtn.innerText = "❤️ Liked"; likeBtn.style.background = "#ef4444"; }
-                await updateDoc(storyRef, { likes }); document.getElementById("storyLikesCount").innerText = likes.length;
+                await updateDoc(storyRef, { likes });
+                data.likes = likes;
+                storyCacheMap.set(currentViewingStoryId, data);
+                document.getElementById("storyLikesCount").innerText = likes.length;
             }
         };
 
@@ -2330,12 +2422,16 @@
 
         window.switchSidebarTab = (tab) => {
             activeSidebarTab = tab;
+            const chatListEl = document.getElementById("chatList");
+            if (chatListEl) {
+                chatListEl.classList.toggle("reels-scroll-mode", tab === "reels");
+            }
             document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
             document.getElementById(tab + "TabBtn").classList.add("active");
             document.getElementById("sidebarTitleText").innerText =
                 tab === 'chats' ? "💬 Accepted Chats" :
                 tab === 'groups' ? "👥 Groups" :
-                tab === 'reels' ? "🎬 Reels" : "🔔 Notifications";
+                tab === 'reels' ? "🎬 Reels • Scroll" : "🔔 Notifications";
             document.getElementById("addGroupHeaderBtn").style.display = tab === 'groups' ? "inline-block" : "none";
             document.getElementById("addReelHeaderBtn").style.display = tab === 'reels' ? "inline-block" : "none";
             if (tab === 'notifs') renderNotificationsList();
