@@ -818,7 +818,7 @@
                 </select>
             </div>
             <div class="input-group">
-                <label>🎵 Song URL / Local Audio</label>
+                <label>🎵 Song URL / Local Audio (&lt; 700 KB)</label>
                 <input type="text" id="noteIsaiifyUrlInput" placeholder="Paste song URL or choose file below..." style="margin-bottom:6px; font-size:11px;">
                 <input type="file" id="noteAudioFileInput" accept="audio/*" style="font-size:11px; padding:4px;">
             </div>
@@ -858,7 +858,7 @@
         <div class="modal-content">
             <h3 style="margin-bottom:10px; color:#f8fafc; font-size: 16px; font-weight: 800;">📸 Add New 24-Hour Story</h3>
             <div class="input-group">
-                <label>Select Image / Media</label>
+                <label>Select Image / Media (&lt; 700 KB)</label>
                 <input type="file" id="storyMediaFileInput" accept="image/*" style="font-size:11px; padding:6px;">
             </div>
             <div class="input-group">
@@ -875,7 +875,7 @@
                 </select>
             </div>
             <div class="input-group">
-                <label>🎵 Song URL / Local Audio</label>
+                <label>🎵 Song URL / Local Audio (&lt; 700 KB)</label>
                 <input type="text" id="storyIsaiifyUrlInput" placeholder="Paste song URL or choose file below..." style="margin-bottom:6px; font-size:11px;">
                 <input type="file" id="storyAudioFileInput" accept="audio/*" style="font-size:11px; padding:4px;">
             </div>
@@ -1053,6 +1053,21 @@
         const db = getFirestore(app);
 
         const TWENTY_FOUR_HOURS_MS = 24 * 60 * 60 * 1000;
+        const MAX_FIRESTORE_MEDIA_BYTES = 700 * 1024;
+
+        function readFileAsDataUrlSafe(file, label) {
+            return new Promise((resolve, reject) => {
+                if (!file) return resolve("");
+                if (file.size > MAX_FIRESTORE_MEDIA_BYTES) {
+                    reject(new Error(`${label} is too large (${Math.round(file.size / 1024)} KB). Please choose a file under 700 KB.`));
+                    return;
+                }
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = () => reject(new Error(`Failed to read ${label}.`));
+                reader.readAsDataURL(file);
+            });
+        }
 
         let currentChatId = "";
         let currentChatName = "";
@@ -1391,7 +1406,7 @@
 
             const file = fileInput.files[0];
 
-            if (file.size > 700 * 1024) {
+            if (file.size > MAX_FIRESTORE_MEDIA_BYTES) {
                 return alert("⚠️ File too large for Firestore! Please pick a small photo or short clip under 700 KB.");
             }
 
@@ -1541,21 +1556,24 @@
         };
 
         window.publishNewNote = async () => {
-            if (!auth.currentUser) return alert("Please login first!");
-            const comment = document.getElementById("noteCommentText").value.trim();
-            const privacy = document.getElementById("notePrivacySelect").value;
-            const isaiifyUrl = document.getElementById("noteIsaiifyUrlInput").value.trim();
-            const fileInput = document.getElementById("noteAudioFileInput");
-            if(!comment) return alert("Please type a comment for your note!");
+            try {
+                if (!auth.currentUser) return alert("Please login first!");
+                const comment = document.getElementById("noteCommentText").value.trim();
+                const privacy = document.getElementById("notePrivacySelect").value;
+                const isaiifyUrl = document.getElementById("noteIsaiifyUrlInput").value.trim();
+                const fileInput = document.getElementById("noteAudioFileInput");
+                if (!comment) return alert("Please type a comment for your note!");
 
-            let finalSongUrl = isaiifyUrl;
-            if(!finalSongUrl && fileInput && fileInput.files[0]) {
-                const reader = new FileReader();
-                reader.onload = async function(evt) { await saveNoteToDb(comment, privacy, evt.target.result); };
-                reader.readAsDataURL(fileInput.files[0]);
-                return;
+                let finalSongUrl = isaiifyUrl;
+                if (!finalSongUrl && fileInput?.files?.[0]) {
+                    finalSongUrl = await readFileAsDataUrlSafe(fileInput.files[0], "Note audio");
+                }
+
+                await saveNoteToDb(comment, privacy, finalSongUrl);
+            } catch (err) {
+                console.error("Publish note error:", err);
+                alert("❌ " + err.message);
             }
-            await saveNoteToDb(comment, privacy, finalSongUrl);
         };
 
         async function saveNoteToDb(comment, privacy, songUrl) {
@@ -1726,32 +1744,47 @@
         };
         window.closeAddStoryModal = () => {
             document.getElementById("addStoryModal").style.display = "none";
+            document.getElementById("storyMediaFileInput").value = "";
+            document.getElementById("storyAudioFileInput").value = "";
             document.getElementById("storyIsaiifyUrlInput").value = "";
             document.getElementById("storyMentionUserSelect").value = "";
         };
 
         window.publishNewStory = async () => {
-            const fileInput = document.getElementById("storyMediaFileInput");
-            const privacy = document.getElementById("storyPrivacySelect").value;
-            const isaiifyUrl = document.getElementById("storyIsaiifyUrlInput").value.trim();
-            const mentionSel = document.getElementById("storyMentionUserSelect");
-            const mentionedUserId = mentionSel ? mentionSel.value : "";
-            const mentionedUserName = mentionedUserId ? mentionSel.options[mentionSel.selectedIndex].getAttribute("data-name") : "";
+            try {
+                if (!auth.currentUser) return alert("Please login first!");
+                const fileInput = document.getElementById("storyMediaFileInput");
+                const privacy = document.getElementById("storyPrivacySelect").value;
+                const isaiifyUrl = document.getElementById("storyIsaiifyUrlInput").value.trim();
+                const audioFileInput = document.getElementById("storyAudioFileInput");
+                const mentionSel = document.getElementById("storyMentionUserSelect");
+                const mentionedUserId = mentionSel ? mentionSel.value : "";
+                const mentionedUserName = mentionedUserId ? mentionSel.options[mentionSel.selectedIndex].getAttribute("data-name") : "";
 
-            if(!fileInput.files[0]) return alert("Select an image for your story!");
-            const reader = new FileReader();
-            reader.onload = async function(evt) {
-                await saveStoryToDb(evt.target.result, privacy, isaiifyUrl, mentionedUserId, mentionedUserName);
-            };
-            reader.readAsDataURL(fileInput.files[0]);
+                const imgFile = fileInput?.files?.[0];
+                if (!imgFile) return alert("Select an image for your story!");
+
+                const mediaUrl = await readFileAsDataUrlSafe(imgFile, "Story image");
+                let finalSongUrl = isaiifyUrl;
+                if (!finalSongUrl && audioFileInput?.files?.[0]) {
+                    finalSongUrl = await readFileAsDataUrlSafe(audioFileInput.files[0], "Story audio");
+                }
+
+                await saveStoryToDb(mediaUrl, privacy, finalSongUrl, mentionedUserId, mentionedUserName);
+            } catch (err) {
+                console.error("Publish story error:", err);
+                alert("❌ " + err.message);
+            }
         };
 
         async function saveStoryToDb(mediaUrl, privacy, songUrl, mentionedUserId, mentionedUserName) {
             const myName = document.getElementById("displayName").innerText;
+            const safeAvatar = (selectedAvatarEmoji && selectedAvatarEmoji.length < 400000) ? selectedAvatarEmoji : "👨‍💻";
+
             const storyDoc = await addDoc(collection(db, "stories"), {
                 userId: auth.currentUser.uid,
                 userName: myName,
-                userAvatar: selectedAvatarEmoji,
+                userAvatar: safeAvatar,
                 mediaUrl,
                 privacy,
                 songUrl: songUrl || "",
