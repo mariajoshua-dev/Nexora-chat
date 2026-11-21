@@ -235,10 +235,10 @@
         .story-thumb img { width: 100%; height: 100%; object-fit: cover; }
         .add-story-btn-mini { position: absolute; bottom: 0; right: 0; background: var(--accent-color); color: white; width: 17px; height: 17px; border-radius: 50%; font-size: 11px; display: flex; align-items: center; justify-content: center; border: 1.5px solid #0b0f19; font-weight: 800; }
 
-        .notes-tray { display: flex; gap: 8px; padding: 6px; overflow-x: auto; background: rgba(2, 6, 23, 0.35); border-radius: 12px; flex-shrink: 0; border: 1px solid var(--border-color); }
-        .note-bubble-card { min-width: 96px; max-width: 125px; background: rgba(30, 41, 59, 0.65); border: 1px solid var(--border-color); border-radius: 12px; padding: 6px 8px; cursor: pointer; text-align: center; position: relative; flex-shrink: 0; }
-        .note-bubble-text { font-size: 11px; font-weight: 700; color: #f1f5f9; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 2px; }
-        .note-bubble-user { font-size: 10px; font-weight: 600; color: var(--muted-text); }
+        .notes-tray { display: flex; gap: 8px; padding: 6px; overflow-x: auto; background: rgba(2, 6, 23, 0.35); border-radius: 12px; flex-shrink: 0; border: 1px solid var(--border-color); align-items: center; }
+        .note-bubble-card { min-width: 104px; max-width: 140px; background: rgba(30, 41, 59, 0.75); border: 1px solid rgba(99, 102, 241, 0.35); border-radius: 12px; padding: 6px 9px; cursor: pointer; text-align: center; position: relative; flex-shrink: 0; }
+        .note-bubble-text { font-size: 11px; font-weight: 700; color: #f8fafc; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 2px; }
+        .note-bubble-user { font-size: 10px; font-weight: 600; color: #a5b4fc; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
         .sidebar-tabs { display: flex; gap: 4px; flex-shrink: 0; }
         .tab-btn { flex: 1; padding: 8px 4px; background: rgba(30, 41, 59, 0.55); border: 1px solid var(--border-color); color: #cbd5e1; border-radius: 9px; cursor: pointer; font-size: 11.5px; font-weight: 700; text-align: center; }
@@ -296,7 +296,6 @@
             flex-shrink: 0;
         }
 
-        /* VERTICAL SCROLL SNAP REELS FEED */
         #chatList.reels-scroll-mode {
             display: flex;
             flex-direction: column;
@@ -568,7 +567,6 @@
 </head>
 <body class="theme-slate">
 
-    <!-- PROFESSIONAL NEXORA LOADING SPLASH SCREEN -->
     <div id="splashScreen">
         <div class="splash-card">
             <div class="splash-orb-wrap">
@@ -627,7 +625,7 @@
                             <span style="font-size:16px;">⚙️</span>
                         </div>
 
-                        <!-- STORIES TRAY (24 HOURS • UNLIMITED RE-OPEN) -->
+                        <!-- STORIES TRAY -->
                         <div class="stories-tray" id="storiesTrayContainer">
                             <div class="story-ring" onclick="triggerAddStory()" title="Add Story (24h)">
                                 <div class="story-thumb" id="myStoryThumb">➕</div>
@@ -636,14 +634,13 @@
                             <div id="activeStoriesList" style="display:flex; gap:8px;"></div>
                         </div>
 
-                        <!-- NOTES TRAY (24 HOURS • UNLIMITED OPEN) -->
+                        <!-- NOTES TRAY -->
                         <div class="notes-tray" id="notesTrayContainer">
-                            <div id="activeNotesList" style="display:flex; gap:8px; width:100%;">
-                                <div class="note-bubble-card" onclick="triggerAddNote()">
-                                    <div class="note-bubble-text">＋ Add Note</div>
-                                    <div class="note-bubble-user">24h Note</div>
-                                </div>
+                            <div class="note-bubble-card" onclick="triggerAddNote()">
+                                <div class="note-bubble-text">＋ Add Note</div>
+                                <div class="note-bubble-user">24h Note</div>
                             </div>
+                            <div id="activeNotesList" style="display:flex; gap:8px; align-items:center;"></div>
                         </div>
                         
                         <div class="sidebar-tabs">
@@ -737,10 +734,8 @@
         </div>
     </div>
 
-    <!-- WORKING VOICE CALL OVERLAY UI (MIC + SPEAKER ACCESS) -->
     <div class="call-screen-overlay" id="voiceCallOverlay">
         <div class="call-top-badge">🎙️ Live Mic & Speaker • NEXORA Voice</div>
-        
         <div class="call-center-info">
             <div class="call-avatar-ring">
                 <div class="call-avatar-inner" id="callScreenAvatar">👤</div>
@@ -749,9 +744,7 @@
             <div class="call-status-text" id="callScreenTimer">Connecting Mic & Speaker...</div>
             <div class="call-device-note" id="callAudioDeviceStatus">Mic: Active • Speaker: Enabled</div>
         </div>
-
         <audio id="remoteCallAudio" autoplay playsinline></audio>
-
         <div class="call-controls-bar">
             <div class="call-control-item">
                 <button class="call-circle-btn btn-mute" id="callMuteBtn" onclick="toggleCallMute()" title="Mute / Unmute Mic">🎙️</button>
@@ -768,7 +761,6 @@
         </div>
     </div>
 
-    <!-- 20 EMOJIS REACTION POPUP MODAL -->
     <div class="reactions-popup-overlay" id="reactionsModal">
         <div class="reactions-grid-box">
             <h3 style="font-size:15px; font-weight:800; color:#a5b4fc; margin-bottom:4px;">React with Emoji</h3>
@@ -779,7 +771,6 @@
         </div>
     </div>
 
-    <!-- ADD REEL MODAL (PERMANENT) -->
     <div class="modal-overlay" id="addReelModal">
         <div class="modal-content">
             <h3 style="margin-bottom:10px; color:#f8fafc; font-size: 16px; font-weight: 800;">🎬 Upload a Permanent Reel</h3>
@@ -796,7 +787,6 @@
         </div>
     </div>
 
-    <!-- NOTE VIEWER MODAL -->
     <div class="story-viewer-overlay" id="noteViewerModal">
         <div class="story-container" style="background:#0f172a; padding:16px; justify-content: space-between;">
             <div style="display:flex; justify-content:space-between; align-items:center;">
@@ -807,7 +797,6 @@
                 Note comment here...
             </div>
             <audio id="viewerNoteAudio" loop style="display:none;"></audio>
-            
             <div style="display:flex; flex-direction:column; gap:6px;">
                 <div style="display:flex; justify-content:space-between; align-items:center;">
                     <button id="noteLikeBtn" onclick="toggleNoteLike()" style="background:rgba(255,255,255,0.14); border:none; padding:6px 14px; border-radius:20px; color:white; font-size:12px; font-weight:700; cursor:pointer;">🤍 Like (<span id="noteLikesCount">0</span>)</button>
@@ -821,7 +810,6 @@
         </div>
     </div>
 
-    <!-- ADD NOTE MODAL -->
     <div class="modal-overlay" id="addNoteModal">
         <div class="modal-content">
             <h3 style="margin-bottom:10px; color:#f8fafc; font-size: 16px; font-weight: 800;">💬 Leave a 24-Hour Note</h3>
@@ -832,8 +820,8 @@
             <div class="input-group">
                 <label>🔒 Who can see this note?</label>
                 <select id="notePrivacySelect" style="background:#020617; color:white; padding:8px; border-radius:8px; font-size:11px; font-weight:600;">
-                    <option value="friends">Accepted Friends Only</option>
                     <option value="public">All Nexora Users</option>
+                    <option value="friends">Accepted Friends Only</option>
                 </select>
             </div>
             <div class="input-group">
@@ -846,7 +834,6 @@
         </div>
     </div>
 
-    <!-- STORY VIEWER MODAL -->
     <div class="story-viewer-overlay" id="storyViewerModal">
         <div class="story-container">
             <div class="story-header-bar">
@@ -872,7 +859,6 @@
         </div>
     </div>
 
-    <!-- ADD STORY MODAL (WITH @MENTION) -->
     <div class="modal-overlay" id="addStoryModal">
         <div class="modal-content">
             <h3 style="margin-bottom:10px; color:#f8fafc; font-size: 16px; font-weight: 800;">📸 Add New 24-Hour Story</h3>
@@ -889,8 +875,8 @@
             <div class="input-group">
                 <label>🔒 Who can view this story?</label>
                 <select id="storyPrivacySelect" style="background:#020617; color:white; padding:8px; border-radius:8px; font-size:11px; font-weight:600;">
-                    <option value="friends">Accepted Friends Only</option>
                     <option value="public">All Nexora Users</option>
+                    <option value="friends">Accepted Friends Only</option>
                 </select>
             </div>
             <div class="input-group">
@@ -903,7 +889,6 @@
         </div>
     </div>
 
-    <!-- NEXORA REWARDS STORE MODAL -->
     <div class="modal-overlay" id="nexoraStoreModal">
         <div class="modal-content">
             <h3 style="margin-bottom:8px; color:#f8fafc; font-size: 16px; font-weight: 800;">🏪 Nexora Rewards Store</h3>
@@ -922,7 +907,6 @@
         </div>
     </div>
 
-    <!-- FORWARD MESSAGE MODAL -->
     <div class="modal-overlay" id="forwardModal">
         <div class="modal-content">
             <h3 style="margin-bottom:10px; color:#f8fafc; font-size: 16px; font-weight: 800;">📤 Forward Message To:</h3>
@@ -931,7 +915,6 @@
         </div>
     </div>
 
-    <!-- CREATE GROUP MODAL -->
     <div class="modal-overlay" id="createGroupModal">
         <div class="modal-content">
             <h3 style="margin-bottom:10px; color:#f8fafc; font-size: 16px; font-weight: 800;">👥 Create Private Group</h3>
@@ -946,7 +929,6 @@
         </div>
     </div>
 
-    <!-- CAMERA OVERLAY -->
     <div class="camera-overlay" id="cameraOverlay">
         <h3 style="color:white; margin-bottom:4px; font-size:14px; font-weight:800;">📸 Snap Studio (Double Tap screen to flip camera)</h3>
         <video id="cameraVideo" class="camera-view f-normal" autoplay playsinline ondblclick="toggleCameraFacing()"></video>
@@ -958,7 +940,6 @@
         </div>
     </div>
 
-    <!-- ACCOUNT SETTINGS MODAL -->
     <div class="modal-overlay" id="accountSettingsModal">
         <div class="modal-content">
             <h3 style="margin-bottom:10px; color:#f8fafc; font-size: 16px; font-weight: 800;">⚙️ Account Settings</h3>
@@ -1024,7 +1005,6 @@
         </div>
     </div>
 
-    <!-- PROFILE & CHAT SETTINGS MODAL -->
     <div class="modal-overlay" id="selectedUserProfileModal">
         <div class="modal-content">
             <div class="avatar-preview-box" id="modalTargetAvatar" style="width:54px; height:54px; font-size:26px; margin: 0 auto 6px;">👤</div>
@@ -1052,7 +1032,6 @@
         </div>
     </div>
 
-    <!-- SCRIPT LOGIC -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
         import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
@@ -1114,7 +1093,6 @@
         let currentViewingNoteId = null;
         let currentNoteOwnerId = null;
 
-        // Safe cache maps so stories & notes open unlimited times without string escaping bugs
         const storyCacheMap = new Map();
         const noteCacheMap = new Map();
 
@@ -1208,7 +1186,7 @@
             alert("✂️ Face cropped! Click 'Save Avatar' to update your profile.");
         };
 
-        // ================= WORKING VOICE CALL (MIC + SPEAKER ACCESS) =================
+        // ================= WORKING VOICE CALL =================
         let callTimerInterval = null;
         let callDurationSeconds = 0;
         let isCallMuted = false;
@@ -1217,7 +1195,6 @@
 
         window.startVoiceCall = async () => {
             if (!currentChatId) return alert("Please select a user or group first!");
-
             document.getElementById("callScreenUserName").innerText = currentChatName || "NEXORA User";
             const avEl = document.getElementById("callScreenAvatar");
             if (currentChatAvatar && currentChatAvatar.startsWith("data:")) {
@@ -1225,19 +1202,14 @@
             } else {
                 avEl.innerText = isCurrentChatGroup ? "👥" : (currentChatAvatar || "👤");
             }
-
             isCallMuted = false;
             isSpeakerOn = true;
-            const muteBtn = document.getElementById("callMuteBtn");
-            muteBtn.classList.remove("muted");
-            muteBtn.innerText = "🎙️";
+            document.getElementById("callMuteBtn").classList.remove("muted");
+            document.getElementById("callMuteBtn").innerText = "🎙️";
             document.getElementById("callMuteLabel").innerText = "Mute";
-
-            const spkBtn = document.getElementById("callSpeakerBtn");
-            spkBtn.classList.remove("off");
-            spkBtn.innerText = "🔊";
+            document.getElementById("callSpeakerBtn").classList.remove("off");
+            document.getElementById("callSpeakerBtn").innerText = "🔊";
             document.getElementById("callSpeakerLabel").innerText = "Speaker";
-
             callDurationSeconds = 0;
             document.getElementById("callScreenTimer").innerText = "Requesting Mic Access...";
             document.getElementById("callAudioDeviceStatus").innerText = "Checking microphone & speaker...";
@@ -1248,14 +1220,11 @@
                     audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true },
                     video: false
                 });
-
                 const remoteAudio = document.getElementById("remoteCallAudio");
                 remoteAudio.muted = false;
                 remoteAudio.volume = 1.0;
-
                 document.getElementById("callAudioDeviceStatus").innerText = "🎙️ Mic: Connected • 🔊 Speaker: Ready";
                 document.getElementById("callScreenTimer").innerText = "00:00";
-
                 if (callTimerInterval) clearInterval(callTimerInterval);
                 callTimerInterval = setInterval(() => {
                     callDurationSeconds++;
@@ -1272,23 +1241,14 @@
         window.toggleCallMute = () => {
             isCallMuted = !isCallMuted;
             if (activeCallStream) {
-                activeCallStream.getAudioTracks().forEach(track => {
-                    track.enabled = !isCallMuted;
-                });
+                activeCallStream.getAudioTracks().forEach(track => { track.enabled = !isCallMuted; });
             }
             const muteBtn = document.getElementById("callMuteBtn");
             const muteLabel = document.getElementById("callMuteLabel");
-            if (isCallMuted) {
-                muteBtn.classList.add("muted");
-                muteBtn.innerText = "🔇";
-                muteLabel.innerText = "Unmute";
-                document.getElementById("callAudioDeviceStatus").innerText = `🔇 Mic: Muted • ${isSpeakerOn ? '🔊 Speaker: On' : '🔈 Speaker: Soft'}`;
-            } else {
-                muteBtn.classList.remove("muted");
-                muteBtn.innerText = "🎙️";
-                muteLabel.innerText = "Mute";
-                document.getElementById("callAudioDeviceStatus").innerText = `🎙️ Mic: Active • ${isSpeakerOn ? '🔊 Speaker: On' : '🔈 Speaker: Soft'}`;
-            }
+            muteBtn.classList.toggle("muted", isCallMuted);
+            muteBtn.innerText = isCallMuted ? "🔇" : "🎙️";
+            muteLabel.innerText = isCallMuted ? "Unmute" : "Mute";
+            document.getElementById("callAudioDeviceStatus").innerText = `${isCallMuted ? '🔇 Mic: Muted' : '🎙️ Mic: Active'} • ${isSpeakerOn ? '🔊 Speaker: On' : '🔈 Speaker: Soft'}`;
         };
 
         window.toggleCallSpeaker = async () => {
@@ -1296,23 +1256,14 @@
             const spkBtn = document.getElementById("callSpeakerBtn");
             const spkLabel = document.getElementById("callSpeakerLabel");
             const remoteAudio = document.getElementById("remoteCallAudio");
-
-            if (isSpeakerOn) {
-                spkBtn.classList.remove("off");
-                spkBtn.innerText = "🔊";
-                spkLabel.innerText = "Speaker";
-                remoteAudio.volume = 1.0;
-                if (typeof remoteAudio.setSinkId === "function") {
-                    try { await remoteAudio.setSinkId(""); } catch (_) {}
-                }
-                document.getElementById("callAudioDeviceStatus").innerText = `${isCallMuted ? '🔇 Mic: Muted' : '🎙️ Mic: Active'} • 🔊 Speaker: Loud`;
-            } else {
-                spkBtn.classList.add("off");
-                spkBtn.innerText = "🔈";
-                spkLabel.innerText = "Earpiece";
-                remoteAudio.volume = 0.35;
-                document.getElementById("callAudioDeviceStatus").innerText = `${isCallMuted ? '🔇 Mic: Muted' : '🎙️ Mic: Active'} • 🔈 Speaker: Low/Earpiece`;
+            spkBtn.classList.toggle("off", !isSpeakerOn);
+            spkBtn.innerText = isSpeakerOn ? "🔊" : "🔈";
+            spkLabel.innerText = isSpeakerOn ? "Speaker" : "Earpiece";
+            remoteAudio.volume = isSpeakerOn ? 1.0 : 0.35;
+            if (isSpeakerOn && typeof remoteAudio.setSinkId === "function") {
+                try { await remoteAudio.setSinkId(""); } catch (_) {}
             }
+            document.getElementById("callAudioDeviceStatus").innerText = `${isCallMuted ? '🔇 Mic: Muted' : '🎙️ Mic: Active'} • ${isSpeakerOn ? '🔊 Speaker: Loud' : '🔈 Speaker: Low/Earpiece'}`;
         };
 
         window.endVoiceCall = () => {
@@ -1322,17 +1273,13 @@
                 activeCallStream.getTracks().forEach(track => track.stop());
                 activeCallStream = null;
             }
-            const remoteAudio = document.getElementById("remoteCallAudio");
-            remoteAudio.srcObject = null;
+            document.getElementById("remoteCallAudio").srcObject = null;
             document.getElementById("voiceCallOverlay").style.display = "none";
         };
 
-        // ================= BADGE UI HELPER =================
         function refreshMyBadgeUI() {
             const badgeEl = document.getElementById("myVipBadge");
-            if (badgeEl) {
-                badgeEl.style.display = hasNexoraVipBadge ? "inline-flex" : "none";
-            }
+            if (badgeEl) badgeEl.style.display = hasNexoraVipBadge ? "inline-flex" : "none";
         }
 
         let activeReactingMessageId = null;
@@ -1353,11 +1300,8 @@
             const snap = await getDoc(msgRef);
             if(snap.exists()) {
                 let reactions = { ...(snap.data().reactions || {}) };
-                if (reactions[auth.currentUser.uid] === emoji) {
-                    delete reactions[auth.currentUser.uid];
-                } else {
-                    reactions[auth.currentUser.uid] = emoji;
-                }
+                if (reactions[auth.currentUser.uid] === emoji) delete reactions[auth.currentUser.uid];
+                else reactions[auth.currentUser.uid] = emoji;
                 await updateDoc(msgRef, { reactions });
             }
             closeReactionsModal();
@@ -1392,7 +1336,6 @@
         const nexoraStickers = ["🔥", "🚀", "💎", "⭐", "🎉", "😎", "🦄", "⚡", "🍀", "💖", "👑", "🐱", "🐶", "🐼", "🍕", "🍔", "🍿", "🍩", "☕", "🍺", "🏆", "🎯", "💻", "📱", "⌚", "💡"];
         const maleAvatars = [{ name: "Developer", emoji: "👨‍💻" }, { name: "Gentleman", emoji: "👨‍💼" }, { name: "Cool Guy", emoji: "😎" }, { name: "Hacker", emoji: "🥷" }];
         const femaleAvatars = [{ name: "Professional", emoji: "👩‍💼" }, { name: "Stylish", emoji: "👩‍🎤" }, { name: "Princess", emoji: "👸" }, { name: "Scientist", emoji: "👩‍🔬" }];
-
         const snapFiltersList = [
             { id: "f-normal", name: "Normal" }, { id: "f-cyberpunk", name: "Cyberpunk" }, { id: "f-neon", name: "Neon Glow" },
             { id: "f-grayscale", name: "Grayscale" }, { id: "f-sepia", name: "Sepia" }
@@ -1413,7 +1356,7 @@
         window.toggleStickersPanel = () => { const p = document.getElementById("stickersPopup"); p.style.display = p.style.display === "flex" ? "none" : "flex"; };
         window.sendSticker = async (st) => { toggleStickersPanel(); await sendMessage(st, "sticker", "🌟 [STICKER]"); };
 
-        // ================= REELS FEATURE (PERMANENT DISPLAY + DELETE + SCROLL SNAP) =================
+        // ================= REELS FEATURE =================
         window.openAddReelModal = () => { document.getElementById("addReelModal").style.display = "flex"; };
         window.closeAddReelModal = () => {
             document.getElementById("addReelModal").style.display = "none";
@@ -1426,16 +1369,12 @@
             const caption = document.getElementById("reelCaptionInput").value.trim();
             if (!fileInput.files[0]) return alert("Please select a video or image for your reel!");
             if (!auth.currentUser) return alert("Please login first!");
-
             const file = fileInput.files[0];
-
             if (file.size > MAX_FIRESTORE_MEDIA_BYTES) {
                 return alert("⚠️ File too large for Firestore! Please pick a small photo or short clip under 700 KB.");
             }
-
             const mediaType = file.type.startsWith("video/") ? "video" : "image";
             const reader = new FileReader();
-
             reader.onload = async (evt) => {
                 try {
                     await addDoc(collection(db, "reels"), {
@@ -1453,42 +1392,28 @@
                     else renderReelsFeed();
                     alert("🎬 Reel published permanently!");
                 } catch (err) {
-                    console.error("Reel upload error:", err);
                     alert("❌ Failed to publish reel: " + err.message);
                 }
             };
-
-            reader.onerror = () => {
-                alert("❌ Could not read the selected file.");
-            };
-
             reader.readAsDataURL(file);
         };
 
         function listenToReels() {
             if (unsubscribeReels) unsubscribeReels();
-            unsubscribeReels = onSnapshot(
-                collection(db, "reels"),
-                (snapshot) => {
-                    if (activeSidebarTab === "reels") renderReelsFeed(snapshot);
-                },
-                (err) => {
-                    console.error("Reels listener error:", err);
-                }
-            );
+            unsubscribeReels = onSnapshot(collection(db, "reels"), (snapshot) => {
+                if (activeSidebarTab === "reels") renderReelsFeed(snapshot);
+            });
         }
 
         async function renderReelsFeed(existingSnap = null) {
             const chatList = document.getElementById("chatList");
             const snapshot = existingSnap || await getDocs(collection(db, "reels"));
             let reels = [];
-
             snapshot.forEach((d) => {
                 const data = d.data();
                 const createdAtMillis = data.createdAt?.toMillis ? data.createdAt.toMillis() : Date.now();
                 reels.push({ id: d.id, ...data, createdAtMillis });
             });
-
             reels.sort((a,b) => b.createdAtMillis - a.createdAtMillis);
 
             if(!reels.length) {
@@ -1504,7 +1429,6 @@
                 const mediaEl = r.mediaType === "video"
                     ? `<video class="reel-media" src="${r.mediaUrl}" controls playsinline></video>`
                     : `<img class="reel-media" src="${r.mediaUrl}" alt="Reel">`;
-
                 const commentsHtml = comments.length
                     ? comments.map(c => `<div class="reel-comment-item"><strong>${c.userName}:</strong> ${c.text}</div>`).join("")
                     : `<div style="color:var(--muted-text);">No comments yet.</div>`;
@@ -1561,30 +1485,34 @@
         };
 
         window.deleteReel = async (reelId) => {
-            if(confirm("Delete this reel?")) {
-                await deleteDoc(doc(db, "reels", reelId));
-            }
+            if(confirm("Delete this reel?")) await deleteDoc(doc(db, "reels", reelId));
         };
 
-        // ================= NOTES FEATURE (24 HOURS • UNLIMITED OPEN) =================
+        // ================= NOTES FEATURE (NULL-SAFE & RELIABLE) =================
         window.triggerAddNote = () => {
             if (!auth.currentUser) return alert("Please login first!");
-            document.getElementById("addNoteModal").style.display = "flex";
+            const modal = document.getElementById("addNoteModal");
+            if (modal) modal.style.display = "flex";
         };
         window.closeAddNoteModal = () => {
-            document.getElementById("addNoteModal").style.display = "none";
-            document.getElementById("noteIsaiifyUrlInput").value = "";
-            document.getElementById("noteCommentText").value = "";
-            const fileInput = document.getElementById("noteAudioFileInput"); if(fileInput) fileInput.value = "";
+            const modal = document.getElementById("addNoteModal");
+            if (modal) modal.style.display = "none";
+            const urlEl = document.getElementById("noteIsaiifyUrlInput");
+            const commentEl = document.getElementById("noteCommentText");
+            const fileInput = document.getElementById("noteAudioFileInput");
+            if (urlEl) urlEl.value = "";
+            if (commentEl) commentEl.value = "";
+            if (fileInput) fileInput.value = "";
         };
 
         window.publishNewNote = async () => {
             try {
                 if (!auth.currentUser) return alert("Please login first!");
-                const comment = document.getElementById("noteCommentText").value.trim();
-                const privacy = document.getElementById("notePrivacySelect").value;
-                const isaiifyUrl = document.getElementById("noteIsaiifyUrlInput").value.trim();
+                const comment = document.getElementById("noteCommentText")?.value.trim() || "";
+                const privacy = document.getElementById("notePrivacySelect")?.value || "public";
+                const isaiifyUrl = document.getElementById("noteIsaiifyUrlInput")?.value.trim() || "";
                 const fileInput = document.getElementById("noteAudioFileInput");
+
                 if (!comment) return alert("Please type a comment for your note!");
 
                 let finalSongUrl = isaiifyUrl;
@@ -1595,31 +1523,36 @@
                 await saveNoteToDb(comment, privacy, finalSongUrl);
             } catch (err) {
                 console.error("Publish note error:", err);
-                alert("❌ " + err.message);
+                alert("❌ Note error: " + (err && err.message ? err.message : err));
             }
         };
 
         async function saveNoteToDb(comment, privacy, songUrl) {
             if (!auth.currentUser) return;
-            const userNoteRef = doc(db, "notes", auth.currentUser.uid);
-            await setDoc(userNoteRef, {
-                userId: auth.currentUser.uid,
-                userName: document.getElementById("displayName").innerText || "NEXORA User",
-                comment,
-                privacy,
-                songUrl: songUrl || "",
+            const uid = auth.currentUser.uid;
+            const myName = document.getElementById("displayName")?.innerText || "NEXORA User";
+
+            const notePayload = {
+                userId: uid,
+                userName: myName,
+                comment: String(comment),
+                privacy: privacy || "public",
+                songUrl: songUrl ? String(songUrl) : "",
                 likes: [],
                 comments: [],
                 createdAt: serverTimestamp()
-            });
+            };
+
+            noteCacheMap.set(uid, { ...notePayload, createdAtMillis: Date.now() });
+            await setDoc(doc(db, "notes", uid), notePayload, { merge: true });
             closeAddNoteModal();
-            alert("Note published for 24 hours!");
+            alert("✅ Note published for 24 hours!");
         }
 
         async function checkCanView(ownerId, privacySetting) {
             if (!auth.currentUser) return false;
             if (ownerId === auth.currentUser.uid) return true;
-            if (privacySetting === "public") return true;
+            if (!privacySetting || privacySetting === "public") return true;
             if (privacySetting === "friends" || privacySetting === "private") {
                 try {
                     const roomId = [auth.currentUser.uid, ownerId].sort().join('_');
@@ -1634,45 +1567,40 @@
 
         function listenToNotes() {
             if (unsubscribeNotes) unsubscribeNotes();
-            const addNoteCardHtml = `
-                <div class="note-bubble-card" onclick="triggerAddNote()">
-                    <div class="note-bubble-text">＋ Add Note</div>
-                    <div class="note-bubble-user">24h Note</div>
-                </div>`;
-
             unsubscribeNotes = onSnapshot(
                 collection(db, "notes"),
                 async (snapshot) => {
                     const list = document.getElementById("activeNotesList");
                     if (!list) return;
                     if (!auth.currentUser) {
-                        list.innerHTML = addNoteCardHtml;
+                        list.innerHTML = "";
                         return;
                     }
 
                     let notesHtml = "";
-                    let hasMyNote = false;
                     const now = Date.now();
                     noteCacheMap.clear();
 
                     for (const docSnap of snapshot.docs) {
                         const n = docSnap.data();
                         const nId = docSnap.id;
-                        noteCacheMap.set(nId, n);
+                        if (!n || !n.comment) continue;
 
                         const createdAtMillis = n.createdAt?.toMillis ? n.createdAt.toMillis() : now;
-                        if (now - createdAtMillis > TWENTY_FOUR_HOURS_MS) {
-                            continue;
-                        }
+                        if (now - createdAtMillis > TWENTY_FOUR_HOURS_MS) continue;
 
-                        if (n.userId === auth.currentUser.uid) {
-                            hasMyNote = true;
-                        }
+                        noteCacheMap.set(nId, n);
 
-                        const canSee = await checkCanView(n.userId, n.privacy || "friends");
+                        const canSee = await checkCanView(n.userId, n.privacy || "public");
                         if (canSee) {
-                            const noteUserLabel = (n.userId === auth.currentUser.uid) ? "Your Note (24h)" : (n.userName || "User");
-                            const safeCommentText = (n.comment || "").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+                            const noteUserLabel = (n.userId === auth.currentUser.uid)
+                                ? "Your Note (24h)"
+                                : (n.userName || "User");
+                            const safeCommentText = String(n.comment)
+                                .replace(/&/g, "&amp;")
+                                .replace(/</g, "&lt;")
+                                .replace(/>/g, "&gt;");
+
                             notesHtml += `
                                 <div class="note-bubble-card" onclick="openNoteViewer('${nId}')">
                                     <div class="note-bubble-text">💬 ${safeCommentText}</div>
@@ -1681,15 +1609,10 @@
                         }
                     }
 
-                    if (!hasMyNote) {
-                        notesHtml = addNoteCardHtml + notesHtml;
-                    }
-                    list.innerHTML = notesHtml || addNoteCardHtml;
+                    list.innerHTML = notesHtml;
                 },
                 (err) => {
                     console.error("Notes listener error:", err);
-                    const list = document.getElementById("activeNotesList");
-                    if (list) list.innerHTML = addNoteCardHtml;
                 }
             );
         }
@@ -1710,81 +1633,122 @@
                 const uName = n.userName || "NEXORA User";
                 const likes = Array.isArray(n.likes) ? n.likes : [];
 
-                document.getElementById("noteViewerUser").innerText = `${uName}'s Note`;
-                document.getElementById("noteViewerText").innerText = n.comment || "";
-                document.getElementById("noteLikesCount").innerText = likes.length;
-
+                const userEl = document.getElementById("noteViewerUser");
+                const textEl = document.getElementById("noteViewerText");
+                const likesCountEl = document.getElementById("noteLikesCount");
                 const likeBtn = document.getElementById("noteLikeBtn");
-                const isLiked = auth.currentUser && likes.includes(auth.currentUser.uid);
-                likeBtn.innerText = isLiked ? `❤️ Liked (${likes.length})` : `🤍 Like (${likes.length})`;
-                likeBtn.style.background = isLiked ? "#ef4444" : "rgba(255,255,255,0.15)";
-
-                document.getElementById("deleteNoteBtn").style.display =
-                    auth.currentUser && n.userId === auth.currentUser.uid ? "inline-block" : "none";
-
+                const delBtn = document.getElementById("deleteNoteBtn");
                 const audioEl = document.getElementById("viewerNoteAudio");
-                if (n.songUrl) {
-                    audioEl.src = n.songUrl;
-                    audioEl.play().catch(() => {});
-                } else {
-                    audioEl.pause();
-                    audioEl.src = "";
+                const modalEl = document.getElementById("noteViewerModal");
+
+                if (userEl) userEl.innerText = `${uName}'s Note`;
+                if (textEl) textEl.innerText = n.comment || "";
+                if (likesCountEl) likesCountEl.innerText = String(likes.length);
+
+                const isLiked = Boolean(auth.currentUser && likes.includes(auth.currentUser.uid));
+                if (likeBtn) {
+                    likeBtn.innerText = isLiked ? `❤️ Liked (${likes.length})` : `🤍 Like (${likes.length})`;
+                    likeBtn.style.background = isLiked ? "#ef4444" : "rgba(255,255,255,0.15)";
                 }
 
-                document.getElementById("noteViewerModal").style.display = "flex";
+                if (delBtn) {
+                    delBtn.style.display =
+                        auth.currentUser && n.userId === auth.currentUser.uid ? "inline-block" : "none";
+                }
+
+                if (audioEl) {
+                    if (n.songUrl) {
+                        audioEl.src = n.songUrl;
+                        audioEl.play().catch(() => {});
+                    } else {
+                        audioEl.pause();
+                        audioEl.src = "";
+                    }
+                }
+
+                if (modalEl) {
+                    modalEl.style.display = "flex";
+                }
             } catch (err) {
                 console.error("Open note error:", err);
-                alert("Could not open note: " + err.message);
+                alert("Could not open note: " + (err && err.message ? err.message : err));
             }
         };
 
         window.closeNoteViewer = () => {
-            document.getElementById("noteViewerModal").style.display = "none";
-            const audioEl = document.getElementById("viewerNoteAudio"); audioEl.pause(); audioEl.src = "";
-            currentViewingNoteId = null; currentNoteOwnerId = null;
+            const modalEl = document.getElementById("noteViewerModal");
+            if (modalEl) modalEl.style.display = "none";
+            const audioEl = document.getElementById("viewerNoteAudio");
+            if (audioEl) {
+                audioEl.pause();
+                audioEl.src = "";
+            }
+            currentViewingNoteId = null;
+            currentNoteOwnerId = null;
         };
 
         window.deleteCurrentNote = async () => {
-            if(!currentViewingNoteId || currentNoteOwnerId !== auth.currentUser.uid) return;
-            if(confirm("Delete note?")) { await deleteDoc(doc(db, "notes", currentViewingNoteId)); closeNoteViewer(); alert("Note deleted!"); }
+            if(!currentViewingNoteId || !auth.currentUser || currentNoteOwnerId !== auth.currentUser.uid) return;
+            if(confirm("Delete note?")) {
+                await deleteDoc(doc(db, "notes", currentViewingNoteId));
+                closeNoteViewer();
+                alert("Note deleted!");
+            }
         };
 
         window.toggleNoteLike = async () => {
-            if(!currentViewingNoteId) return;
+            if(!currentViewingNoteId || !auth.currentUser) return;
             const noteRef = doc(db, "notes", currentViewingNoteId);
             const snap = await getDoc(noteRef);
             if(snap.exists()) {
-                let data = snap.data(); let likes = [...(data.likes || [])];
+                let data = snap.data();
+                let likes = [...(Array.isArray(data.likes) ? data.likes : [])];
                 if(likes.includes(auth.currentUser.uid)) likes = likes.filter(id => id !== auth.currentUser.uid);
                 else likes.push(auth.currentUser.uid);
                 await updateDoc(noteRef, { likes });
                 data.likes = likes;
                 noteCacheMap.set(currentViewingNoteId, data);
-                document.getElementById("noteLikesCount").innerText = likes.length;
+                const likesCountEl = document.getElementById("noteLikesCount");
+                if (likesCountEl) likesCountEl.innerText = String(likes.length);
                 const likeBtn = document.getElementById("noteLikeBtn");
-                if(likes.includes(auth.currentUser.uid)) { likeBtn.innerText = `❤️ Liked (${likes.length})`; likeBtn.style.background = "#ef4444"; }
-                else { likeBtn.innerText = `🤍 Like (${likes.length})`; likeBtn.style.background = "rgba(255,255,255,0.15)"; }
+                if (likeBtn) {
+                    if(likes.includes(auth.currentUser.uid)) {
+                        likeBtn.innerText = `❤️ Liked (${likes.length})`;
+                        likeBtn.style.background = "#ef4444";
+                    } else {
+                        likeBtn.innerText = `🤍 Like (${likes.length})`;
+                        likeBtn.style.background = "rgba(255,255,255,0.15)";
+                    }
+                }
             }
         };
 
         window.sendNoteComment = async () => {
             const commentInput = document.getElementById("noteCommentInput");
-            const replyText = commentInput.value.trim();
-            if(!replyText || !currentViewingNoteId) return;
+            const replyText = commentInput ? commentInput.value.trim() : "";
+            if(!replyText || !currentViewingNoteId || !auth.currentUser) return;
             const noteSnap = await getDoc(doc(db, "notes", currentViewingNoteId));
             if(noteSnap.exists()) {
                 let noteOwnerId = noteSnap.data().userId;
                 let roomId = [auth.currentUser.uid, noteOwnerId].sort().join('_');
                 await addDoc(collection(db, "messages"), {
-                    text: `Replied to Note: "${noteSnap.data().comment}" -> ${replyText}`, mediaUrl: "", mediaType: "text",
-                    senderId: auth.currentUser.uid, senderName: document.getElementById("displayName").innerText,
-                    chatRoom: roomId, status: 'sent', createdAt: serverTimestamp(), reactions: {}
+                    text: `Replied to Note: "${noteSnap.data().comment}" -> ${replyText}`,
+                    mediaUrl: "",
+                    mediaType: "text",
+                    senderId: auth.currentUser.uid,
+                    senderName: document.getElementById("displayName")?.innerText || "NEXORA User",
+                    chatRoom: roomId,
+                    status: 'sent',
+                    createdAt: serverTimestamp(),
+                    reactions: {}
                 });
-                commentInput.value = ""; alert("Reply sent as direct chat!"); closeNoteViewer();
+                if (commentInput) commentInput.value = "";
+                alert("Reply sent as direct chat!");
+                closeNoteViewer();
             }
         };
 
-        // ================= STORIES SYSTEM (24 HOURS • UNLIMITED RE-OPEN + MENTIONS) =================
+        // ================= STORIES SYSTEM =================
         function populateStoryMentionDropdown() {
             const sel = document.getElementById("storyMentionUserSelect");
             if(!sel) return;
@@ -1807,7 +1771,7 @@
             try {
                 if (!auth.currentUser) return alert("Please login first!");
                 const fileInput = document.getElementById("storyMediaFileInput");
-                const privacy = document.getElementById("storyPrivacySelect").value;
+                const privacy = document.getElementById("storyPrivacySelect").value || "public";
                 const isaiifyUrl = document.getElementById("storyIsaiifyUrlInput").value.trim();
                 const audioFileInput = document.getElementById("storyAudioFileInput");
                 const mentionSel = document.getElementById("storyMentionUserSelect");
@@ -1885,7 +1849,7 @@
                 userName: document.getElementById("displayName").innerText,
                 userAvatar: selectedAvatarEmoji,
                 mediaUrl: storyMediaUrl,
-                privacy: "friends",
+                privacy: "public",
                 songUrl: "",
                 repostedFrom: fromName || "",
                 viewers: [],
@@ -1900,25 +1864,25 @@
             unsubscribeStories = onSnapshot(collection(db, "stories"), async (snapshot) => {
                 const list = document.getElementById("activeStoriesList");
                 if (!list) return;
-                let storiesHtml = ""; let hasMyStory = false;
+                let storiesHtml = "";
+                let hasMyStory = false;
                 const now = Date.now();
                 storyCacheMap.clear();
 
                 for(let docSnap of snapshot.docs) {
-                    let s = docSnap.data(); let sId = docSnap.id;
+                    let s = docSnap.data();
+                    let sId = docSnap.id;
                     storyCacheMap.set(sId, s);
 
                     let createdAtMillis = s.createdAt?.toMillis ? s.createdAt.toMillis() : now;
-                    if(now - createdAtMillis > TWENTY_FOUR_HOURS_MS) {
-                        continue;
-                    }
+                    if(now - createdAtMillis > TWENTY_FOUR_HOURS_MS) continue;
 
                     if(auth.currentUser && s.userId === auth.currentUser.uid) { 
                         hasMyStory = true; 
                         document.getElementById("myStoryThumb").innerHTML = `<img src="${s.mediaUrl}" alt="My Story">`; 
                     }
 
-                    let canSee = await checkCanView(s.userId, s.privacy || "friends");
+                    let canSee = await checkCanView(s.userId, s.privacy || "public");
                     if(canSee && auth.currentUser) {
                         let hasSeen = Array.isArray(s.viewers) && s.viewers.includes(auth.currentUser.uid);
                         const av = s.userAvatar || "👤";
@@ -2179,26 +2143,21 @@
             const v = document.getElementById("cameraVideo"), c = document.getElementById("cameraCanvas");
             c.width = v.videoWidth || 360; c.height = v.videoHeight || 360;
             const ctx = c.getContext("2d"); 
-            
             ctx.save();
             if(activeSnapFilterClass === "f-cyberpunk") ctx.filter = "contrast(150%) saturate(200%) hue-rotate(310deg)";
             else if(activeSnapFilterClass === "f-neon") ctx.filter = "brightness(120%) contrast(140%)";
             else if(activeSnapFilterClass === "f-grayscale") ctx.filter = "grayscale(100%)";
             else if(activeSnapFilterClass === "f-sepia") ctx.filter = "sepia(90%)";
-            
             ctx.drawImage(v, 0, 0, c.width, c.height);
             ctx.restore();
-
             const now = new Date();
             ctx.font = "bold 16px sans-serif";
             ctx.fillStyle = "#38bdf8";
             ctx.shadowColor = "#000";
             ctx.shadowBlur = 6;
             ctx.fillText(`📍 NEXORA SNAP | ${now.toLocaleString()}`, 20, c.height - 25);
-
             closeCameraModal();
             await sendMessage(c.toDataURL("image/jpeg", 0.85), "image", "📸 [SNAP with Timestamp]");
-            
             currentNexoraPoints += 10;
             await updateDoc(doc(db, "users", auth.currentUser.uid), { nexoraPoints: currentNexoraPoints });
             document.getElementById("displayNexoraPoints").innerText = `⭐ Points: ${currentNexoraPoints} (Open Store)`;
@@ -2300,7 +2259,6 @@
         async function renderNotificationsList() {
             const chatList = document.getElementById("chatList");
             let html = "";
-
             for (const req of cachedPendingRequests) {
                 let sName = req.fromName;
                 if (!sName) {
@@ -2317,7 +2275,6 @@
                     </div>
                 `;
             }
-
             for (const m of cachedStoryMentions) {
                 html += `
                     <div class="user-item" style="flex-direction:column; align-items:flex-start; gap:6px; padding:10px; border-color:rgba(99,102,241,0.45);" onclick="openChatWithUser('${m.fromUserId}', '${m.id}')">
@@ -2326,14 +2283,11 @@
                     </div>
                 `;
             }
-
             chatList.innerHTML = html || `<div style="font-size:11px; font-weight:600; color:var(--muted-text); padding:10px;">No pending notifications.</div>`;
         }
 
         window.openChatWithUser = async (targetUserId, mentionId = "") => {
-            if (mentionId) {
-                await updateDoc(doc(db, "story_mentions", mentionId), { read: true }).catch(() => {});
-            }
+            if (mentionId) await updateDoc(doc(db, "story_mentions", mentionId), { read: true }).catch(() => {});
             const uSnap = await getDoc(doc(db, "users", targetUserId));
             const uData = uSnap.exists() ? uSnap.data() : {};
             selectChat(targetUserId, uData.name || "User", uData.avatar || "", uData.email || "", false, uData.online, uData.statusMsg || "Available", [], Boolean(uData.hasBadge));
@@ -2388,7 +2342,11 @@
                 document.getElementById("modalAvatarPreview").innerHTML = selectedAvatarEmoji.startsWith("data:") ? `<img src="${selectedAvatarEmoji}">` : selectedAvatarEmoji;
                 renderAvatarOptions("male");
                 await setDoc(doc(db, "users", user.uid), { online: true, hasBadge: hasNexoraVipBadge }, { merge: true });
-                listenToActiveUsersAndGroups(); listenToIncomingRequests(); listenToStories(); listenToNotes(); listenToReels();
+                listenToActiveUsersAndGroups();
+                listenToIncomingRequests();
+                listenToStories();
+                listenToNotes();
+                listenToReels();
             } else {
                 if(auth.currentUser) await setDoc(doc(db, "users", auth.currentUser.uid), { online: false }, { merge: true });
                 document.getElementById("app").style.display = "none"; document.getElementById("loginPage").style.display = "flex";
@@ -2423,9 +2381,7 @@
         window.switchSidebarTab = (tab) => {
             activeSidebarTab = tab;
             const chatListEl = document.getElementById("chatList");
-            if (chatListEl) {
-                chatListEl.classList.toggle("reels-scroll-mode", tab === "reels");
-            }
+            if (chatListEl) chatListEl.classList.toggle("reels-scroll-mode", tab === "reels");
             document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
             document.getElementById(tab + "TabBtn").classList.add("active");
             document.getElementById("sidebarTitleText").innerText =
@@ -2536,31 +2492,23 @@
             currentChatEmail = email;
             currentChatHasBadge = Boolean(hasBadge);
             isCurrentChatGroup = isGroup;
-
             try {
                 currentGroupMemberNames = encodedMembers ? JSON.parse(decodeURIComponent(encodedMembers)) : [];
             } catch (_) {
                 currentGroupMemberNames = [];
             }
-
             const titleEl = document.getElementById("chatTitle");
             titleEl.innerHTML = `${name}${currentChatHasBadge && !isGroup ? `<span class="nexora-vip-badge">👑 VIP</span>` : ""}`;
-
             if (isGroup) {
                 const membersPreview = currentGroupMemberNames.length ? currentGroupMemberNames.join(", ") : "Group Members";
                 document.getElementById("chatSub").innerText = `👥 ${membersPreview}`;
             } else {
                 document.getElementById("chatSub").innerText = `${statusMsg || 'Online'} • Tap for profile`;
             }
-            
             const headerAv = document.getElementById("headerUserAvatar");
-            if (isGroup) {
-                headerAv.innerHTML = "👥";
-            } else if (avatar && avatar.startsWith("data:")) {
-                headerAv.innerHTML = `<img src="${avatar}" alt="${name}">`;
-            } else {
-                headerAv.innerText = avatar || "👤";
-            }
+            if (isGroup) headerAv.innerHTML = "👥";
+            else if (avatar && avatar.startsWith("data:")) headerAv.innerHTML = `<img src="${avatar}" alt="${name}">`;
+            else headerAv.innerText = avatar || "👤";
 
             document.getElementById("sidebarView").classList.add("hidden-mobile");
             document.getElementById("chatAreaBackground").classList.add("active-mobile");
@@ -2593,13 +2541,9 @@
             }
 
             const modalAv = document.getElementById("modalTargetAvatar");
-            if (isCurrentChatGroup) {
-                modalAv.innerHTML = "👥";
-            } else if (currentChatAvatar && currentChatAvatar.startsWith("data:")) {
-                modalAv.innerHTML = `<img src="${currentChatAvatar}" alt="${currentChatName}">`;
-            } else {
-                modalAv.innerText = currentChatAvatar || "👤";
-            }
+            if (isCurrentChatGroup) modalAv.innerHTML = "👥";
+            else if (currentChatAvatar && currentChatAvatar.startsWith("data:")) modalAv.innerHTML = `<img src="${currentChatAvatar}" alt="${currentChatName}">`;
+            else modalAv.innerText = currentChatAvatar || "👤";
             document.getElementById("selectedUserProfileModal").style.display = "flex";
         };
         window.closeSelectedUserProfile = () => document.getElementById("selectedUserProfileModal").style.display = "none";
